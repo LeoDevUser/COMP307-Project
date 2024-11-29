@@ -1,0 +1,30 @@
+const express = require('express');
+const path = require('path');
+const app = express();
+
+const hostname = '127.0.0.1';
+const port = 3000;
+
+// Set EJS as the view engine
+app.set('view engine', 'ejs');
+app.set('views', path.join(__dirname, 'views'));
+
+// Serve static files from the 'css' and 'images' directories
+app.use('/css', express.static(path.join(__dirname, 'css')));
+app.use('/images', express.static(path.join(__dirname, 'images')));
+
+// Route to serve the landing page with template included
+app.get('/landing.html', (req, res) => {
+  // Render the landing page using EJS
+  res.render('landing');  // This will render 'views/landing.ejs' and include 'template.ejs'
+});
+
+// 404 for any other route
+app.use((req, res) => {
+  res.status(404).send('Page not found');
+});
+
+// Start the server
+app.listen(port, hostname, () => {
+  console.log(`Server running at http://${hostname}:${port}/`);
+});

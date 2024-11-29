@@ -1,0 +1,72 @@
+.p_header_image{
+    width: 100vw;
+    height: auto;
+}
+
+.p_widgets{
+    width: 100%;
+    height: auto;
+    max-width: 70%;
+}
+
+.p_widgets_text {
+    display: flex;
+    justify-content: center;  
+    align-items: center;      
+    text-align: center;       
+    padding-left: 1vw; 
+    padding-right: 1vw;     
+                
+}
+
+
+.p_thirtythree, .p_thirtyfour {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 3vh;
+}
+
+.p_thirtythree {
+    width: 33%;
+    border-right: 1px solid #ccc;
+}
+
+.p_thirtyfour {
+    width: 34%;
+}
+
+
+.container {
+    width: 100%;
+    display: flex;  
+    justify-content: space-between;
+    margin-bottom: 5vh;
+    
+}
+
+
+
+
+.red_back {
+    padding: 20px;
+    background-color: #ed1b2f;
+}
+
+.red_back h2 {
+    font-size: 1.8rem;
+    font-weight: bold;
+    margin-bottom: 15px;
+    color: #fff;
+}
+
+.schedule-list {
+    padding-left: 8vw;
+}
+
+.schedule-list li {
+    font-size: 1.2rem;
+    line-height: 1.6;
+    margin-bottom: 10px;
+    color: #fff;
+}

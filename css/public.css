@@ -4,9 +4,11 @@
 }
 
 .p_widgets{
+    display: flex;
     width: 100%;
     height: auto;
-    max-width: 70%;
+    max-width: 50%;
+    margin: 0 auto;
 }
 
 .p_widgets_text {
@@ -51,6 +53,9 @@
 .red_back {
     padding: 20px;
     background-color: #ed1b2f;
+    justify-content: center;
+    align-items: center;
+    display: grid;
 }
 
 .red_back h2 {
@@ -60,9 +65,6 @@
     color: #fff;
 }
 
-.schedule-list {
-    padding-left: 8vw;
-}
 
 .schedule-list li {
     font-size: 1.2rem;
@@ -70,3 +72,46 @@
     margin-bottom: 10px;
     color: #fff;
 }
+
+
+
+
+.image-container {
+    position: relative;
+    display: inline-block;
+}
+
+
+
+.overlay {
+    position: absolute;
+    top: 50%;  /* Adjust for vertical centering */
+    left: 20%; /* Adjust for horizontal centering */
+    transform: translate(-50%, -50%);  /* Fine-tune centering */
+    color: #000;  /* Make text white for contrast */
+    text-align: center;
+}
+
+.overlay p {
+    margin: 0;
+    font-size: 1.2em;
+
+}
+
+.overlay button {
+    display: inline-flex;
+    margin: 10px 0 0;
+    padding: 1.2vh 2vw;
+    font-size: 1em;
+    color: #fff;
+    border: none;
+    background: #ed1b2f;
+    transition: background 0.3s, border-radius 0.3s;
+}
+
+.overlay button:hover {
+    background: #424242;
+    border-radius: 5px;
+}
+
+

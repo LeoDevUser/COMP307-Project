@@ -24,6 +24,12 @@ app.get('/', (req, res) => {
   res.render('landing');
 });
 
+//route to dashboard, for now it is dashboard for a generic user
+//will later make the request handle specific users with security
+app.get('/dashboard', (req, res) => {
+  res.render('dashboard');
+});
+
 // 404 for any other route
 app.use((req, res) => {
   res.status(404).send('Page not found');

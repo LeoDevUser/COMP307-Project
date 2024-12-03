@@ -19,6 +19,11 @@ app.get('/landing.html', (req, res) => {
   res.render('landing');  // This will render 'views/landing.ejs' and include 'template.ejs'
 });
 
+// Default route to server landing page
+app.get('/', (req, res) => {
+  res.render('landing');
+});
+
 // 404 for any other route
 app.use((req, res) => {
   res.status(404).send('Page not found');

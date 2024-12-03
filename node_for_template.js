@@ -22,8 +22,8 @@ const server = http.createServer((req, res) => {
         });
     }
     // If the request is for the CSS file
-    else if (req.url === '/stylesheet.css') {
-        const filePath = path.join(__dirname, 'stylesheet.css');
+    else if (req.url === 'css/stylesheet.css') {
+        const filePath = path.join(__dirname,'css', 'stylesheet.css');
         fs.readFile(filePath, 'utf8', (err, data) => {
             if (err) {
                 res.statusCode = 500;
@@ -37,8 +37,8 @@ const server = http.createServer((req, res) => {
         });
     }
     // If the request is for the logo.png file
-    else if (req.url === '/logo2.png') {
-        const filePath = path.join(__dirname, 'logo2.png');
+    else if (req.url === 'images/logo2.png') {
+        const filePath = path.join(__dirname,'images', 'logo2.png');
         fs.readFile(filePath, (err, data) => {
             if (err) {
                 res.statusCode = 500;

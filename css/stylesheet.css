@@ -47,76 +47,6 @@ body, html {
     padding-bottom: 1vh;
 }
 
-/*style for dashboard*/
-.dashboard-section {
-	display: flex;
-	background-color: #424242;
-	justify-content: center;
-	align-items: center;
-	padding: 2vh;
-	color: white;
-	width: 10vw;
-	height: 6vh;
-}
-
-.upcoming-header {
-	position: absolute;
-	top: 25vh;
-	left: 5vw;
-	text-align: center;
-}
-
-.my-appointments-header {
-	position: absolute;
-	top: 25vh;
-	left: 25vw;
-	text-align: center;
-}
-
-.date-header {
-	display: flex;
-	background-color: #424242;
-	justify-content: center;
-	align-items: center;
-	padding: 2vh;
-	color: white;
-	width: 10vw;
-	height: 6vh;
-	text-align: center;
-	position: absolute;
-	top: 25vh;
-	left: 75vw;
-}
-
-.date-header form {
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	color: white;
-	background-color: #424242;
-	padding: 2vh;
-	flex-wrap: inherit;
-}
-
-.date-header form label,
-.date-header form input[type="date"],
-.date-header form input[type="submit"] {
-	margin: 0.5vh 0.5vw;
-	font-size: 1.2vw;
-}
-
-.date-header form input[type="date"]:hover,
-.date-header form input[type="submit"]:hover {
-    background-color: #ed1b2f;
-	color:white;
-    border-radius: 5px;
-}
-
-.dashboard-section p {
-	font-size: 1.2vw;
-}
-/*end style for dashboard*/
-
 /* Responsive Design for Mobile */
  @media (max-width: 900px) {
     .image{
@@ -127,13 +57,5 @@ body, html {
     .nav-links a {
         font-size: 4vw;
     }
-
-	.dashboard-section p,
-	.date-header form label,
-	.date-header form input[type="date"],
-	.date-header form input[type="submit"] {
-		font-size: 2vh;
-	}
-
 } 
 

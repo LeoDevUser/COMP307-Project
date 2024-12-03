@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<link rel="stylesheet" href="../css/dash.css">
+</head>
+<div class="calendar-container">
+	<div class="calendar-header">
+		<button class="prev-week" onclick="prevWeek()">
+			<i class="fas fa-chevron-left"></i>
+		</button>
+		<h2 id="current-month-year"></h2>
+		<button class="next-week" onclick="nextWeek()">
+		<i class="fas fa-chevron-right"></i>
+		</button>
+	</div>
+
+	<div class="calendar-grid">
+		<div class="day-header">
+			<div class="day-name">Sun</div>
+			<div class="day-name">Mon</div>
+			<div class="day-name">Tue</div>
+			<div class="day-name">Wed</div>
+			<div class="day-name">Thu</div>
+			<div class="day-name">Fri</div>
+			<div class="day-name">Sat</div>
+		</div>
+
+		<div class="week-rows">
+			<% for (let i = 0; i < 6; i++) { %>
+			<div class="week-row">
+				<% for (let j = 0; j < 7; j++) { %>
+				<div class="day-cell">
+					<div class="date-number"></div>
+					<div class="appointments"></div>
+				</div>
+				<% } %>
+			</div>
+			<% } %>
+		</div>
+	</div>
+</div>
+<!--initial render-->
+<script>
+  // JavaScript functions to handle date navigation and rendering
+  let currentDate = new Date();
+
+  function prevWeek() {
+    currentDate.setDate(currentDate.getDate() - 7);
+    renderCalendar();
+  }
+
+  function nextWeek() {
+    currentDate.setDate(currentDate.getDate() + 7);
+    renderCalendar();
+  }
+
+  function renderCalendar() {
+    // Logic to calculate the dates for the current week
+    // and render the calendar grid
+    const monthYear = currentDate.toLocaleString('default', {
+      month: 'long',
+      year: 'numeric',
+    });
+    document.getElementById('current-month-year').textContent = monthYear;
+  }
+
+renderCalendar();
+</script>
+</html>

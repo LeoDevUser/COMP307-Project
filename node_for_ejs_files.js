@@ -30,6 +30,13 @@ app.get('/dashboard', (req, res) => {
   res.render('dashboard');
 });
 
+//route to calendar page, will be used as an iframe in pages
+//needing to display a calendar
+//will later adjust get for security
+app.get('/calendar', (req, res) => {
+  res.render('calendar');
+});
+
 // 404 for any other route
 app.use((req, res) => {
   res.status(404).send('Page not found');

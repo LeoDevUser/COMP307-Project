@@ -1,8 +1,7 @@
 <%- include('template.ejs'); %>
 
 <link rel="stylesheet" href="../css/dash.css">
-
-
+<br>
 <div class="upcoming-header dashboard-section">
 	<p>Upcoming Appointments</p>
 </div>
@@ -10,11 +9,13 @@
 <div class="my-appointments-header dashboard-section">
 	<p>All my Appointments</p>
 </div>
-
 <div class="date-header">
 	<form action="">
 	<label for="week">Change Date</label>
 	<input type="date" id="week" name="week">
 	<input type="submit">
 	</form>
+</div>
+<div class="calendar-container">
+	<%- include('calendar.ejs'); %>
 </div>

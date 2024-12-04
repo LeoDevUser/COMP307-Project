@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="stylesheet" href="../css/cal.css">
 </head>
 <body>
@@ -64,16 +66,18 @@
 		year: 'numeric',
 	});
 	document.getElementById('current-month-year').textContent = monthYear;
-	let tmp = new Date();
 	let days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday',
-		'Thurdays', 'Friday', 'Saturday']
+		'Thurday', 'Friday', 'Saturday']
+	let now = new Date(currentDate);
+	now.setDate(currentDate.getDate() - currentDate.getDay());
 	for(let i =0; i <7; i++) {
-		tmp.setDate(currentDate.getDate() + i);
-		let d = tmp.toLocaleString('default', {
+		let cur = new Date(now);
+		cur.setDate(now.getDate() + i)
+		let d = cur.toLocaleString('default', {
 			day: 'numeric',
 		});
-		let id = "day";
-			document.getElementById(id.concat(i)).innerText = days[i]+ " " + d;
+		let dayIndex = cur.getDay();
+			document.getElementById("day"+ dayIndex).innerText = days[dayIndex]+ " " + d;
 		}
 	}
 	renderCalendar();

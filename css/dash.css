@@ -18,8 +18,8 @@ body, html {
 .calendar-container {
 	position: absolute;
 	top: 18vh;
-	left: 20vw;
-	width:60vw;
+	left: 12.5vw;
+	width:75vw;
 	height: 5vh;
 }
 
@@ -49,7 +49,7 @@ body, html {
 	text-align: center;
 	position: absolute;
 	top: 25vh;
-	left: 75vw;
+	left: 74.5vw;
 }
 
 .date-header form {
@@ -93,7 +93,7 @@ body, html {
 
 @media (min-width: 900px) {
 	.date-header {
-		left:82.5vw;
+		left:81vw;
 	}
 	.my-appointments-header,
 	.upcoming-header {
@@ -103,7 +103,9 @@ body, html {
 		top: 16vh;
 	}
 	.calendar-container {
+		left:12.5vw;
 		top: 13vh;
+		width: 73.75vw;
 	}
 }
 

@@ -33,6 +33,7 @@ button {
 	padding: 1vw;
 	background-color: #424242;
 	font-size: 1vw;
+	font-family: inherit;
 }
 
 #middle, .test {

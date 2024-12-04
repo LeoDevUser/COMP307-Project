@@ -97,4 +97,16 @@ body, html {
 	.date-header {
 		left:82.5vw;
 	}
+	.my-appointments-header,
+	.upcoming-header {
+		top: 15vh;
+	}
+	.date-header {
+		top: 16vh;
+	}
+	.calendar-container {
+		top: 13vh;
+	}
 }
+
+

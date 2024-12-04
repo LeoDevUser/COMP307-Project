@@ -17,10 +17,10 @@ body, html {
 }
 .calendar-container {
 	position: absolute;
-	top: 20vh;
-	left: 25vw;
-	width:10vw;
-	height: 10vh;
+	top: 18vh;
+	left: 20vw;
+	width:60vw;
+	height: 5vh;
 }
 
 .upcoming-header {
@@ -62,13 +62,7 @@ body, html {
 	flex-wrap: inherit;
 }
 
-.subtitles {
-	display:flex;
-	flex-wrap: wrap;
-	justify-content: space-between;
-	height: 6vh;
-	width: 100%;
-}
+
 
 .date-header form label,
 .date-header form input[type="date"],
@@ -89,7 +83,7 @@ body, html {
 }
 
 /* Responsive Design for Mobile */
- @media (max-width: 900px) {
+@media (max-width: 900px) {
 	.dashboard-section p,
 	.date-header form label,
 	.date-header form input[type="date"],
@@ -99,3 +93,8 @@ body, html {
 
 } 
 
+@media (min-width: 900px) {
+	.date-header {
+		left:82.5vw;
+	}
+}

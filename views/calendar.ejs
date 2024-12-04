@@ -19,31 +19,21 @@
 			<th class="day-name" id="day5">Fri</th>
 			<th class="day-name" id="day6">Sat</th>
 		</tr>
-
-		<div class="week-rows">
-			<% for (let i = 0; i < 6; i++) { %>
-			<div class="week-row">
-				<% for (let j = 0; j < 7; j++) { %>
-				<div class="day-cell">
-					<div class="date-number"></div>
-					<div class="appointments"></div>
-				</div>
-				<% } %>
-			</div>
-			<% } %>
-		</div>
-	</table>
-	<br>
-	<div class="calendar-buttons">
-		<button class="prev-week" onclick="prevWeek()">
-			previous week
-		</button>
-		<button class="next-week" onclick="nextWeek()">
-			next week
-		</button>
-	</div>
+		<tr class="calendar-buttons">
+			<th class="test" colspan="3">
+			<button class="prev-week" onclick="prevWeek()">
+				Previous Week
+			</button>
+			</th>
+			<th id="middle"></th>
+			<th class="test" colspan="3">
+			<button class="next-week" onclick="nextWeek()">
+				Next Week
+			</button>
+			</th>
+		</tr>
+		</table>
 </div>
-<!--initial render-->
 <script>
 	// JavaScript functions to handle date navigation and rendering
 	let currentDate = new Date();
@@ -80,6 +70,7 @@
 			document.getElementById("day"+ dayIndex).innerText = days[dayIndex]+ " " + d;
 		}
 	}
+	//render calendar
 	renderCalendar();
 </script>
 </body>

@@ -13,6 +13,9 @@ app.set('views', path.join(__dirname, 'views'));
 app.use('/css', express.static(path.join(__dirname, 'css')));
 app.use('/images', express.static(path.join(__dirname, 'images')));
 
+//serve scripts
+app.use('/js', express.static(path.join(__dirname, 'js')));
+
 // Route to serve the landing page with template included
 app.get('/landing.html', (req, res) => {
   // Render the landing page using EJS

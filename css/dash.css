@@ -62,8 +62,6 @@ body, html {
 	flex-wrap: inherit;
 }
 
-
-
 .date-header form label,
 .date-header form input[type="date"],
 .date-header form input[type="submit"] {

@@ -21,12 +21,12 @@
 			<th class="day-name" id="day6">Sat</th>
 		</tr>
 		<tr class="calendar-buttons">
-			<th class="test" colspan="4">
+			<th class="b-container" colspan="4">
 			<button class="prev-week" onclick="prevWeek()">
 				Previous Week
 			</button>
 			</th>
-			<th class="test" colspan="4">
+			<th class="b-container" colspan="4">
 			<button class="next-week" onclick="nextWeek()">
 				Next Week
 			</button>
@@ -34,44 +34,6 @@
 		</tr>
 		</table>
 </div>
-<script>
-	// JavaScript functions to handle date navigation and rendering
-	let currentDate = new Date();
-
-	function prevWeek() {
-	currentDate.setDate(currentDate.getDate() - 7);
-	renderCalendar();
-	}
-
-	function nextWeek() {
-	currentDate.setDate(currentDate.getDate() + 7);
-	renderCalendar();
-	}
-
-	function renderCalendar() {
-	// Logic to calculate the dates for the current week
-	// and render the calendar grid
-	const monthYear = currentDate.toLocaleString('default', {
-		month: 'long',
-		year: 'numeric',
-	});
-	document.getElementById('current-month-year').textContent = monthYear;
-	let days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday',
-		'Thurday', 'Friday', 'Saturday']
-	let now = new Date(currentDate);
-	now.setDate(currentDate.getDate() - currentDate.getDay());
-	for(let i =0; i <7; i++) {
-		let cur = new Date(now);
-		cur.setDate(now.getDate() + i)
-		let d = cur.toLocaleString('default', {
-			day: 'numeric',
-		});
-		let dayIndex = cur.getDay();
-			document.getElementById("day"+ dayIndex).innerText = days[dayIndex]+ " " + d;
-		}
-	}
-	//render calendar
-	renderCalendar();
-</script>
+<script src="../js/calendar.js"></script>
 </body>
 </html>

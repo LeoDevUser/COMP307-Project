@@ -1,7 +1,7 @@
 body, html {
     margin: 0;
     padding: 0;
-    font-family: 'EB Garamond', Arial, serif;
+    font-family: 'EB Garamond', 'Arial', 'serif';
 }
 
 /*style for dashboard*/

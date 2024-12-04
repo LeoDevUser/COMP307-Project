@@ -1,29 +1,22 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<link rel="stylesheet" href="../css/dash.css">
+<link rel="stylesheet" href="../css/cal.css">
 </head>
+<body>
 <div class="calendar-container">
-	<div class="calendar-header">
-		<button class="prev-week" onclick="prevWeek()">
-			<i class="fas fa-chevron-left"></i>
-		</button>
-		<h2 id="current-month-year"></h2>
-		<button class="next-week" onclick="nextWeek()">
-		<i class="fas fa-chevron-right"></i>
-		</button>
-	</div>
 
-	<div class="calendar-grid">
-		<div class="day-header">
-			<div class="day-name">Sun</div>
-			<div class="day-name">Mon</div>
-			<div class="day-name">Tue</div>
-			<div class="day-name">Wed</div>
-			<div class="day-name">Thu</div>
-			<div class="day-name">Fri</div>
-			<div class="day-name">Sat</div>
-		</div>
+	<table class="calendar-grid">
+		<tr><th colspan="7" id="current-month-year"></th></tr>
+		<tr class="day-header">
+			<th class="day-name" id="day0">Sun</th>
+			<th class="day-name" id="day1">Mon</th>
+			<th class="day-name" id="day2">Tue</th>
+			<th class="day-name" id="day3">Wed</th>
+			<th class="day-name" id="day4">Thu</th>
+			<th class="day-name" id="day5">Fri</th>
+			<th class="day-name" id="day6">Sat</th>
+		</tr>
 
 		<div class="week-rows">
 			<% for (let i = 0; i < 6; i++) { %>
@@ -37,33 +30,53 @@
 			</div>
 			<% } %>
 		</div>
+	</table>
+	<br>
+	<div class="calendar-buttons">
+		<button class="prev-week" onclick="prevWeek()">
+			previous week
+		</button>
+		<button class="next-week" onclick="nextWeek()">
+			next week
+		</button>
 	</div>
 </div>
 <!--initial render-->
 <script>
-  // JavaScript functions to handle date navigation and rendering
-  let currentDate = new Date();
+	// JavaScript functions to handle date navigation and rendering
+	let currentDate = new Date();
 
-  function prevWeek() {
-    currentDate.setDate(currentDate.getDate() - 7);
-    renderCalendar();
-  }
+	function prevWeek() {
+	currentDate.setDate(currentDate.getDate() - 7);
+	renderCalendar();
+	}
 
-  function nextWeek() {
-    currentDate.setDate(currentDate.getDate() + 7);
-    renderCalendar();
-  }
+	function nextWeek() {
+	currentDate.setDate(currentDate.getDate() + 7);
+	renderCalendar();
+	}
 
-  function renderCalendar() {
-    // Logic to calculate the dates for the current week
-    // and render the calendar grid
-    const monthYear = currentDate.toLocaleString('default', {
-      month: 'long',
-      year: 'numeric',
-    });
-    document.getElementById('current-month-year').textContent = monthYear;
-  }
-
-renderCalendar();
+	function renderCalendar() {
+	// Logic to calculate the dates for the current week
+	// and render the calendar grid
+	const monthYear = currentDate.toLocaleString('default', {
+		month: 'long',
+		year: 'numeric',
+	});
+	document.getElementById('current-month-year').textContent = monthYear;
+	let tmp = new Date();
+	let days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday',
+		'Thurdays', 'Friday', 'Saturday']
+	for(let i =0; i <7; i++) {
+		tmp.setDate(currentDate.getDate() + i);
+		let d = tmp.toLocaleString('default', {
+			day: 'numeric',
+		});
+		let id = "day";
+			document.getElementById(id.concat(i)).innerText = days[i]+ " " + d;
+		}
+	}
+	renderCalendar();
 </script>
+</body>
 </html>

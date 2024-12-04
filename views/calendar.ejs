@@ -9,8 +9,9 @@
 <div class="calendar-container">
 
 	<table class="calendar-grid">
-		<tr><th colspan="7" id="current-month-year"></th></tr>
+		<tr><th colspan="8" id="current-month-year"></th></tr>
 		<tr class="day-header">
+			<th class="day-name" id="time"></th>
 			<th class="day-name" id="day0">Sun</th>
 			<th class="day-name" id="day1">Mon</th>
 			<th class="day-name" id="day2">Tue</th>
@@ -20,13 +21,12 @@
 			<th class="day-name" id="day6">Sat</th>
 		</tr>
 		<tr class="calendar-buttons">
-			<th class="test" colspan="3">
+			<th class="test" colspan="4">
 			<button class="prev-week" onclick="prevWeek()">
 				Previous Week
 			</button>
 			</th>
-			<th id="middle"></th>
-			<th class="test" colspan="3">
+			<th class="test" colspan="4">
 			<button class="next-week" onclick="nextWeek()">
 				Next Week
 			</button>

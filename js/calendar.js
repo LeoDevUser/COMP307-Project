@@ -22,7 +22,11 @@ document.getElementById('current-month-year').textContent = monthYear;
 let days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday',
 	'Thurday', 'Friday', 'Saturday']
 let now = new Date(currentDate);
-now.setDate(currentDate.getDate() - currentDate.getDay());
+if (currentDate.getDay != 0) {
+	now.setDate(currentDate.getDate() - currentDate.getDay());
+} else {
+	console.log(currentDate.getDate());
+}
 for(let i =0; i <7; i++) {
 	let cur = new Date(now);
 	cur.setDate(now.getDate() + i)
@@ -44,7 +48,10 @@ document.addEventListener('DOMContentLoaded', () => {
         event.preventDefault(); // Prevent default form submission
 
         const selectedDate = document.getElementById('week').value;
-		currentDate = new Date(selectedDate);
+		//handling timezone since Date() constructor
+		//auto converts to UTC, but montreal is UTC-5
+		currentDate = new Date(selectedDate + 'T12:00:00Z');
+		currentDate.setHours(0, 0, 0, 0);
         renderCalendar();
     });
 });

@@ -33,11 +33,17 @@ app.get('/dashboard', (req, res) => {
   res.render('dashboard');
 });
 
-//route to calendar page, will be used as an iframe in pages
-//needing to display a calendar
-//will later adjust get for security
+//route to calendar page, will be used as template in 
+//pages needing to display a calendar will later adjust 
+//get for security
 app.get('/calendar', (req, res) => {
   res.render('calendar');
+});
+
+//route to upcoming appointments page, will be used
+//in user dashboard page
+app.get('/upcoming', (req, res) => {
+  res.render('upcoming');
 });
 
 // 404 for any other route

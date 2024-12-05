@@ -1,0 +1,46 @@
+body, html {
+    margin: 0;
+    padding: 0;
+    font-family: 'EB Garamond', 'Arial', 'serif';
+}
+
+/*style for calendar*/
+.upcoming-grid table, .upcoming-grid th, .upcoming-grid td {
+	text-align: center;
+	border: 1px solid black;
+	border-collapse: collapse;
+	padding: 1vw;
+	height: 8vh;
+	font-size: 1vw;
+	font-family: inherit;
+}
+
+.upcoming-grid tr {
+	border: 1px solid black;
+}
+
+.upcoming-grid th {
+	width: 2.5vw;
+	border: none;
+}
+
+.upcoming-grid td {
+	color:black;
+	background-color: white;
+	width: 7vw;
+	border: none;
+}
+
+.hour {
+	font-weight: 700;
+}
+
+@media (min-width: 900px) {
+	.upcoming-grid th {
+		width: 2vw;
+	}
+
+	.upcoming-grid td {
+		width: 5.7vw;
+	}
+} 

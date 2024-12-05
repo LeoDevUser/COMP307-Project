@@ -23,6 +23,14 @@ body, html {
 	height: 5vh;
 }
 
+.upcoming-container {
+	position: absolute;
+	top: 18vh;
+	left: 2.5vw;
+	width:75vw;
+	height: 5vh;
+}
+
 .upcoming-header {
 	position: absolute;
 	top: 25vh;
@@ -115,6 +123,10 @@ body, html {
 		left:12.5vw;
 		top: 13vh;
 		width: 73.75vw;
+	}
+	.upcoming-container {
+		top: 13vh;
+		left: 2.5vw;
 	}
 }
 

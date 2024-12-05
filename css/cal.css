@@ -5,26 +5,36 @@ body, html {
 }
 
 /*style for calendar*/
-table, th, td {
+.calendar-grid table, .calendar-grid th:not(.b-container), .calendar-grid td {
 	text-align: center;
 	border: 1px solid black;
-	border-collapse: collapse;
 	color: white;
 	background-color: #424242;
 	padding: 1vw;
 	height: 1vh;
 	font-size: 1vw;
 }
+table, td, tr {
+	border-collapse: collapse;
+}
 
-tr {
+.calendar-grid tr {
+	border: 1px solid black;
 	width:70vw;
 }
 
-th, td {
+.calendar-grid th, .calendar-grid td {
 	width: 10vw;
 }
 
-button {
+/*
+.calendar-grid td {
+	color:black;
+	background-color: white;
+}
+*/
+
+.calendar-grid button {
 	display:block;
 	margin: auto;
 	text-align: center;
@@ -36,17 +46,22 @@ button {
 	font-family: inherit;
 }
 
-#middle, .b-container {
+.b-container {
     border: none;
 	padding: 0vw;
+	text-align: center;
+	color: white;
+	background-color: #424242;
+	height: 1vh;
+	font-size: 1vw;
 }
 
-button:hover {
+.calendar-grid button:hover {
 	background-color: #ed1b2f
 }
 /* Responsive Design for Mobile */
 @media (min-width: 900px) {
-	button {
+	.calendar-grid button {
 		font-size: 1vw;
 	}
 } 

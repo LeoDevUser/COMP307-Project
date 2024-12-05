@@ -63,10 +63,21 @@ body, html {
 }
 
 .date-header form label,
-.date-header form input[type="date"],
-.date-header form input[type="submit"] {
+.date-header form input[type="date"] {
 	margin: 0.5vh 0.5vw;
 	font-size: 1.2vw;
+}
+
+.date-header form input[type="submit"] {
+	display:block;
+	margin: auto;
+	text-align: center;
+	vertical-align: middle;
+	color: white;
+	padding: 1vw;
+	background-color: #424242;
+	font-size: 1vw;
+	font-family: inherit;
 }
 
 .date-header form input[type="date"]:hover,

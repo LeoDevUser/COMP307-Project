@@ -55,6 +55,9 @@ app.use('/images', express.static(path.join(__dirname, 'images')));
 //serve scripts
 app.use('/js', express.static(path.join(__dirname, 'js')));
 
+//React application
+app.use('/schedule', express.static(path.join(__dirname, 'react', 'schedule')));
+
 // Route to serve the landing page with template included
 app.get('/landing.html', (req, res) => {
   // Render the landing page using EJS
@@ -83,6 +86,11 @@ app.get('/calendar', (req, res) => {
 //in user dashboard page
 app.get('/upcoming', (req, res) => {
   res.render('upcoming');
+});
+
+//Loads professor's schedule builder
+app.get('/schedule', function (req, res) {
+  res.sendFile(path.join(__dirname, 'react','schedule', 'index.html'));
 });
 
 // 404 for any other route

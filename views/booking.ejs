@@ -1,0 +1,63 @@
+
+<title>Real-time Search Bar</title>
+<link rel="stylesheet" href="../css/booking.css">
+<link rel="stylesheet" href="../css/public.css">
+<script src="../js/searchbar.js"></script>
+<link rel="stylesheet" href="../css/dash.css">
+
+
+<%- include('template.ejs'); %>
+
+<div style="display: flex;">
+        <div class="full_element">
+</div>
+
+<div>
+<h1>RSVP For an Office Hour</h1>
+</div></div>
+
+<div style="display: flex;">
+
+
+    <!-- Search bar section -->
+
+    <div class="full_element">
+
+
+        <p>Search for a class or Professor</p>
+
+        <div class="search-container">
+            <input type="text" id="search" class="search-bar" placeholder="Search..." oninput="filterSuggestions()">
+            <div id="suggestions" class="suggestions" style="display: none;"></div>
+        </div>
+
+        <p>XYZ Professor's classes</p>
+
+        
+            <ul class="styled-radio">
+                <li><input type="radio" name="options" id="option1"> Option 1</li>
+                <li><input type="radio" name="options" id="option2"> Option 2</li>
+                <li><input type="radio" name="options" id="option3"> Option 3</li>
+                <li><input type="radio" name="options" id="option4"> Option 4</li>
+            </ul>
+        
+        <button class="button_class">
+            Reset
+        </button>
+
+
+        <p>Need to Request a specific time?</p>
+        
+        <button class="button_class">
+            Request a Time
+        </button>
+        
+    </div>
+
+    <!-- calendar section -->
+    
+    <div class="calendar-container">
+        <%- include('calendar.ejs'); %>
+    </div>
+
+</div>

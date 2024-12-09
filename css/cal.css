@@ -41,7 +41,7 @@ table, td, tr {
 	vertical-align: middle;
 	color: white;
 	padding: 1vw;
-	background-color: #424242;
+	background-color: #ed1b2f;
 	font-size: 1vw;
 	font-family: inherit;
 	width: 100%;
@@ -59,7 +59,7 @@ table, td, tr {
 }
 
 .b-container button:hover {
-	background-color: #ed1b2f
+	background-color: #424242
 }
 /* Responsive Design for Mobile */
 @media (min-width: 900px) {

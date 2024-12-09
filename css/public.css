@@ -98,7 +98,7 @@
 
 }
 
-.overlay button {
+.button_class {
     display: inline-flex;
     margin: 10px 0 0;
     padding: 1.2vh 2vw;
@@ -109,7 +109,7 @@
     transition: background 0.3s, border-radius 0.3s;
 }
 
-.overlay button:hover {
+.button_class:hover {
     background: #424242;
     border-radius: 5px;
 }

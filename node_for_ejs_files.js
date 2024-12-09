@@ -93,6 +93,11 @@ app.get('/schedule', function (req, res) {
   res.sendFile(path.join(__dirname, 'react','schedule', 'index.html'));
 });
 
+
+app.get('/booking', (req, res) => {
+  res.render('booking');
+});
+
 // 404 for any other route
 app.use((req, res) => {
   res.status(404).send('Page not found');

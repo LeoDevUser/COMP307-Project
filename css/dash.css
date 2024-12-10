@@ -107,6 +107,15 @@ body, html {
 		font-size: 2vh;
 	}
 
+	.calendar-container {
+		position: absolute;
+		top: auto;
+		padding-top: 2vh;
+		left: auto;
+		width:75vw;
+		height: 5vh;
+	}
+
 } 
 
 @media (min-width: 900px) {

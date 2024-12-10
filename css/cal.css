@@ -38,6 +38,11 @@ tr day-header{
 }
 */
 
+.time {
+    vertical-align: top;
+}
+
+
 .b-container button {
 	display:flex;
 	margin: auto;
@@ -73,6 +78,21 @@ tr day-header{
 		font-size: 1vw;
 	}
 } 
+
+@media (max-width: 900px){
+	.calendar-grid table, .calendar-grid th:not(.b-container), .calendar-grid td {
+		font-size: 3vw;
+	}
+
+	.b-container button {
+		font-size: 3vw;
+	}
+	
+	.calendar-grid .b-container {
+		height: auto;
+	}
+	
+}
 
 
   

@@ -8,15 +8,17 @@
 
 <%- include('template.ejs'); %>
 
-<div style="display: flex;">
-        <div class="full_element">
+<div class="hide_for_small_screen">
+
+        <div class="full_element"></div>
+
+        <div>
+        <h1>RSVP For an Office Hour</h1>
+        </div>
 </div>
 
-<div>
-<h1>RSVP For an Office Hour</h1>
-</div></div>
 
-<div style="display: flex;">
+<div class="booking_layout">
 
 
     <!-- Search bar section -->
@@ -55,9 +57,25 @@
     </div>
 
     <!-- calendar section -->
-    
-    <div class="calendar-container">
-        <%- include('calendar.ejs'); %>
-    </div>
+    <div class="cal_class_booking">
+
+        <div class="calendar-container">
+            <%- include('calendar.ejs'); %>
+        </div> 
+
+    </div>   
 
 </div>
+
+
+<div class="hide_for_small_screen">
+
+    <div class="full_element"></div>
+
+    <div class="rsvp_booking">
+        <h3>Confirm RSVP time: <span id="time_selected">12:00-13:00 Mon 15th</span> 
+            <button class="button_class">Confirm</button></h3>
+    </div>
+    
+</div>
+

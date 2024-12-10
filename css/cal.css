@@ -8,9 +8,8 @@ body, html {
 .calendar-grid table, .calendar-grid th:not(.b-container), .calendar-grid td {
 	text-align: center;
 	border: 1px solid black;
-	color: white;
-	background-color: #424242;
-	padding: 1vw;
+	color: black;
+	padding: 0.5vw;
 	height: 1vh;
 	font-size: 1vw;
 }
@@ -18,13 +17,18 @@ table, td, tr {
 	border-collapse: collapse;
 }
 
+tr day-header{
+	background-color: #fff;
+}
+
+
 .calendar-grid tr {
 	border: 1px solid black;
 	width:70vw;
 }
 
 .calendar-grid th, .calendar-grid td {
-	width: 10vw;
+	width: 7vw;
 }
 
 /*
@@ -35,17 +39,19 @@ table, td, tr {
 */
 
 .b-container button {
-	display:block;
+	display:flex;
 	margin: auto;
 	text-align: center;
 	vertical-align: middle;
 	color: white;
 	padding: 1vw;
-	background-color: #ed1b2f;
+	background-color: #424242;
 	font-size: 1vw;
 	font-family: inherit;
 	width: 100%;
 	height: 100%;
+	justify-content: center;
+  	align-items: center;
 }
 
 .calendar-grid .b-container {
@@ -59,7 +65,7 @@ table, td, tr {
 }
 
 .b-container button:hover {
-	background-color: #424242
+	background-color: #ed1b2f
 }
 /* Responsive Design for Mobile */
 @media (min-width: 900px) {
@@ -67,4 +73,7 @@ table, td, tr {
 		font-size: 1vw;
 	}
 } 
+
+
+  
 

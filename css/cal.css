@@ -13,6 +13,27 @@ body, html {
 	height: 1vh;
 	font-size: 1vw;
 }
+
+table.calendar-grid {
+	width: 100%;
+	table-layout: fixed;  /* Fix table layout to make all columns equal */
+	border-collapse: collapse;
+}
+  
+.calendar-grid th, .calendar-grid td {
+	width: 12.5%;   /* Equal width for all columns (since you have 8 columns) */
+	height: 4vw;   
+	overflow: hidden; /* Prevent overflow of text */
+	word-wrap: break-word;
+	white-space: nowrap;
+}
+
+
+table.calendar-grid {
+		table-layout: fixed;
+
+}
+
 table, td, tr {
 	border-collapse: collapse;
 }
@@ -81,7 +102,7 @@ tr day-header{
 
 @media (max-width: 900px){
 	.calendar-grid table, .calendar-grid th:not(.b-container), .calendar-grid td {
-		font-size: 3vw;
+		font-size: 2.5vw;
 	}
 
 	.b-container button {
@@ -91,6 +112,11 @@ tr day-header{
 	.calendar-grid .b-container {
 		height: auto;
 	}
+
+	.calendar-grid th, .calendar-grid td {
+		height: 10vw;   
+	}
+	
 	
 }
 

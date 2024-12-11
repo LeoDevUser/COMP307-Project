@@ -3,6 +3,8 @@
 <link rel="stylesheet" href="../css/booking.css">
 <link rel="stylesheet" href="../css/public.css">
 <script src="../js/searchbar.js"></script>
+<script src="../js/populate_cal.js"></script>
+
 
 
 <%- include('template.ejs'); %>
@@ -29,7 +31,7 @@
 
         <div class="search-container">
             <input type="text" id="search" class="search-bar" placeholder="Search..." oninput="filterSuggestions()">
-            <div id="suggestions" class="suggestions" style="display: none;"></div>
+            <div id="suggestions" class="suggestions" style="display: none;" ></div>
         </div>
 
         <p>XYZ Professor's classes</p>
@@ -42,7 +44,7 @@
                 <li><input type="radio" name="options" id="option4"> Option 4</li>
             </ul>
         
-        <button class="button_class">
+        <button class="button_class" onclick="clearAllTableData()">
             Reset
         </button>
 

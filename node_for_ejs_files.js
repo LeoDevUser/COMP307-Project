@@ -46,24 +46,25 @@ app.get('/search', async (req, res) => {
       return res.json([]);
     }
 
-    // Access the 'users' collection from the sample_mflix database
-    const usersCollection = db.collection('users');
+    // Access the 'classes' collection from the database
+    const classesCollection = db.collection('classes');
 
-    // Find users that match the search query in fields like 'name' or 'email'
-    const users = await usersCollection.find({
+    // Find classes that match the search query in fields like 'ClassName' or 'ClassNumber'
+    const classes = await classesCollection.find({
       $or: [
-        { name: { $regex: searchQuery, $options: 'i' } },
-        { email: { $regex: searchQuery, $options: 'i' } },
+        { ClassName: { $regex: searchQuery, $options: 'i' } },  // Search in ClassName
+        { ClassNumber: { $regex: searchQuery, $options: 'i' } }, // Search in ClassNumber
       ]
     }).toArray();  // Convert the result to an array
 
-    // Return the found users as JSON
-    res.json(users);
+    // Return the found classes as JSON
+    res.json(classes);
   } catch (err) {
     console.error(err);
     res.status(500).send('Server error');
   }
 });
+
 
 
 //search bar end

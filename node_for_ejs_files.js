@@ -34,6 +34,40 @@ const commentSchema = new mongoose.Schema({
 //create model
 const Comment = mongoose.model('Comment', commentSchema);
 
+
+// searchbar start
+app.get('/search', async (req, res) => {
+  try {
+    // Retrieve the search query from the request
+    const searchQuery = req.query.q;
+
+    // If no query is provided, return empty array
+    if (!searchQuery) {
+      return res.json([]);
+    }
+
+    // Access the 'users' collection from the sample_mflix database
+    const usersCollection = db.collection('users');
+
+    // Find users that match the search query in fields like 'name' or 'email'
+    const users = await usersCollection.find({
+      $or: [
+        { name: { $regex: searchQuery, $options: 'i' } },
+        { email: { $regex: searchQuery, $options: 'i' } },
+      ]
+    }).toArray();  // Convert the result to an array
+
+    // Return the found users as JSON
+    res.json(users);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Server error');
+  }
+});
+
+
+//search bar end
+
 async function findComments() {
   try {
     const comments = await Comment.find({ date: { $gt: new Date('2003-01-01') } });

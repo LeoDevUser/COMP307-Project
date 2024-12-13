@@ -45,11 +45,13 @@ mongoose.connect(MONGODB_URI, {
 });
 
 const userSchema = new mongoose.Schema({
-    email: { type: String, required: true, unique: true },
-    password: { type: String, required: true },
+  email: { type: String, required: true, unique: true },
+  password: { type: String, required: true },
+  name: { type: String, required: true },
+  classes: { type: Array, required: false },
 });
 
-const userModel = mongoose.model("users", userSchema)
+const userModel = mongoose.model("users2", userSchema)
 
 async function findComments() {
   try {
@@ -63,7 +65,23 @@ findComments();
 
 
 // searchbar start
-app.get('/search', async (req, res) => {
+
+// Helper function to get professors
+async function getProfessors() {
+  try {
+    // Use Mongoose's model to query for professors (isProf: true)
+    const professors = await userModel.find({ isProf: true });
+    return professors;
+  } catch (err) {
+    console.error("Error fetching professors:", err);
+    throw err;
+  }
+}
+
+
+
+app.get('/searchbar', async (req, res) => {
+
   try {
     // Retrieve the search query from the request
     const searchQuery = req.query.q;
@@ -72,25 +90,27 @@ app.get('/search', async (req, res) => {
     if (!searchQuery) {
       return res.json([]);
     }
+    // Get all professors (isProf: true) using the previously defined logic
+    const professors = await getProfessors();
 
-    // Access the 'classes' collection from the database
-    const classesCollection = db.collection('classes');
+    // Filter the professors array based on the search query (name, email, or classes_array)
+    const filteredProfessors = professors.filter(professor => {
 
-    // Find classes that match the search query in fields like 'ClassName' or 'ClassNumber'
-    const classes = await classesCollection.find({
-      $or: [
-        { ClassName: { $regex: searchQuery, $options: 'i' } },  // Search in ClassName
-        { ClassNumber: { $regex: searchQuery, $options: 'i' } }, // Search in ClassNumber
-      ]
-    }).toArray();  // Convert the result to an array
+      return (
+        (professor.name && professor.name.match(new RegExp(searchQuery, 'i'))) ||
+        (professor.classes && professor.classes.some(classItem => classItem.match(new RegExp(searchQuery, 'i'))))
+      );  
+    });
 
-    // Return the found classes as JSON
-    res.json(classes);
+
+    // Return the filtered professors
+    res.json(filteredProfessors);
   } catch (err) {
     console.error(err);
     res.status(500).send('Server error');
   }
 });
+
 
 
 

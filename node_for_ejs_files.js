@@ -5,7 +5,7 @@ const app = express();
 const MONGODB_URI = 'mongodb+srv://tempuser:BcRXLU3TTLOqxCWE@myschedule2024.lhqde.mongodb.net/?retryWrites=true&w=majority&appName=myschedule2024/test';
 
 const hostname = '0.0.0.0';
-const port = 3001;
+const port = 3000;
 
 // //connect to mongoose
 // mongoose.connect(MONGODB_URI, {
@@ -54,7 +54,7 @@ const userModel = mongoose.model("users", userSchema)
 async function findComments() {
   try {
     const comments = await userModel.find({ email: 'Jack@mail.mcgill.ca'});
-    console.log('Comments after 2003:', comments);
+    console.log('jack:', comments);
   } catch (err) {
     console.error(err);
   }

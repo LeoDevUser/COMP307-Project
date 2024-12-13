@@ -2,37 +2,64 @@ const express = require('express');
 const mongoose = require('mongoose');
 const path = require('path');
 const app = express();
-const MONGODB_URI = 'mongodb+srv://tempuser:BcRXLU3TTLOqxCWE@myschedule2024.lhqde.mongodb.net/?retryWrites=true&w=majority&appName=myschedule2024/sample_mflix';
+const MONGODB_URI = 'mongodb+srv://tempuser:BcRXLU3TTLOqxCWE@myschedule2024.lhqde.mongodb.net/?retryWrites=true&w=majority&appName=myschedule2024/test';
 
 const hostname = '0.0.0.0';
-const port = 3000;
+const port = 3001;
 
-//connect to mongoose
+// //connect to mongoose
+// mongoose.connect(MONGODB_URI, {
+// 	useNewUrlParser: true,
+// 	useUnifiedTopology: true,
+// 	dbName: 'sample_mflix'
+// });
+
+
+// //get default connection
+// const db = mongoose.connection;
+
+// db.on('error', console.error.bind(console, 'MongoDB connection erro:'));
+// db.once('open', () => {
+// 	console.log('Connected to MongoDB successfully!');
+// });
+
+// const commentSchema = new mongoose.Schema({
+//   name: { type: String, required: true },
+//   email: { type: String, required: true },
+//   movie_id: { type: mongoose.Schema.Types.ObjectId, ref: 'Movie', required: true },
+//   text: { type: String, required: true },
+//   date: { type: Date, default: Date.now },
+// });
+
+// //create model
+// const Comment = mongoose.model('Comment', commentSchema);
+
 mongoose.connect(MONGODB_URI, {
-	useNewUrlParser: true,
-	useUnifiedTopology: true,
-	dbName: 'sample_mflix'
+  dbName: 'test'
+})
+.then(() => {
+    console.log("Connected to Database")
+})
+.catch((err) => {
+    console.error("Error Encountered connecting to database", err)
 });
 
-
-//get default connection
-const db = mongoose.connection;
-
-db.on('error', console.error.bind(console, 'MongoDB connection erro:'));
-db.once('open', () => {
-	console.log('Connected to MongoDB successfully!');
+const userSchema = new mongoose.Schema({
+    email: { type: String, required: true, unique: true },
+    password: { type: String, required: true },
 });
 
-const commentSchema = new mongoose.Schema({
-  name: { type: String, required: true },
-  email: { type: String, required: true },
-  movie_id: { type: mongoose.Schema.Types.ObjectId, ref: 'Movie', required: true },
-  text: { type: String, required: true },
-  date: { type: Date, default: Date.now },
-});
+const userModel = mongoose.model("users", userSchema)
 
-//create model
-const Comment = mongoose.model('Comment', commentSchema);
+async function findComments() {
+  try {
+    const comments = await userModel.find({ email: 'Jack@mail.mcgill.ca'});
+    console.log('Comments after 2003:', comments);
+  } catch (err) {
+    console.error(err);
+  }
+}
+findComments();
 
 
 // searchbar start
@@ -69,15 +96,15 @@ app.get('/search', async (req, res) => {
 
 //search bar end
 
-async function findComments() {
-  try {
-    const comments = await Comment.find({ date: { $gt: new Date('2003-01-01') } });
-    console.log('Comments after 2003:', comments);
-  } catch (err) {
-    console.error(err);
-  }
-}
-findComments();
+// async function findComments() {
+//   try {
+//     const comments = await Comment.find({ date: { $gt: new Date('2003-01-01') } });
+//     console.log('Comments after 2003:', comments);
+//   } catch (err) {
+//     console.error(err);
+//   }
+// }
+// findComments();
 
 // Set EJS as the view engine
 app.set('view engine', 'ejs');

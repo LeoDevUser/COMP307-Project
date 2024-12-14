@@ -4,12 +4,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     dateForm.addEventListener('submit', (event) => {
         event.preventDefault(); // Prevent default form submission
-
         const selectedDate = document.getElementById('week').value;
-                //handling timezone since Date() constructor
-                //auto converts to UTC, but montreal is UTC-5
-                currentDate = new Date(selectedDate + 'T12:00:00Z');
-                currentDate.setHours(0, 0, 0, 0);
-        renderCalendar();
+		//handling timezone since Date() constructor
+		//auto converts to UTC, but montreal is UTC-5
+		currentDate = new Date(selectedDate + 'T12:00:00Z');
+		currentDate.setHours(0, 0, 0, 0);
+		clearCalendar();
+		renderCalendar();
     });
 });

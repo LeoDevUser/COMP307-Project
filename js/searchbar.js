@@ -2,6 +2,7 @@
 function filterSuggestions() {
     const suggestions = document.getElementById("suggestions");
 
+
     
     document.getElementById("search").addEventListener('input', async function(event) {
       const searchQuery = event.target.value;
@@ -67,45 +68,9 @@ function filterSuggestions() {
         suggestions.appendChild(item);
       });
   }
-  
-  
-
-  // Function to handle item selection
-function selectOption(option,professors) {
-
-    console.log("rf");
-
-    const professor_or_class = professors.find(prof => prof.name === option);
-
-    suggestions.style.display = 'none';
-
-    if (professor) {
-        //if it is a professor
-        console.log("Found professor:", professor);
-        document.getElementById('search').value = professor_or_class.ClassNumber;
-      } else {
-        //if it is a class
-        console.log("Professor not found.");
-        document.getElementById('search').value = professor_or_class.ClassNumber;
-      }
 
 
-
-    
-
-    option.OHtimes.forEach(function(time) {
-        populateRowWithColor(time, option.ClassNumber);
-    });
-    
-
-    console.log(getProfessor(option));  // Prints the entire selected option to the console
-    // If you want to print it in a more readable way, you can use JSON.stringify with indentation
-    console.log(JSON.stringify(option, null, 2)); 
-  }
-
-
-
-function clearAllTableData() {
+  function clearAllTableData() {
     // Select all <td> elements in the document
     const cells = document.querySelectorAll('td');  // Only target <td> elements
     
@@ -115,4 +80,144 @@ function clearAllTableData() {
       cell.style.backgroundColor = '';  // Clear the background color
     });
   }
+
+function populateClassesOptions(professor) {
+    // Get the select element
+    const dropdown = document.getElementById("dropdown");
+    
+    // Loop through the professor's classes
+    professor.classes.forEach((className, index) => {
+        // Get the corresponding <option> element by ID
+        const option = document.getElementById(`class${index + 1}`);
+        
+        // Set the option text to the class name
+        option.textContent = className;
+        
+        // Make the option visible by changing the display style
+        option.style.display = 'block';
+    });
+}
+  
+function getEventInstances() {
+    // Select all <td> elements
+    const tdElements = document.querySelectorAll('td');
+    
+    // Create an array to store objects containing both 'data' and text content
+    const instances = [];
+  
+    // Iterate over each <td> element
+    tdElements.forEach(td => {
+        // Check if the <td> element has a 'data' attribute
+        if (td.hasAttribute('data')) {
+            // Push an object with 'data' attribute and text content
+            instances.push({
+                data: td.getAttribute('data'),
+                text: td.textContent.trim().slice(0, -3) // trimming to remove any extra whitespace
+            });
+        }
+    });
+  
+    // Return the array of instances
+    return instances;
+}
+
+  
+  
+
+  // Function to handle item selection
+function selectOption(option,professors) {
+
+    const eventInstance = false;
+
+    for (let i = 1; i <= 6; i++) {
+        const option = document.getElementById(`class${i}`);
+        option.style.display = 'none'; // Hide the option
+    }
+
+    if (/\d/.test(option)) {
+        //if option is a class
+        const dropdown = document.getElementById("dropdown");
+        const class1 = document.getElementById(`class1`);
+        
+        // Set the option text to the class name
+        class1.textContent = option;
+    }else{
+        //if option is a professor
+
+        const professor_or_class = professors.find(prof => prof.name === option);
+        const eventInstance = professors.find(instances => instances.name === option).event_instances;
+
+        const search = document.getElementById(`search`);
+        search.value = option;
+        document.getElementById(`suggestions`).display='none';
+
+        populateClassesOptions(professor_or_class);
+
+}
+populateOptions();
+    
+
+}
+
+function populateOptions(){
+
+    //get eent_instance-class pairs
+    events_instances=getEventInstances();
+
+    // const eid = event_instances.map(instance => instance.data);
+
+    for (let i = 1; i <= 4; i++) {
+        const option = document.getElementById(`option${i}`);
+        option.style.visibility = 'hidden'; // Hide the option
+        option.textContent = ""; 
+        }
+
+    let index = 0;
+
+    events_instances.forEach(async (key_pair) => {
+        const response = await fetch(`/findInstance?eid=${key_pair.data}`);
+        const data = await response.json();
+
+
+        const option = document.getElementById(`option${index + 1}`);
+        index=index+1;
+        
+        // Set the option text to the class name
+        option.textContent = data[0].date.split('T')[1].split('.')[0];
+
+        // options.forEach(option => {
+        //     if (option.textContent.trim() === "comp") {
+        //       console.log(option.id);  // Log the id of the option that contains "comp"
+        //     }
+        //   });
+        
+        // Make the option visible by changing the display style
+        option.style.visibility = 'visible';
+
+
+
+        console.log(data);
+        // Do something with data
+      });
+
+}
+
+    
+      
+
+    
+
+
+    
+
+
+
+
+
+
+  
+
+
+
+
   

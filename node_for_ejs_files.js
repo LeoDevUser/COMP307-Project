@@ -104,30 +104,69 @@ app.get('/populate', async (req, res) => {
 	}
 });
 
-// searchbar start
-app.get('/search', async (req, res) => {
-  try {
-    // retrieve the search query from the request
-    const searchquery = req.query.q;
 
-    // if no query is provided, return empty array
-    if (!searchquery) {
+// searchbar start
+
+// Helper function to get professors
+async function getProfessors() {
+  try {
+    // Use Mongoose's model to query for professors (isProf: true)
+    const userModel = db.collection('users2');
+    const professors = await userModel.find({ isProf: true }).toArray();;
+    return professors;
+  } catch (err) {
+    console.error("Error fetching professors:", err);
+    throw err;
+  }
+}
+
+
+app.get('/searchbar', async (req, res) => {
+
+  try {
+    // Retrieve the search query from the request
+    const searchQuery = req.query.q;
+
+    // If no query is provided, return empty array
+    if (!searchQuery) {
       return res.json([]);
     }
+    // Get all professors (isProf: true) using the previously defined logic
+    const professors = await getProfessors();
 
-// get all professors (isprof: true) using the previously defined logic
-    const professors = await getprofessors();
-// filter the professors array based on the search query (name, email, or classes_array)
-    const filteredprofessors = professors.filter(professor => {
-		return (
-			(professor.name && professor.name.match(new RegExp(searchQuery, 'i'))) ||
-			(professor.classes && professor.classes.some(classItem => classItem.match(new RegExp(searchQuery, 'i'))))
-		);  
-	});
+    // Filter the professors array based on the search query (name, email, or classes_array)
+    const filteredProfessors = professors.filter(professor => {
 
+      return (
+        (professor.name && professor.name.match(new RegExp(searchQuery, 'i'))) ||
+        (professor.classes && professor.classes.some(classItem => classItem.match(new RegExp(searchQuery, 'i'))))
+      );  
+    });
+
+
+    // Return the filtered professors
+    res.json(filteredProfessors);
   } catch (err) {
     console.error(err);
     res.status(500).send('Server error');
+  }
+});
+
+
+
+//returns the full event instance
+app.get('/findInstance', async (req, res) => {
+  const eid = req.query.eid;
+  const eventiModel = db.collection('event_instances');
+
+  if (!eid) return res.status(400).json({ error: 'eid is required' });
+
+  try {
+    const resp = await eventiModel.find({ _id: new ObjectId(eid) }).toArray();
+    return res.json(resp);
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ error: 'Server error' });
   }
 });
 

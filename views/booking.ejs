@@ -4,6 +4,8 @@
 <link rel="stylesheet" href="../css/public.css">
 <script src="../js/searchbar.js"></script>
 <script src="../js/populate_cal.js"></script>
+<script src="../js/booking_logic.js"></script>
+
 
 
 
@@ -34,19 +36,30 @@
             <div id="suggestions" class="suggestions" style="display: none;" ></div>
         </div>
 
-        <p>XYZ Professor's classes</p>
+        
+        
+        
 
+        <div class="full_element"></div>
         
-            <ul class="styled-radio">
-                <li><input type="radio" name="options" id="option1"> Option 1</li>
-                <li><input type="radio" name="options" id="option2"> Option 2</li>
-                <li><input type="radio" name="options" id="option3"> Option 3</li>
-                <li><input type="radio" name="options" id="option4"> Option 4</li>
-            </ul>
-        
-        <button class="button_class" onclick="clearAllTableData()">
-            Reset
-        </button>
+        <div class="rsvp_booking">
+                <label for="dropdown">Confirm RSVP for:</label>
+                <select id="dropdown" name="classes">
+                    <option id="class1" style="display: none;"></option>
+                    <option id="class2" style="display: none;"></option>
+                    <option id="class3" style="display: none;"></option>
+                    <option id="class4" style="display: none;"></option>
+                    <option id="class5" style="display: none;"></option>
+                    <option id="class6" style="display: none;"></option>
+                </select> <br> for the week shown <br> 
+
+
+               
+                
+                
+                
+                <button class="button_class">Confirm</button>
+        </div>
 
 
         <p>Need to Request a specific time?</p>
@@ -69,14 +82,5 @@
 </div>
 
 
-<div>
 
-    <div class="full_element"></div>
-
-    <div class="rsvp_booking">
-        <h3>Confirm RSVP time: <span id="time_selected">12:00-13:00 Mon 15th</span> 
-            <button class="button_class">Confirm</button></h3>
-    </div>
-    
-</div>
 

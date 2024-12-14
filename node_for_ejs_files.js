@@ -74,10 +74,11 @@ app.get('/populate', async (req, res) => {
 	}
 
 	//returns the tim and appointments for the user
-	//in json format {times: [Date]; appointments: [String]}
+	//in json format {times: [Date]; appointments: [String], event_instance ObjectId (eid): [str]}
 	async function getAppointments(mail) {
 		let times = [];
 		let appointments = [];
+		let evis = [];
 		let tmp;
 		try {
 			const instances = await findUserEvents(mail);
@@ -86,9 +87,11 @@ app.get('/populate', async (req, res) => {
 				times.push(tmp[0]);
 				var fullLabel = await findEvent(tmp[1]);
 				appointments.push(fullLabel);
+				//storing objectId for event_instance
+				evis.push(e);
 			}
 			//console.log(appointments);
-			return res.json({times: times, appointments: appointments});
+			return res.json({times: times, appointments: appointments, evis: evis});
 		} catch (err) {
 			console.error(err);
 		}

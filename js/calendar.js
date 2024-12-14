@@ -49,6 +49,8 @@ function clearCalendar() {
     cells.forEach(cell => {
 		cell.textContent = '';  // Clear the content inside the <td>
 		cell.style.backgroundColor = '';  // Clear the background color
+		//remove objectId for event_instance if there is one
+		cell.removeAttribute('data');
     });
   }
 
@@ -70,7 +72,7 @@ function inweek(date) {
 	}
 }
 
-function populateColor(id, inputString) {
+function populateColor(id, inputString, evi) {
     // List of possible colors
     const colors = ['#cbd4eb','#c0f4ae','#fafe92','#e8cae3','#c0a6fc'];
     
@@ -99,6 +101,8 @@ function populateColor(id, inputString) {
     
     element.style.backgroundColor=colorToUse;
     element.textContent=inputString;
+	//objectinstanceid of event_instance stored as <td data=evi>
+    element.setAttribute('data', evi);
 }
 
 async function populate(email) {
@@ -113,8 +117,8 @@ async function populate(email) {
 		//const obj = JSON.parse(result);
 		const times = result.times; //here we have the times
 		const appointments = result.appointments; //here the labels
+		const evis = result.evis; //objid event_instance
 		let counter = 0;
-		console.log("here",appointments[0]);
 		for (time of times) {
 			//parse the the Date and convert into the identifier
 			date = new Date(time);
@@ -138,8 +142,9 @@ async function populate(email) {
 					id = h.toString();
 				}
 				id = id + date.getDay().toString();
-				input = appointments[counter];
-				populateColor(id, input);
+				let input = appointments[counter];
+				let evi = evis[counter];
+				populateColor(id, input, evi);
 			}
 		}
 	} catch (err) {

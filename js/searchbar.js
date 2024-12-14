@@ -1,298 +1,247 @@
+let email_global = "";
+let class_global = "";
+let currentDate = new Date();
+
 // Function to initialize the search functionality
 function filterSuggestions() {
-    const suggestions = document.getElementById("suggestions");
-
-
-    
-    document.getElementById("search").addEventListener('input', async function(event) {
-      const searchQuery = event.target.value;
-      if (searchQuery) {
-        const response = await fetch(`/searchbar?q=${searchQuery}`);
-        const professors = await response.json();
-
-        displayResults(professors, "suggestions");
-          } else {
-        suggestions.innerHTML = ''; // Clear results if input is empty
-      }
-    });
+  const suggestions = document.getElementById("suggestions");
   
-    // Close suggestions when clicking outside of the suggestions container
-    document.addEventListener('click', function(event) {
-      if (!suggestions.contains(event.target) && event.target !== document.getElementById('search')) {
-        suggestions.style.display = 'none'; // Hide suggestions
-      }
-    });
-  }
-
-  window.onload = function() {
-    document.getElementById('search').value = '';  // Clear the search bar on page load
-  }
-  
-  // Function to display search results
-  function displayResults(professors, suggestionsContainerId) {
-    const query = document.getElementById('search').value.toLowerCase();
-    const suggestions = document.getElementById(suggestionsContainerId);
-    suggestions.innerHTML = ''; // Clear previous suggestions
-    if (query.length === 0) {
-      suggestions.style.display = 'none'; // Hide suggestions if input is empty
-      return;
+  document.getElementById("search").addEventListener('input', async function(event) {
+    const searchQuery = event.target.value;
+    if (searchQuery) {
+      const response = await fetch(`/searchbar?q=${searchQuery}`);
+      const professors = await response.json();
+      displayResults(professors, suggestions);
+    } else {
+      suggestions.innerHTML = '';  // Clear results if input is empty
     }
-    // Filter and display only the first 5 results
-    const filteredProfessors = professors.filter(professor =>
-        professor.name.toLowerCase().includes(query.toLowerCase()) ||
-        professor.email.toLowerCase().includes(query.toLowerCase())
-      ).map(professor => professor.name);
-
-      const filteredClasses = professors.filter(professor =>
-        professor.classes.some(classItem => 
-          classItem.toLowerCase().includes(query.toLowerCase())
-        )
-      ).flatMap(professor => 
-        professor.classes.filter(classItem => 
-          classItem.toLowerCase().includes(query.toLowerCase())
-        )
-      );
-
-    const filteredOptions = [...filteredProfessors, ...filteredClasses];
-
-
-
-  
-    suggestions.style.display = 'block'; // Show suggestions
-    filteredOptions.slice(0, 5).forEach(option => {
-        const item = document.createElement('div');
-        item.classList.add('suggestion-item');
-        item.textContent = option; // Directly display the option (either professor name or class name)
-    
-        item.onclick = () => selectOption(option,professors); // Handle item selection
-        suggestions.appendChild(item);
-      });
-  }
-
-
-  function clearAllTableData() {
-    // Select all <td> elements in the document
-    const cells = document.querySelectorAll('td');  // Only target <td> elements
-    
-    // Loop through each <td> and reset content and background color
-    cells.forEach(cell => {
-      cell.textContent = '';  // Clear the content inside the <td>
-      cell.style.backgroundColor = '';  // Clear the background color
-    });
-  }
-
-function populateClassesOptions(professor) {
-    // Get the select element
-    const dropdown = document.getElementById("dropdown");
-    
-    // Loop through the professor's classes
-    professor.classes.forEach((className, index) => {
-        // Get the corresponding <option> element by ID
-        const option = document.getElementById(`class${index + 1}`);
-        
-        // Set the option text to the class name
-        option.textContent = className;
-        
-        // Make the option visible by changing the display style
-        option.style.display = 'block';
-    });
-}
-  
-// function getEventInstances() {
-//     // Select all <td> elements
-//     const tdElements = document.querySelectorAll('td');
-    
-//     // Create an array to store objects containing both 'data' and text content
-//     const instances = [];
-  
-//     // Iterate over each <td> element
-//     tdElements.forEach(td => {
-//         // Check if the <td> element has a 'data' attribute
-//         if (td.hasAttribute('data')) {
-//             // Push an object with 'data' attribute and text content
-//             instances.push({
-//                 data: td.getAttribute('data'),
-//                 text: td.textContent.trim().slice(0, -3) // trimming to remove any extra whitespace
-//             });
-//         }
-//     });
-  
-//     // Return the array of instances
-//     return instances;
-// }
-
-
-  
-
-  // Function to handle item selection
-function selectOption(option,professors) {
-
-    const eventInstance = false;
-
-    for (let i = 1; i <= 6; i++) {
-        const option = document.getElementById(`class${i}`);
-        option.style.display = 'none'; // Hide the option
-    }
-
-    if (/\d/.test(option)) {
-        //if option is a class
-        const dropdown = document.getElementById("dropdown");
-        const class1 = document.getElementById(`class1`);
-        
-        // Set the option text to the class name
-        class1.textContent = option;
-        class1.style.display="block";
-    }else{
-        //if option is a professor
-
-        const professor_or_class = professors.find(prof => prof.name === option);
-        const eventInstance = professors.find(instances => instances.name === option).event_instances;
-
-        const search = document.getElementById(`search`);
-        search.value = option;
-        document.getElementById(`suggestions`).display='none';
-
-        populateClassesOptions(professor_or_class);
-
-}
-}
-
-
-async function findCellInstance(start_time,end_time,day,class_string){
-
-        let start_hour = start_time.split(":")[0];
-
-        if (start_hour > 12) {
-            start_hour -= 12;  // Convert to 12-hour format if hour is > 12
-          }
-
-        //const formatted_hour = start_hour < 10 ? '0' + start_hour : start_hour;
-        // Create the string and add the day at the end
-        const result = start_hour + day;
-
-        cell= document.getElementById(result)
-
-      
-
-
-        if (cell.textContent.trim() === "" || !cell.textContent.includes(class_string)) {
-            alert("There is no class for those times/days. Please provide a valid input.");
-            return;
-          }
-
-
-
-
-        const response = await fetch(`/registerForInstance?eid=${cell.getAttribute("data")}`);
-
-
-
-        if (!response.ok) {
-            alert('Failed to register');
-            return;
-          }
-          
-          const data = await response.json();
-        
-          if (response.ok) {
-            alert('Success!');
-            return;
-          }
-        
-
-    
-      }
-      
-
-
-
-
-
-
-
-function logFormData() {
-    // Get values from form elements
-    const classDropdown = document.getElementById('dropdown').value;
-    const dayDropdown = document.getElementById('day').value;
-    const startTime = document.getElementById('start-time').value;
-    const endTime = document.getElementById('end-time').value;
-
-
-    if (!classDropdown || !dayDropdown || !startTime || !endTime) {
-        alert("Please fill out all required fields!");  // Show a popup if any field is empty
-        return;  // Stop further processing if the form is invalid
-      }
-
-      findCellInstance(startTime,endTime,dayDropdown,classDropdown);
-
-
-    document.getElementById('dropdown').value = '';
-    document.getElementById('day').value = '';
-    document.getElementById('start-time').value = '';
-    document.getElementById('end-time').value = '';
-  }
-  
-  // call this function when the form is submitted
-  document.querySelector('.button_class').addEventListener('click', function(event) {
-    event.preventDefault();  // Prevent form submission
-    logFormData();  // Call the function
   });
+
+  document.addEventListener('click', function(event) {
+    if (!suggestions.contains(event.target) && event.target !== document.getElementById('search')) {
+      suggestions.style.display = 'none';  // Hide suggestions
+    }
+  });
+}
+
+window.onload = function() {
+  document.getElementById('search').value = '';  // Clear the search bar on page load
+}
+
+// Function to display search results
+function displayResults(professors, suggestions) {
+  const query = document.getElementById('search').value.toLowerCase();
+  suggestions.innerHTML = '';  // Clear previous suggestions
   
+  if (!query) return suggestions.style.display = 'none';  // Hide suggestions if input is empty
 
-// function populateOptions(){
+  const filteredProfessors = professors.filter(professor =>
+    professor.name.toLowerCase().includes(query) || professor.email.toLowerCase().includes(query)
+  ).map(professor => professor.name);
 
-//     //get eent_instance-class pairs
-//     events_instances=getEventInstances();
+  const filteredClasses = professors.filter(professor =>
+    professor.classes.some(classItem => classItem.toLowerCase().includes(query))
+  ).flatMap(professor => professor.classes.filter(classItem => classItem.toLowerCase().includes(query)));
 
-//     // const eid = event_instances.map(instance => instance.data);
+  const filteredOptions = [...filteredProfessors, ...filteredClasses].slice(0, 5);
+  
+  suggestions.style.display = 'block';  // Show suggestions
+  filteredOptions.forEach(option => {
+    const item = document.createElement('div');
+    item.classList.add('suggestion-item');
+    item.textContent = option;
+    item.onclick = () => selectOption(option, professors);
+    suggestions.appendChild(item);
+  });
+}
 
-//     for (let i = 1; i <= 4; i++) {
-//         const option = document.getElementById(`option${i}`);
-//         option.style.visibility = 'hidden'; // Hide the option
-//         option.textContent = ""; 
-//         }
+// Function to clear all table data
+function clearAllTableData() {
+  document.querySelectorAll('td').forEach(cell => {
+    cell.textContent = '';  // Clear content
+    cell.style.backgroundColor = '';  // Clear background color
+  });
+}
 
-//     let index = 0;
+// Function to populate class options for a professor
+function populateClassesOptions(professor) {
+  professor.classes.forEach((className, index) => {
+    const option = document.getElementById(`class${index + 1}`);
+    option.textContent = className;
+    option.style.display = 'block';
+  });
+}
 
-//     events_instances.forEach(async (key_pair) => {
-//         const response = await fetch(`/findInstance?eid=${key_pair.data}`);
-//         const data = await response.json();
+// Function to handle item selection
+async function selectOption(option, professors) {
+  const suggestions = document.getElementById("suggestions");
+  for (let i = 1; i <= 6; i++) {
+    document.getElementById(`class${i}`).style.display = 'none';  // Hide all class options
+  }
+
+  if (/\d/.test(option)) {  // If the option is a class
+    document.getElementById("class1").textContent = option;
+    document.getElementById("class1").style.display = 'block';
+    class_global = option;
+    populatebyClassName(option);
+    suggestions.style.display = 'none';
+    document.getElementById('search').value = option;
 
 
-//         const option = document.getElementById(`option${index + 1}`);
-//         index=index+1;
-        
-//         // Set the option text to the class name
-//         option.textContent = data[0].date.split('T')[1].split('.')[0];
+  } else {  // If the option is a professor
+    const professor = professors.find(p => p.name === option);
+    email_global = professor.email;
+    class_global = '';
+    populateClassesOptions(professor);
+    clearAllTableData();
+    document.getElementById('search').value = option;
+    suggestions.style.display = 'none';
+    populate(professor.email);
+  }
+}
 
-        
-//         // Make the option visible by changing the display style
-//         option.style.visibility = 'visible';
+// Function to find and populate data for a specific time slot and class
+async function findCellInstance(start_time, end_time, day, class_string) {
+  let start_hour = start_time.split(":")[0];
+  start_hour = (start_hour > 12) ? start_hour - 12 : start_hour;
 
+  const result = `${start_hour}${day}`;
+  const cell = document.getElementById(result);
+  
+  if (!cell.textContent.trim() || !cell.textContent.includes(class_string)) {
+    alert("Invalid time or class. Please provide a valid input.");
+    return;
+  }
 
+  const response = await fetch(`/registerForInstance?eid=${cell.getAttribute("data")}`);
+  if (!response.ok) return alert('Failed to register');
 
-//         console.log(data);
-//         // Do something with data
-//       });
+  alert('Success!');
+}
 
-// }
+// Function to log form data and register class
+function logFormData() {
+  const classDropdown = document.getElementById('dropdown').value;
+  const dayDropdown = document.getElementById('day').value;
+  const startTime = document.getElementById('start-time').value;
+  const endTime = document.getElementById('end-time').value;
 
+  if (!classDropdown || !dayDropdown || !startTime || !endTime) {
+    alert("Please fill out all required fields!");
+    return;
+  }
+
+  findCellInstance(startTime, endTime, dayDropdown, classDropdown);
+  document.querySelectorAll('#dropdown, #day, #start-time, #end-time').forEach(input => input.value = '');
+}
+
+// Event listener for form submission
+document.querySelector('.button_class').addEventListener('click', event => {
+  event.preventDefault();
+  logFormData();
+});
+
+// Function to populate calendar based on class name
+async function populatebyClassName(name) {
+  try {
+    const response = await fetch(`/populatebyclassname?q=${name}`);
+    if (!response.ok) throw new Error('Population failed');
     
+    const { times, appointments, evis } = await response.json();
+    times.forEach((time, index) => {
+      const date = new Date(time);
+      if (!inweek(date)) return;
       
+      const h = (date.getHours() + 5) % 12 || 12;
+      const id = `${h < 10 ? '0' : ''}${h}${date.getDay()}`;
+      populateColor(id, appointments[index], evis[index]);
+    });
+  } catch (err) {
+    console.log("Error during population:", err);
+  }
+}
 
+// Function to populate calendar based on email
+async function populate(email) {
+  try {
+    const response = await fetch(`/populate?q=${email}`);
+    if (!response.ok) throw new Error('Population failed');
     
+    const { times, appointments, evis } = await response.json();
+    times.forEach((time, index) => {
+      const date = new Date(time);
+      if (!inweek(date)) return;
+      
+      const h = (date.getHours() + 5) % 12 || 12;
+      const id = `${h < 10 ? '0' : ''}${h}${date.getDay()}`;
+      populateColor(id, appointments[index], evis[index]);
+    });
+  } catch (err) {
+    console.log("Error during population:", err);
+  }
+}
 
-
-    
-
-
-
-
-
-
+// Function to check if a date is within the current week
+function inweek(date) {
+  const start = new Date(currentDate);
+  start.setDate(currentDate.getDate() - currentDate.getDay());
   
-
-
-
-
+  const end = new Date(start);
+  end.setDate(start.getDate() + 7);
   
+  return date >= start && date <= end;
+}
+
+// Function to populate cell color for the schedule
+function populateColor(id, inputString, evi) {
+  const colors = ['#cbd4eb', '#c0f4ae', '#fafe92', '#e8cae3', '#c0a6fc'];
+  const availableColors = colors.filter(color => !Array.from(document.querySelectorAll('td')).some(cell => cell.style.backgroundColor === color));
+  const colorToUse = availableColors.length ? availableColors[Math.floor(Math.random() * availableColors.length)] : colors[Math.floor(Math.random() * colors.length)];
+
+  const element = document.getElementById(id);
+  element.style.backgroundColor = colorToUse;
+  element.textContent = inputString;
+  element.setAttribute('data', evi);
+}
+
+// Function to render the calendar
+function renderCalendar() {
+  const monthYear = currentDate.toLocaleString('default', { month: 'long', year: 'numeric' });
+  document.getElementById('current-month-year').textContent = monthYear;
+  
+  const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+  let now = new Date(currentDate);
+  now.setDate(currentDate.getDate() - currentDate.getDay());
+
+  for (let i = 0; i < 7; i++) {
+    const cur = new Date(now);
+    cur.setDate(now.getDate() + i);
+    document.getElementById(`day${cur.getDay()}`).innerText = `${days[cur.getDay()]} ${cur.getDate()}`;
+  }
+
+  if (email_global.trim() || class_global.trim()) populate("test@mail.mcgill.ca");
+}
+
+// Function to clear the calendar
+function clearCalendar() {
+  document.querySelectorAll('td:not(.u-td)').forEach(cell => {
+    cell.textContent = '';  // Clear content
+    cell.style.backgroundColor = '';  // Clear background color
+    cell.removeAttribute('data');  // Remove event data
+  });
+}
+
+// Functions to navigate weeks in the calendar
+function prevWeek() {
+  currentDate.setDate(currentDate.getDate() - 7);
+  clearCalendar();
+  renderCalendar();
+}
+
+function nextWeek() {
+  currentDate.setDate(currentDate.getDate() + 7);
+  clearCalendar();
+  renderCalendar();
+}
+
+renderCalendar();  // Initial render

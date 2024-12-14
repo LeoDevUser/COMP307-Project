@@ -45,7 +45,6 @@ const eventiModel = db.collection('event_instances');
 async function findEventInstances(eid) {
   try {
 	const resp = await eventiModel.find({_id: new ObjectId(eid)}).toArray();
-	//console.log(resp[0]);
 	return [resp[0].date, resp[0].eventid];
   } catch (err) {
 	console.error(err);
@@ -145,6 +144,121 @@ app.get('/populatebyeid', async (req, res) => {
 		console.error(err);
 	}
 });
+
+// Function to find class instances based on class name
+async function findClassInstances(class_name) {
+  try {
+    // Decode the class name to handle spaces or special characters
+    const decodedClassName = decodeURIComponent(class_name);
+
+    // Find all events that match the class name
+    const eventsCursor = await events.find({ classs: decodedClassName }).toArray();
+
+    if (eventsCursor.length === 0) {
+      return { error: 'No events found for the given class name' };  // Return error if no matching event
+    }
+
+    // Create an array to store all event instances (event_instaces)
+    const allClassInstances = [];
+
+    // Iterate over each event and extract its event instances (event_instaces)
+    for (const event of eventsCursor) {
+      const eventInstances = event.event_instaces;
+
+      if (eventInstances && eventInstances.length > 0) {
+        // Push the full event instance details to the array
+        allClassInstances.push({ eventId: event._id, eventInstances });
+      } else {
+        allClassInstances.push({ eventId: event._id, error: 'No event instances found' });
+      }
+    }
+
+    // Return the array of all event instances for each event
+    return allClassInstances;
+
+  } catch (err) {
+    console.error(err);
+    return { error: 'Server error' };  // Return error in case of any server error
+  }
+}
+
+
+// Function to fetch appointments based on event instance ID (eid)
+async function getAppEid(eid) {
+  let times = [];
+  let appointments = [];
+  let evis = [];
+
+  try {
+    // Get event instance details (replace with your method to fetch event instance)
+    const instance = await findEventInstances(eid);  // Assuming you have this function
+    if (!instance) return;  // If no instance found, return early
+
+    // Push the time and appointments to the arrays
+    times.push(instance[0]);  // Assuming instance has a date property
+    const fullLabel = await findEvent(instance[1]);  // Assuming eventid exists in instance
+    appointments.push(fullLabel);
+
+    // Store the event_instance objectId (eid)
+    evis.push(eid);
+
+    // Return the results
+    return { times, appointments, evis };
+  } catch (err) {
+    console.error(err);
+  }
+}
+
+// Populate by class name
+app.get('/populatebyclassname', async (req, res) => {
+  const class_name = req.query.q;  // Get the class name from the query parameter
+
+  try {
+    // Find all class instances based on the class name
+    const all_eid = await findClassInstances(class_name);
+
+    if (!all_eid || all_eid.length === 0) {
+      return res.json({ error: 'No class instances found' });
+    }
+
+    // Create arrays to hold the results
+    const times = [];
+    const appointments = [];
+    const evis = [];
+
+    
+
+    // Process each eid in all_eid sequentially
+    for (each_event of all_eid) {
+      for (const eid of each_event.eventInstances) {
+        // Call getAppEid function for each event instance ID
+        const result =await getAppEid(eid);
+
+
+
+        if (result) {
+          times.push(...result.times);
+          appointments.push(...result.appointments);
+          evis.push(...result.evis);
+        }
+
+      }
+      
+    }
+
+
+    // Return the results as a JSON response
+    res.json({ times, appointments, evis });
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
+
+
+
 //END of populate api calls
 
 
@@ -238,7 +352,7 @@ app.get('/registerForInstance', async (req, res) => {
     // Update the event instance:
     // - Increment the `cur_count` by 1
     // - Push the string to the `student_emails` array
-    console.log("event1");
+    console.log("emails need fixing");
 
     await eventiModel.updateOne(
       { _id: new ObjectId(eid) },
@@ -282,7 +396,6 @@ app.get('/retrieveClasses', async (req, res) => {
     const classes = await classesCollection.findOne({email: { $regex: searchQuery, $options: 'i' }},
        {projection: {"classes": 1, "_id": 0}});  
 
-    console.log(classes);
     res.json(classes); //returns classes
 
   } catch (err) { //error

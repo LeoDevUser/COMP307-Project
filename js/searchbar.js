@@ -98,30 +98,30 @@ function populateClassesOptions(professor) {
     });
 }
   
-function getEventInstances() {
-    // Select all <td> elements
-    const tdElements = document.querySelectorAll('td');
+// function getEventInstances() {
+//     // Select all <td> elements
+//     const tdElements = document.querySelectorAll('td');
     
-    // Create an array to store objects containing both 'data' and text content
-    const instances = [];
+//     // Create an array to store objects containing both 'data' and text content
+//     const instances = [];
   
-    // Iterate over each <td> element
-    tdElements.forEach(td => {
-        // Check if the <td> element has a 'data' attribute
-        if (td.hasAttribute('data')) {
-            // Push an object with 'data' attribute and text content
-            instances.push({
-                data: td.getAttribute('data'),
-                text: td.textContent.trim().slice(0, -3) // trimming to remove any extra whitespace
-            });
-        }
-    });
+//     // Iterate over each <td> element
+//     tdElements.forEach(td => {
+//         // Check if the <td> element has a 'data' attribute
+//         if (td.hasAttribute('data')) {
+//             // Push an object with 'data' attribute and text content
+//             instances.push({
+//                 data: td.getAttribute('data'),
+//                 text: td.textContent.trim().slice(0, -3) // trimming to remove any extra whitespace
+//             });
+//         }
+//     });
   
-    // Return the array of instances
-    return instances;
-}
+//     // Return the array of instances
+//     return instances;
+// }
 
-  
+
   
 
   // Function to handle item selection
@@ -141,6 +141,7 @@ function selectOption(option,professors) {
         
         // Set the option text to the class name
         class1.textContent = option;
+        class1.style.display="block";
     }else{
         //if option is a professor
 
@@ -154,53 +155,127 @@ function selectOption(option,professors) {
         populateClassesOptions(professor_or_class);
 
 }
-populateOptions();
+}
+
+
+async function findCellInstance(start_time,end_time,day,class_string){
+
+        let start_hour = start_time.split(":")[0];
+
+        if (start_hour > 12) {
+            start_hour -= 12;  // Convert to 12-hour format if hour is > 12
+          }
+
+        //const formatted_hour = start_hour < 10 ? '0' + start_hour : start_hour;
+        // Create the string and add the day at the end
+        const result = start_hour + day;
+
+        cell= document.getElementById(result)
+
+      
+
+
+        if (cell.textContent.trim() === "" || !cell.textContent.includes(class_string)) {
+            alert("There is no class for those times/days. Please provide a valid input.");
+            return;
+          }
+
+
+
+
+        const response = await fetch(`/registerForInstance?eid=${cell.getAttribute("data")}`);
+
+
+
+        if (!response.ok) {
+            alert('Failed to register');
+            return;
+          }
+          
+          const data = await response.json();
+        
+          if (response.ok) {
+            alert('Success!');
+            return;
+          }
+        
+
     
-
-}
-
-function populateOptions(){
-
-    //get eent_instance-class pairs
-    events_instances=getEventInstances();
-
-    // const eid = event_instances.map(instance => instance.data);
-
-    for (let i = 1; i <= 4; i++) {
-        const option = document.getElementById(`option${i}`);
-        option.style.visibility = 'hidden'; // Hide the option
-        option.textContent = ""; 
-        }
-
-    let index = 0;
-
-    events_instances.forEach(async (key_pair) => {
-        const response = await fetch(`/findInstance?eid=${key_pair.data}`);
-        const data = await response.json();
+      }
+      
 
 
-        const option = document.getElementById(`option${index + 1}`);
-        index=index+1;
+
+
+
+
+
+function logFormData() {
+    // Get values from form elements
+    const classDropdown = document.getElementById('dropdown').value;
+    const dayDropdown = document.getElementById('day').value;
+    const startTime = document.getElementById('start-time').value;
+    const endTime = document.getElementById('end-time').value;
+
+
+    if (!classDropdown || !dayDropdown || !startTime || !endTime) {
+        alert("Please fill out all required fields!");  // Show a popup if any field is empty
+        return;  // Stop further processing if the form is invalid
+      }
+
+      findCellInstance(startTime,endTime,dayDropdown,classDropdown);
+
+
+    document.getElementById('dropdown').value = '';
+    document.getElementById('day').value = '';
+    document.getElementById('start-time').value = '';
+    document.getElementById('end-time').value = '';
+  }
+  
+  // call this function when the form is submitted
+  document.querySelector('.button_class').addEventListener('click', function(event) {
+    event.preventDefault();  // Prevent form submission
+    logFormData();  // Call the function
+  });
+  
+
+// function populateOptions(){
+
+//     //get eent_instance-class pairs
+//     events_instances=getEventInstances();
+
+//     // const eid = event_instances.map(instance => instance.data);
+
+//     for (let i = 1; i <= 4; i++) {
+//         const option = document.getElementById(`option${i}`);
+//         option.style.visibility = 'hidden'; // Hide the option
+//         option.textContent = ""; 
+//         }
+
+//     let index = 0;
+
+//     events_instances.forEach(async (key_pair) => {
+//         const response = await fetch(`/findInstance?eid=${key_pair.data}`);
+//         const data = await response.json();
+
+
+//         const option = document.getElementById(`option${index + 1}`);
+//         index=index+1;
         
-        // Set the option text to the class name
-        option.textContent = data[0].date.split('T')[1].split('.')[0];
+//         // Set the option text to the class name
+//         option.textContent = data[0].date.split('T')[1].split('.')[0];
 
-        // options.forEach(option => {
-        //     if (option.textContent.trim() === "comp") {
-        //       console.log(option.id);  // Log the id of the option that contains "comp"
-        //     }
-        //   });
         
-        // Make the option visible by changing the display style
-        option.style.visibility = 'visible';
+//         // Make the option visible by changing the display style
+//         option.style.visibility = 'visible';
 
 
 
-        console.log(data);
-        // Do something with data
-      });
+//         console.log(data);
+//         // Do something with data
+//       });
 
-}
+// }
 
     
       

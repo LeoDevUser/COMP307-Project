@@ -87,6 +87,3 @@ async function populateU(email) {
 		console.log("Error during upcoming population", err);
 	}
 }
-
-//render calendar
-renderCalendar();

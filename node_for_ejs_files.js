@@ -130,6 +130,147 @@ app.get('/search', async (req, res) => {
 
 //search bar end
 
+//retrieves list of classes, takes email
+app.get('/retrieveClasses', async (req, res) => {
+  try {
+    // retrieves email sent with req
+    const searchQuery = req.query.q;
+
+    // If no query is provided, return empty array
+    if (!searchQuery) {
+      return res.json([]);
+    }
+
+    const classesCollection = db.collection('users2');
+
+    // retrieves classes associated with email
+    const classes = await classesCollection.findOne({email: { $regex: searchQuery, $options: 'i' }},
+       {projection: {"classes": 1, "_id": 0}});  
+
+    console.log(classes);
+    res.json(classes); //returns classes
+
+  } catch (err) { //error
+    console.error(err);
+    res.status(500).send('Server error');
+  }
+});
+
+const eventsSchema = new mongoose.Schema({
+  profEmail: { type: String },
+  label: { type: String },
+  class: { type: String},
+  start: {type : Date},
+  end: {type : Date},
+  time: {type : Number},
+  hours: {type: Number},
+  repeats: {type: Number},
+  capacity: {type: Number},
+  event_instances: [{type: String}]
+});
+
+const Events = mongoose.model('events', eventsSchema);
+
+const eventsInstancesSchema = new mongoose.Schema({
+  date: { type: Date},
+  cur_count: {type: Number},
+  student_emails: [{type : String}],
+  eventid: {type : String}
+});
+
+const eventsInstances = mongoose.model('event_instances', eventsInstancesSchema);
+
+//Adds new events to database
+app.get('/add', async (req, res) => {
+  try {
+    console.log(req.url);
+    const repeat = req.query.repeats;
+    const email = req.query.email;
+    let start = req.query.start;
+    const label = req.query.appointmentLabel;
+    const compClass = req.query.class.split('_').join(' ');
+    const time = req.query.time;
+    const hours = req.query.hours;
+    let capacity = req.query.avaliblePositions;
+    //If unlimited then capacity is given -1 value
+    if(capacity == "unlimited"){
+      capacity = -1;
+    } else{
+      capacity = req.query.userInputAvaliblePositions;
+    }
+
+    //If only a single instance is needed
+    if(repeat == "doesNotRepeat"){
+      //Creates instance
+      const curInstance = await eventsInstances.create({date: start,
+        cur_count: 0, 
+        student_emails: [],
+        eventid: "123"});
+        console.log(curInstance._id.toString());
+
+       //Creates event 
+        const curEvent = await Events.create({
+          profEmail: email,
+          label: label,
+          class: compClass,
+          start: start,
+          end: start,
+          time: time,
+          hours: hours,
+          repeats: -1,
+          capacity: capacity,
+          event_instances: [curInstance._id]});
+      
+          //Adds event id to instance
+          curInstance.eventid = curEvent._id.toString();
+          curInstance.save();
+
+
+    } else{ //repeating event
+      //Creates date object dublicates of start/end to know when to break while loop
+      const end = req.query.end;
+      let dateEnd = new Date(end);
+      let date = new Date(start);
+      const day = date.getDay();
+
+      //Creates new event
+      const curEvent = await Events.create({
+        profEmail: email,
+        label: label,
+        class: compClass,
+        start: start,
+        end: end,
+        time: time,
+        hours: hours,
+        repeats: day,
+        capacity: capacity,
+        event_instances: []
+      });
+
+      while(date < dateEnd){
+
+        //Creates new instance
+        let curInstance = await eventsInstances.create(
+          {date: date,
+          cur_count: 0, 
+          student_emails: [],
+          eventid: curEvent._id.toString()
+        });
+
+        date.setDate(date.getDate() + 7); //Updated date to be the next week
+        curEvent.event_instances.push(curInstance._id.toString()); //adds new instance id to eveny
+        curEvent.save();
+      }
+    }
+    
+    res.render('delete'); //temp relocation
+  } catch (err) { //error
+    console.error(err);
+    res.status(500).send('Server error');
+  }
+});
+
+
 // Set EJS as the view engine
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
@@ -140,9 +281,6 @@ app.use('/images', express.static(path.join(__dirname, 'images')));
 
 //serve scripts
 app.use('/js', express.static(path.join(__dirname, 'js')));
-
-//React application
-app.use('/schedule', express.static(path.join(__dirname, 'react', 'schedule')));
 
 // Route to serve the landing page with template included
 app.get('/landing.html', (req, res) => {
@@ -174,9 +312,14 @@ app.get('/upcoming', (req, res) => {
   res.render('upcoming');
 });
 
-//Loads professor's schedule builder
+//route to professor's event adder
 app.get('/schedule', function (req, res) {
-  res.sendFile(path.join(__dirname, 'react','schedule', 'index.html'));
+  res.render('schedule');
+});
+
+//route to professor's event deleter
+app.get('/delete', function (req, res) {
+  res.render('delete');
 });
 
 

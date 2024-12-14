@@ -33,13 +33,42 @@ async function getProfessors() {
   }
 }
 
-//to populate calendar
+//START of api calls to populate
+//db collections used in calls
+const events = db.collection('events');
+const userModel = db.collection('users2');
+const eventiModel = db.collection('event_instances');
+
+//helpers
+//takes ObjectId(event_instance)
+//returns the date and event id
+async function findEventInstances(eid) {
+  try {
+	const resp = await eventiModel.find({_id: new ObjectId(eid)}).toArray();
+	//console.log(resp[0]);
+	return [resp[0].date, resp[0].eventid];
+  } catch (err) {
+	console.error(err);
+  }
+}
+
+//takes ObjectId(event)
+//returns the full event name
+async function findEvent(evid) {
+	try {
+		const resp = await events.find({_id:  new ObjectId(evid)}).toArray();
+		//console.log(resp[0]);
+		//console.log(evid);
+		return (resp[0].classs + " " + resp[0].label);
+	} catch (err) {
+		console.error(err);
+	}
+}
+//to populate calendar by user email (default)
 app.get('/populate', async (req, res) => {
 	const mail = req.query.q;
-    const events = db.collection('events');
-    const userModel = db.collection('users2');
-    const eventiModel = db.collection('event_instances');
 
+	//takes user email
 	//get user's event_instances
 	async function findUserEvents(mail) {
 	  try {
@@ -51,29 +80,8 @@ app.get('/populate', async (req, res) => {
 	  }
 	}
 
-	//returns the date and event id
-	async function findEventInstances(eid) {
-	  try {
-		const resp = await eventiModel.find({_id: new ObjectId(eid)}).toArray();
-		//console.log(resp[0]);
-		return [resp[0].date, resp[0].eventid];
-	  } catch (err) {
-		console.error(err);
-	  }
-	}
-
-	//returns the full event name
-	async function findEvent(evid) {
-		try {
-			const resp = await events.find({_id:  new ObjectId(evid)}).toArray();
-			//console.log(resp[0]);
-			return (resp[0].classs + " " + resp[0].label);
-		} catch (err) {
-			console.error(err);
-		}
-	}
-
-	//returns the tim and appointments for the user
+	//takes user email
+	//returns the time and appointments for the user
 	//in json format {times: [Date]; appointments: [String], event_instance ObjectId (eid): [str]}
 	async function getAppointments(mail) {
 		let times = [];
@@ -104,8 +112,44 @@ app.get('/populate', async (req, res) => {
 	}
 });
 
+//populate by event_instance
+app.get('/populatebyeid', async (req, res) => {
+	const eid = req.query.q
+	
+	//takes ObjectId(event_instance)
+	//returns the time and appointments for the user
+	//in json format {times: [Date]; appointments: [String], event_instance ObjectId (eid): [str]}
+	async function getAppeid(eid) {
+		let times = [];
+		let appointments = [];
+		let evis = [];
+		let tmp;
+		try {
+			const instances = await findUserEvents(mail);
+			tmp = await findEventInstances(eid);
+			times.push(tmp[0]);
+			var fullLabel = await findEvent(tmp[1]);
+			appointments.push(fullLabel);
+			//storing objectId for event_instance
+			evis.push(eid);
+			//console.log(appointments);
+			return res.json({times: times, appointments: appointments, evis: evis});
+		} catch (err) {
+			console.error(err);
+		}
+	}
 
-// searchbar start
+	try {
+		await getAppEid(eid); 
+	} catch (err) {
+		console.error(err);
+	}
+});
+//END of populate api calls
+
+
+
+// searchbar START
 
 // Helper function to get professors
 async function getProfessors() {
@@ -201,7 +245,7 @@ app.get('/retrieveClasses', async (req, res) => {
 const eventsSchema = new mongoose.Schema({
   profEmail: { type: String },
   label: { type: String },
-  class: { type: String},
+  classs: { type: String},
   start: {type : Date},
   end: {type : Date},
   time: {type : Number},

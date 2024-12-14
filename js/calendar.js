@@ -38,6 +38,7 @@ function renderCalendar() {
 		let dayIndex = cur.getDay();
 		document.getElementById("day"+ dayIndex).innerText = days[dayIndex]+ " " + d;
 	}
+	populate("test@mail.mcgill.ca");
 }
 
 function clearCalendar() {
@@ -50,6 +51,101 @@ function clearCalendar() {
 		cell.style.backgroundColor = '';  // Clear the background color
     });
   }
+
+//return boolean indicating if the date is in the current week
+function inweek(date) {
+	//start stores the start of the week
+	let start = new Date(currentDate);
+	if (currentDate.getDay() != 0) {
+		start.setDate(currentDate.getDate() - currentDate.getDay());
+	} else {
+		console.log(currentDate.getDate());
+	}
+	let end = new Date(start);
+	end.setDate(start.getDate() + 7);
+	if (date < start || date > end) {
+		return false;
+	} else {
+		return true;
+	}
+}
+
+function populateColor(id, inputString) {
+    // List of possible colors
+    const colors = ['#cbd4eb','#c0f4ae','#fafe92','#e8cae3','#c0a6fc'];
+    
+    const tds = document.getElementsByTagName('td:not(.u-td)');    
+    
+    // Create a set to track used colors
+    const usedColors = new Set();
+    
+    // Check the current background colors and track the ones used
+    for (let i = 0; i < tds.length; i++) {
+        const bgColor = tds[i].style.backgroundColor;
+        if (colors.includes(bgColor)) {
+            usedColors.add(bgColor);
+        }
+    }
+
+    // Find available colors
+    const availableColors = colors.filter(color => !usedColors.has(color));
+
+    // If there are available colors, choose a random one, otherwise choose any
+    const colorToUse = availableColors.length > 0 ? availableColors[Math.floor(Math.random() * availableColors.length)] : colors[Math.floor(Math.random() * colors.length)];
+
+    // Populate the <td> elements with the inputString and apply the chosen background color
+
+    const element = document.getElementById(id);   
+    
+    element.style.backgroundColor=colorToUse;
+    element.textContent=inputString;
+}
+
+async function populate(email) {
+	try {
+		const response = await fetch(`/populate?q=${email}`);
+		if (response.ok) {
+			console.log('Population successful2');
+		} else {
+			console.error('Population failed2:', response.statusText);
+		}
+		const result = await response.json();
+		//const obj = JSON.parse(result);
+		const times = result.times; //here we have the times
+		const appointments = result.appointments; //here the labels
+		let counter = 0;
+		console.log("here",appointments[0]);
+		for (time of times) {
+			//parse the the Date and convert into the identifier
+			date = new Date(time);
+			//check if event within curent week
+			if (!inweek(date)) {
+				counter++;
+				//skip the appointment since not in week
+				continue;
+			} else {
+				let id;
+				//to offset the utc time
+				//+5 since Montreal is UTC-5
+				let h = (date.getHours() + 5) % 12;
+				if (h == 0) {
+					//this means that h was equal to 12
+					h = 12;
+				}
+				if (h < 10) {
+					id = '0' + h.toString();
+				} else {
+					id = h.toString();
+				}
+				id = id + date.getDay().toString();
+				input = appointments[counter];
+				populateColor(id, input);
+			}
+		}
+	} catch (err) {
+		console.log("Error during population2", err);
+	}
+}
 
 //render calendar
 renderCalendar();

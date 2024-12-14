@@ -1,38 +1,12 @@
 const express = require('express');
 const mongoose = require('mongoose');
+const ObjectId = require('mongodb').ObjectId;
 const path = require('path');
 const app = express();
 const MONGODB_URI = 'mongodb+srv://tempuser:BcRXLU3TTLOqxCWE@myschedule2024.lhqde.mongodb.net/?retryWrites=true&w=majority&appName=myschedule2024/test';
 
 const hostname = '0.0.0.0';
 const port = 3000;
-
-// //connect to mongoose
-// mongoose.connect(MONGODB_URI, {
-// 	useNewUrlParser: true,
-// 	useUnifiedTopology: true,
-// 	dbName: 'sample_mflix'
-// });
-
-
-// //get default connection
-// const db = mongoose.connection;
-
-// db.on('error', console.error.bind(console, 'MongoDB connection erro:'));
-// db.once('open', () => {
-// 	console.log('Connected to MongoDB successfully!');
-// });
-
-// const commentSchema = new mongoose.Schema({
-//   name: { type: String, required: true },
-//   email: { type: String, required: true },
-//   movie_id: { type: mongoose.Schema.Types.ObjectId, ref: 'Movie', required: true },
-//   text: { type: String, required: true },
-//   date: { type: Date, default: Date.now },
-// });
-
-// //create model
-// const Comment = mongoose.model('Comment', commentSchema);
 
 mongoose.connect(MONGODB_URI, {
   dbName: 'test'
@@ -44,27 +18,8 @@ mongoose.connect(MONGODB_URI, {
     console.error("Error Encountered connecting to database", err)
 });
 
-const userSchema = new mongoose.Schema({
-  email: { type: String, required: true, unique: true },
-  password: { type: String, required: true },
-  name: { type: String, required: true },
-  classes: { type: Array, required: false },
-});
-
-const userModel = mongoose.model("users2", userSchema)
-
-async function findComments() {
-  try {
-    const comments = await userModel.find({ email: 'Jack@mail.mcgill.ca'});
-    console.log('jack:', comments);
-  } catch (err) {
-    console.error(err);
-  }
-}
-findComments();
-
-
-// searchbar start
+//get default connection
+const db = mongoose.connection;
 
 // Helper function to get professors
 async function getProfessors() {
@@ -78,53 +33,102 @@ async function getProfessors() {
   }
 }
 
+//to populate calendar
+app.get('/populate', async (req, res) => {
+	const mail = req.query.q;
+    const events = db.collection('events');
+    const userModel = db.collection('users2');
+    const eventiModel = db.collection('event_instances');
 
+	//get user's event_instances
+	async function findUserEvents(mail) {
+	  try {
+		const resp = await userModel.find({email: mail}).toArray();
+		//console.log(resp[0].event_instances);
+		return resp[0].event_instances;
+	  } catch (err) {
+		console.error(err);
+	  }
+	}
 
-app.get('/searchbar', async (req, res) => {
+	//returns the date and event id
+	async function findEventInstances(eid) {
+	  try {
+		const resp = await eventiModel.find({_id: new ObjectId(eid)}).toArray();
+		//console.log(resp[0]);
+		return [resp[0].date, resp[0].eventid];
+	  } catch (err) {
+		console.error(err);
+	  }
+	}
 
+	//returns the full event name
+	async function findEvent(evid) {
+		try {
+			const resp = await events.find({_id:  new ObjectId(evid)}).toArray();
+			//console.log(resp[0]);
+			return (resp[0].classs + " " + resp[0].label);
+		} catch (err) {
+			console.error(err);
+		}
+	}
+
+	//returns the tim and appointments for the user
+	//in json format {times: [Date]; appointments: [String]}
+	async function getAppointments(mail) {
+		let times = [];
+		let appointments = [];
+		let tmp;
+		try {
+			const instances = await findUserEvents(mail);
+			for (const e of instances) {
+				tmp = await findEventInstances(e);
+				times.push(tmp[0]);
+				var fullLabel = await findEvent(tmp[1]);
+				appointments.push(fullLabel);
+			}
+			//console.log(appointments);
+			return res.json({times: times, appointments: appointments});
+		} catch (err) {
+			console.error(err);
+		}
+	}
+
+	try {
+		await getAppointments(mail); 
+	} catch (err) {
+		console.error(err);
+	}
+});
+
+// searchbar start
+app.get('/search', async (req, res) => {
   try {
-    // Retrieve the search query from the request
-    const searchQuery = req.query.q;
+    // retrieve the search query from the request
+    const searchquery = req.query.q;
 
-    // If no query is provided, return empty array
-    if (!searchQuery) {
+    // if no query is provided, return empty array
+    if (!searchquery) {
       return res.json([]);
     }
-    // Get all professors (isProf: true) using the previously defined logic
-    const professors = await getProfessors();
 
-    // Filter the professors array based on the search query (name, email, or classes_array)
-    const filteredProfessors = professors.filter(professor => {
+// get all professors (isprof: true) using the previously defined logic
+    const professors = await getprofessors();
+// filter the professors array based on the search query (name, email, or classes_array)
+    const filteredprofessors = professors.filter(professor => {
+		return (
+			(professor.name && professor.name.match(new RegExp(searchQuery, 'i'))) ||
+			(professor.classes && professor.classes.some(classItem => classItem.match(new RegExp(searchQuery, 'i'))))
+		);  
+	});
 
-      return (
-        (professor.name && professor.name.match(new RegExp(searchQuery, 'i'))) ||
-        (professor.classes && professor.classes.some(classItem => classItem.match(new RegExp(searchQuery, 'i'))))
-      );  
-    });
-
-
-    // Return the filtered professors
-    res.json(filteredProfessors);
   } catch (err) {
     console.error(err);
     res.status(500).send('Server error');
   }
 });
 
-
-
-
 //search bar end
-
-// async function findComments() {
-//   try {
-//     const comments = await Comment.find({ date: { $gt: new Date('2003-01-01') } });
-//     console.log('Comments after 2003:', comments);
-//   } catch (err) {
-//     console.error(err);
-//   }
-// }
-// findComments();
 
 // Set EJS as the view engine
 app.set('view engine', 'ejs');

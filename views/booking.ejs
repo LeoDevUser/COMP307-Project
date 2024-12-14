@@ -4,7 +4,6 @@
 <link rel="stylesheet" href="../css/public.css">
 <script src="../js/searchbar.js"></script>
 <script src="../js/populate_cal.js"></script>
-<script src="../js/booking_logic.js"></script>
 
 
 
@@ -45,20 +44,38 @@
         <div class="rsvp_booking">
                 <label for="dropdown">Confirm RSVP for:</label>
                 <select id="dropdown" name="classes">
+                    <option id="class0"></option>
                     <option id="class1" style="display: none;"></option>
                     <option id="class2" style="display: none;"></option>
                     <option id="class3" style="display: none;"></option>
                     <option id="class4" style="display: none;"></option>
                     <option id="class5" style="display: none;"></option>
                     <option id="class6" style="display: none;"></option>
-                </select> <br> for the week shown <br> 
+                </select> <br> on
 
+                <select id="day" name="day" required>
+                    <option value="0">Sunday</option>
+                    <option value="1">Monday</option>
+                    <option value="2">Tuesday</option>
+                    <option value="3">Wednesday</option>
+                    <option value="4">Thursday</option>
+                    <option value="5">Friday</option>
+                    <option value="6">Saturday</option>
+                </select> at <br>
 
                
+                    <label for="start-time">Start Time:</label>
+                    <input type="time" id="start-time" name="start-time" required>
+                    <br><br>
+                    <label for="end-time">End Time:</label>
+                    <input type="time" id="end-time" name="end-time" required>
+                    <br><br>
+                    <button type="submit" class="button_class", onclick=logFormData()>Confirm</button>
+
                 
                 
                 
-                <button class="button_class">Confirm</button>
+                
         </div>
 
 

@@ -214,6 +214,55 @@ app.get('/findInstance', async (req, res) => {
   }
 });
 
+//register for instance
+
+app.get('/registerForInstance', async (req, res) => {
+  const eid = req.query.eid;
+  const eventiModel = db.collection('event_instances');
+
+  if (!eid) return res.status(400).json({ error: 'eid is required' });
+
+  try {
+    // Find the event instance by its ID
+    const event = await eventiModel.find({ f_id: new ObjectId(eid) }).toArray();
+    if (!event) {
+      return res.status(404).json({ error: 'Event instance not found' });
+    }
+
+
+
+    // token = localStorage.getItem('usertoken');  //THIS EMAIL STUFF MIGHT BE CAUSING ERRORS!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    // Userdetails = jwtDecode(token).email;
+  
+
+    // Update the event instance:
+    // - Increment the `cur_count` by 1
+    // - Push the string to the `student_emails` array
+    console.log("event1");
+
+    await eventiModel.updateOne(
+      { _id: new ObjectId(eid) },
+      {
+        $inc: { cur_count: 1 },        // Increment the `cur_count` field by 1
+        $push: { student_emails: "123" }  // Push the string "123" to `student_emails`
+      }
+    );
+
+    // Return the updated event instance
+    const updatedEvent = await eventiModel.findOne({ _id: new ObjectId(eid) });
+
+    console.log("event2");
+
+
+    return res.json(updatedEvent);
+
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ error: 'Server error' });
+  }
+});
+
+
 //search bar end
 
 //retrieves list of classes, takes email

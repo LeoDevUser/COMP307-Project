@@ -2,6 +2,7 @@ let email_global = "";
 let class_global = "";
 let currentDate = new Date();
 
+
 // Function to initialize the search functionality
 function filterSuggestions() {
   const suggestions = document.getElementById("suggestions");
@@ -136,10 +137,13 @@ function logFormData() {
 }
 
 // Event listener for form submission
-document.querySelector('.button_class').addEventListener('click', event => {
-  event.preventDefault();
-  logFormData();
-});
+document.addEventListener('DOMContentLoaded', function() {
+    document.getElementById('confirm').addEventListener('click', function(event) {
+      event.preventDefault();
+      logFormData();
+    });
+  });
+  
 
 // Function to populate calendar based on class name
 async function populatebyClassName(name) {
@@ -205,6 +209,8 @@ function populateColor(id, inputString, evi) {
 }
 
 // Function to render the calendar
+
+  
 function renderCalendar() {
   const monthYear = currentDate.toLocaleString('default', { month: 'long', year: 'numeric' });
   document.getElementById('current-month-year').textContent = monthYear;

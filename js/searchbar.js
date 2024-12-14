@@ -85,6 +85,8 @@ async function selectOption(option, professors) {
     class_global = option;
     populatebyClassName(option);
     suggestions.style.display = 'none';
+    document.getElementById('search').value = option;
+
 
   } else {  // If the option is a professor
     const professor = professors.find(p => p.name === option);

@@ -21,13 +21,11 @@ function clearUpcoming() {
 
 //sets the date and event info
 function fill(id, month, day, hour, label) {
-	console.log(hour);
 	// correct date
     const date = document.getElementById('u' + id.toString());
     date.innerHTML = month + "<br>" + day;
 	//correct hour
     const h = document.getElementById('h' + id.toString());
-	console.log(h);
     h.innerHTML = hour;
 	//correct label
     const l = document.getElementById('l' + id.toString());

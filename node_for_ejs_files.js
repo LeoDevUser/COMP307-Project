@@ -672,10 +672,14 @@ app.get('/', (req, res) => {
   res.render('landing');
 });
 
-//route to dashboard, for now it is dashboard for a generic user
-//will later make the request handle specific users with security
+//route to dashboard (Student)
 app.get('/dashboard', (req, res) => {
   res.render('dashboard');
+});
+
+//route to dashboard (Student)
+app.get('/pdashboard', (req, res) => {
+  res.render('pdashboard');
 });
 
 //route to calendar page, will be used as template in 

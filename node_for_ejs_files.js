@@ -649,6 +649,22 @@ app.get('/addCounter', async (req, res) => {
   }
 });
 
+app.get('/getuserdetails', async (req, res) => {
+  try {
+    const eventID = req.query.q;
+	  
+    const instanceCollection = db.collection('events');
+    var ObjectId = require('mongoose').Types.ObjectId; 
+    const event = await instanceCollection.findOne({_id: new ObjectId(eventID)});
+    console.log(event);
+
+    res.json(event); //returns event
+  } catch (err) { //error
+    console.error(err);
+    res.status(500).send('Server error');
+  }
+});
+
 
 // Set EJS as the view engine
 app.set('view engine', 'ejs');
@@ -667,11 +683,6 @@ app.get('/landing.html', (req, res) => {
   res.render('landing');  // This will render 'views/landing.ejs' and include 'template.ejs'
 });
 
-// Default route to server landing page
-app.get('/', (req, res) => {
-  res.render('landing');
-});
-
 //route to dashboard (Student)
 app.get('/dashboard', (req, res) => {
   res.render('dashboard');
@@ -682,9 +693,7 @@ app.get('/pdashboard', (req, res) => {
   res.render('pdashboard');
 });
 
-//route to calendar page, will be used as template in 
-//pages needing to display a calendar will later adjust 
-//get for security
+//route to calendar
 app.get('/calendar', (req, res) => {
   res.render('calendar');
 });

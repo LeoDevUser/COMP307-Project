@@ -404,6 +404,7 @@ app.get('/retrieveClasses', async (req, res) => {
   }
 });
 
+//Beginning of Adding a new event and all of its instances
 const eventsSchema = new mongoose.Schema({
   profEmail: { type: String },
   label: { type: String },
@@ -428,10 +429,11 @@ const eventsInstancesSchema = new mongoose.Schema({
 
 const eventsInstances = mongoose.model('event_instances', eventsInstancesSchema);
 
-//Adds new events to database
+//Adds new events to database and returns the closest dated instance
 app.get('/add', async (req, res) => {
   try {
-    console.log(req.url);
+    //console.log(req.url);
+    //retrieves all needed info for both repeat cases
     const repeat = req.query.repeats;
     const email = req.query.email;
     let start = req.query.start;
@@ -440,6 +442,9 @@ app.get('/add', async (req, res) => {
     const time = req.query.time;
     const hours = req.query.hours;
     let capacity = req.query.avaliblePositions;
+    let temp = "temp"; //Stores closest dated instance that was just created
+    let curEvent = "temp"; //Needed to add instance values at end 
+	  
     //If unlimited then capacity is given -1 value
     if(capacity == "unlimited"){
       capacity = -1;
@@ -454,7 +459,7 @@ app.get('/add', async (req, res) => {
         cur_count: 0, 
         student_emails: [],
         eventid: "123"});
-        console.log(curInstance._id.toString());
+        //console.log(curInstance._id.toString());
 
        //Creates event 
         const curEvent = await Events.create({
@@ -472,7 +477,7 @@ app.get('/add', async (req, res) => {
           //Adds event id to instance
           curInstance.eventid = curEvent._id.toString();
           curInstance.save();
-
+	  temp = curInstance._id.toString();
 
     } else{ //repeating event
       //Creates date object dublicates of start/end to know when to break while loop
@@ -495,6 +500,7 @@ app.get('/add', async (req, res) => {
         event_instances: []
       });
 
+      //Loops until date is later than dateEnd
       while(date < dateEnd){
 
         //Creates new instance
@@ -506,12 +512,22 @@ app.get('/add', async (req, res) => {
         });
 
         date.setDate(date.getDate() + 7); //Updated date to be the next week
-        curEvent.event_instances.push(curInstance._id.toString()); //adds new instance id to eveny
-        curEvent.save();
+        curEvent.event_instances.push(curInstance._id.toString()); //adds new instance id to event
       }
+      curEvent.save();
+      temp = curEvent.event_instances[0];
     }
+    //Adds event_instances to user (the prof creating new event)
+    const classesCollection = db.collection('users2');
+    classesCollection.findOneAndUpdate(
+        {email: email},
+        { $push: {
+          event_instances : { $each: curEvent.event_instances}
+        }
+      });
     
-    res.render('delete'); //temp relocation
+    res.set('Content-Type', 'text/html');
+    res.send(temp);
   } catch (err) { //error
     console.error(err);
     res.status(500).send('Server error');

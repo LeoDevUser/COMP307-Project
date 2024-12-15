@@ -1,0 +1,151 @@
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Schedule</title>
+    <link rel="stylesheet" href="../css/stylesheet.css" type="text/css">
+    <link href="https://fonts.googleapis.com/css2?family=EB+Garamond&display=swap" rel="stylesheet">
+
+</head>
+
+<body>
+
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="navbar-container">
+           
+            <ul class="nav-links">
+                <li style="width:125px"></li>
+                <li style="width:125px"></li>
+                <li><a href="#landing">Home</a></li>
+                <li><a href="#login">Log In</a></li>
+            </ul>
+            <img class="image" src="../images/logo2.png">
+        </div>
+    </nav>
+    <h1 id="replace">You have been invited to join [insert label] for [class] from [Professor first and last]<h1>
+    <div class="choice" id="choice">    
+        <h1>Would you like to RSVP?</h1>
+        <button type="button" onclick="addToCapacity()">Yes</button>
+        <button>No</button>    
+
+    </div>
+    <script>
+      const params = new URLSearchParams(document.location.search);
+      const instanceID = params.get("p");
+      const url = `/retrieveInstance?q=${instanceID}`;
+      let cur = 0;
+      let max = 0;
+      let event = null;
+      let instance = null;
+
+      async function test(url){
+        const response = await fetch(url);
+        const json = await response.json();
+        return json;
+      }
+
+    function addToCapacity(){
+        const temp = `/addCounter?q=${instanceID}`;
+        test(temp).then(y => {
+            const replace = document.getElementById("replace");
+            const choice = document.getElementById("choice");
+            choice.innerHTML = "";
+            choice.insertAdjacentHTML('beforeend', `<p>Great! You have a spot saved!</p>`); 
+      });
+        
+      }
+
+      async function getInstance() {
+      const response = await fetch(url);
+      const json = await response.json();
+      return json;
+      }
+
+      async function getEvent(eventID) {
+        const eventURL = `/retrieveEvent?q=${eventID}`
+      const response = await fetch(eventURL);
+      const json = await response.json();
+      return json;
+      }
+
+      async function getUser(profEmail) {
+        const eventURL = `/retrieveUser?q=${profEmail}`
+        const response = await fetch(eventURL);
+        const json = await response.json();
+        return json;
+      }
+
+      function whatTime(time){
+        switch(time){
+            case 7 :
+                return "7:00 AM"
+            case 8:
+                return "8:00 AM"
+            case 9:
+                return "9:00 AM"
+            case 10:
+                return "10:00 AM"
+            case 11:
+                return "11:00 AM"
+            case 12:
+                return "12:00 PM"
+            case 1:
+                return "1:00 PM"
+            case 2:
+                return "2:00 PM"
+            case 3:
+                return "3:00 AM"
+            case 4:
+                return "4:00 AM"
+            case 5:
+                return "5:00 AM"
+            case 6:
+                return "6:00 AM"
+            case 7:
+                return "7:00 AM"
+            default:
+                return "Something went wrong"
+        }
+
+      }
+
+      function stringDate(date){
+        let curDate = new Date(date);
+        return `${curDate.getDate()}/${(curDate.getMonth())+1}/${curDate.getFullYear()}`
+      }
+
+
+      getInstance().then(x =>  {
+        if(x == ""){
+            const replace = document.getElementById("replace");
+            const choice = document.getElementById("choice");
+            replace.innerHTML = "Invalid URL";
+            choice.innerHTML= "";
+        }else{
+            cur = x.cur_count;
+            instance = x;
+            getEvent(x.eventid).then(y => {
+        event = y;
+        max = y.capacity;
+        return getUser(y.profEmail);
+      }).then(z => {
+        const replace = document.getElementById("replace");
+        replace.innerHTML = "";
+        replace.insertAdjacentHTML('beforeend', `<p>You have been invited to join ${event.label} for 
+            ${event.class} from ${z.name} on ${stringDate(instance.date)} at ${whatTime(event.time)}</p>`);
+        if(cur >= max && max1 != -1){
+            const choice = document.getElementById("choice");
+            choice.innerHTML = "";
+            choice.insertAdjacentHTML('beforeend', `<p>Sorry! Event is already at max capacity</p>`); 
+        }
+      }).catch((error) => {
+        console.log(error);
+        document.innerHTML="";
+      });
+
+        }
+      })
+
+    </script>
+    </body>

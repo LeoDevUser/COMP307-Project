@@ -433,6 +433,7 @@ const eventsInstances = mongoose.model('event_instances', eventsInstancesSchema)
 app.get('/add', async (req, res) => {
   try {
     //console.log(req.url);
+    //console.log("here");
     //retrieves all needed info for both repeat cases
     const repeat = req.query.repeats;
     const email = req.query.email;
@@ -441,9 +442,9 @@ app.get('/add', async (req, res) => {
     const compClass = req.query.class.split('_').join(' ');
     const time = req.query.time;
     const hours = req.query.hours;
-    let capacity = req.query.avaliblePositions;
     let temp = "temp"; //Stores closest dated instance that was just created
-    let curEvent = "temp"; //Needed to add instance values at end 
+    let capacity = req.query.avaliblePositions;
+    let curEvent = "temp"; //Needed to add instance values at end for user
 	  
     //If unlimited then capacity is given -1 value
     if(capacity == "unlimited"){
@@ -454,15 +455,13 @@ app.get('/add', async (req, res) => {
 
     //If only a single instance is needed
     if(repeat == "doesNotRepeat"){
-      //Creates instance
       const curInstance = await eventsInstances.create({date: start,
         cur_count: 0, 
         student_emails: [],
         eventid: "123"});
         //console.log(curInstance._id.toString());
 
-       //Creates event 
-        const curEvent = await Events.create({
+        curEvent = await Events.create({
           profEmail: email,
           label: label,
           class: compClass,
@@ -472,12 +471,14 @@ app.get('/add', async (req, res) => {
           hours: hours,
           repeats: -1,
           capacity: capacity,
-          event_instances: [curInstance._id]});
-      
-          //Adds event id to instance
-          curInstance.eventid = curEvent._id.toString();
-          curInstance.save();
-	  temp = curInstance._id.toString();
+          event_instances: [curInstance._id]
+        });
+
+	//Adds event id to instance
+        curInstance.eventid = curEvent._id.toString();
+        curInstance.save();
+
+        temp = curInstance._id.toString();
 
     } else{ //repeating event
       //Creates date object dublicates of start/end to know when to break while loop
@@ -486,8 +487,7 @@ app.get('/add', async (req, res) => {
       let date = new Date(start);
       const day = date.getDay();
 
-      //Creates new event
-      const curEvent = await Events.create({
+      curEvent = await Events.create({
         profEmail: email,
         label: label,
         class: compClass,
@@ -500,10 +500,8 @@ app.get('/add', async (req, res) => {
         event_instances: []
       });
 
-      //Loops until date is later than dateEnd
-      while(date < dateEnd){
+      while(date < dateEnd){ //Loops until date is later than dateEnd
 
-        //Creates new instance
         let curInstance = await eventsInstances.create(
           {date: date,
           cur_count: 0, 
@@ -511,13 +509,16 @@ app.get('/add', async (req, res) => {
           eventid: curEvent._id.toString()
         });
 
-        date.setDate(date.getDate() + 7); //Updated date to be the next week
+        date.setDate(date.getDate() + 7); //Updates date to be the next week
         curEvent.event_instances.push(curInstance._id.toString()); //adds new instance id to event
       }
+
       curEvent.save();
       temp = curEvent.event_instances[0];
+      
     }
-    //Adds event_instances to user (the prof creating new event)
+
+    //Adds event_instances to user (the prof creating the new event)
     const classesCollection = db.collection('users2');
     classesCollection.findOneAndUpdate(
         {email: email},
@@ -525,9 +526,48 @@ app.get('/add', async (req, res) => {
           event_instances : { $each: curEvent.event_instances}
         }
       });
-    
+	  
     res.set('Content-Type', 'text/html');
     res.send(temp);
+  } catch (err) { //error
+    console.error(err);
+    res.status(500).send('Server error');
+  }
+});
+
+//Various database acceses needed by RSVP
+//Retrieves instance with instance id
+app.get('/retrieveInstance', async (req, res) => {
+  try {
+    const instanceID = req.query.q;
+
+    const instanceCollection = db.collection('event_instances');
+    var ObjectId = require('mongoose').Types.ObjectId; 
+    if(!ObjectId.isValid(instanceID)){ //Checks if valid id else returns empty 
+      return res.json([]);
+    }
+    const instance = await instanceCollection.findOne({_id: new ObjectId(instanceID)});
+    //console.log(instance);
+
+    res.json(instance); //returns instance
+
+  } catch (err) { //error
+    console.error(err);
+    res.status(500).send('Server error');
+  }
+});
+
+//retrieves event given event id
+app.get('/retrieveEvent', async (req, res) => {
+  try {
+    const eventID = req.query.q;
+	  
+    const instanceCollection = db.collection('events');
+    var ObjectId = require('mongoose').Types.ObjectId; 
+    const event = await instanceCollection.findOne({_id: new ObjectId(eventID)});
+    console.log(event);
+
+    res.json(event); //returns event
   } catch (err) { //error
     console.error(err);
     res.status(500).send('Server error');

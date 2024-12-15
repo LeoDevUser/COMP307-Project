@@ -408,7 +408,7 @@ app.get('/retrieveClasses', async (req, res) => {
 const eventsSchema = new mongoose.Schema({
   profEmail: { type: String },
   label: { type: String },
-  classs: { type: String},
+  class: { type: String},
   start: {type : Date},
   end: {type : Date},
   time: {type : Number},

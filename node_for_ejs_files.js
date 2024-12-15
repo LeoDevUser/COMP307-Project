@@ -534,6 +534,81 @@ app.get('/add', async (req, res) => {
   }
 });
 
+//Various database acceses needed by RSVP
+//Retrieves instance with instance id
+app.get('/retrieveInstance', async (req, res) => {
+  try {
+    const instanceID = req.query.q;
+
+    const instanceCollection = db.collection('event_instances');
+    var ObjectId = require('mongoose').Types.ObjectId; 
+    if(!ObjectId.isValid(instanceID)){ //Checks if valid id else returns empty 
+      return res.json([]);
+    }
+    const instance = await instanceCollection.findOne({_id: new ObjectId(instanceID)});
+    //console.log(instance);
+
+    res.json(instance); //returns instance
+
+  } catch (err) { //error
+    console.error(err);
+    res.status(500).send('Server error');
+  }
+});
+
+//retrieves event given event id
+app.get('/retrieveEvent', async (req, res) => {
+  try {
+    const eventID = req.query.q;
+	  
+    const instanceCollection = db.collection('events');
+    var ObjectId = require('mongoose').Types.ObjectId; 
+    const event = await instanceCollection.findOne({_id: new ObjectId(eventID)});
+    console.log(event);
+
+    res.json(event); //returns event
+  } catch (err) { //error
+    console.error(err);
+    res.status(500).send('Server error');
+  }
+});
+
+//retrieves user given email
+app.get('/retrieveUser', async (req, res) => {
+  try {
+    const userEmail = req.query.q;
+    const userCollection = db.collection('users2');
+    const user = await userCollection.findOne({email: userEmail});
+    console.log(user);
+
+    res.json(user); //returns user
+  } catch (err) { //error
+    console.error(err);
+    res.status(500).send('Server error');
+  }
+});
+
+//Adds one to the cur_count for given instance id
+app.get('/addCounter', async (req, res) => {
+  try {
+    const instanceID = req.query.q;
+
+    const instanceCollection = db.collection('event_instances');
+    var ObjectId = require('mongoose').Types.ObjectId; 
+    //Finds instance and adds one to it
+    instanceCollection.findOneAndUpdate(
+      {_id: new ObjectId(instanceID)},
+      { $inc: {
+        cur_count: 1
+      }});
+
+    res.json([]);
+  } catch (err) { //error
+    console.error(err);
+    res.status(500).send('Server error');
+  }
+});
+
 
 // Set EJS as the view engine
 app.set('view engine', 'ejs');
@@ -584,6 +659,16 @@ app.get('/schedule', function (req, res) {
 //route to professor's event deleter
 app.get('/delete', function (req, res) {
   res.render('delete');
+});
+
+//route to rsvp page
+app.get('/rsvp', function (req, res) {
+  //Checks if rsvp has a sindle parameter else it won't load
+  const param = req.query.p;
+  if (!param) {
+      return res.status(404).send('Page not found');
+    }
+  res.render('rsvp');
 });
 
 

@@ -134,7 +134,7 @@
         replace.innerHTML = "";
         replace.insertAdjacentHTML('beforeend', `<p>You have been invited to join ${event.label} for 
             ${event.class} from ${z.name} on ${stringDate(instance.date)} at ${whatTime(event.time)}</p>`);
-        if(cur >= max && max1 != -1){
+        if(cur >= max && max != -1){
             const choice = document.getElementById("choice");
             choice.innerHTML = "";
             choice.insertAdjacentHTML('beforeend', `<p>Sorry! Event is already at max capacity</p>`); 

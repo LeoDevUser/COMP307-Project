@@ -408,7 +408,7 @@ app.get('/retrieveClasses', async (req, res) => {
 const eventsSchema = new mongoose.Schema({
   profEmail: { type: String },
   label: { type: String },
-  class: { type: String},
+  classs: { type: String},
   start: {type : Date},
   end: {type : Date},
   time: {type : Number},
@@ -464,7 +464,7 @@ app.get('/add', async (req, res) => {
         curEvent = await Events.create({
           profEmail: email,
           label: label,
-          class: compClass,
+          classs: compClass,
           start: start,
           end: start,
           time: time,
@@ -490,7 +490,7 @@ app.get('/add', async (req, res) => {
       curEvent = await Events.create({
         profEmail: email,
         label: label,
-        class: compClass,
+        classs: compClass,
         start: start,
         end: end,
         time: time,

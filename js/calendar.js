@@ -38,9 +38,8 @@ function renderCalendar() {
 		let dayIndex = cur.getDay();
 		document.getElementById("day"+ dayIndex).innerText = days[dayIndex]+ " " + d;
 	}
-	//need to replace this with actual email of user's page
-	//looks like token = localStorage.getItem(‘usertoken’);
-	populate("test@mail.mcgill.ca");
+	//render the user's events in the calendar
+	populate();
 }
 
 function clearCalendar() {

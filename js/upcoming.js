@@ -1,7 +1,7 @@
 // JavaScript functions to handle date navigation and rendering
 let currentDateU = new Date();
 
-populateU('test@mail.mcgill.ca')
+populateU();
 
 //clear the upcoming container
 function clearUpcoming() {
@@ -32,9 +32,18 @@ function fill(id, month, day, hour, label) {
     l.innerHTML = label;
 }
 
-async function populateU(email) {
+async function populateU() {
 	clearUpcoming();
 	try {
+		const response1 = await fetch('/current_user');
+		if (response1.ok) {
+			console.log('user get success');
+		} else {
+			console.error('user get error :', response.statusText);
+		}
+		const user = await response1.json();
+		console.log(user.email);
+		const email = user.email;
 		const response = await fetch(`/populate?q=${email}`);
 		if (response.ok) {
 			console.log('upcoming Population successful');

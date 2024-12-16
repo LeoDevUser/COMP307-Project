@@ -115,13 +115,17 @@ async function populate() {
 			console.error('user get error :', response.statusText);
 		}
 		const user = await response1.json();
-		console.log(user.email);
-		const email = user.email;
+		//console.log(user.email);
+		let email = user.email;
+		if (email === undefined) {
+			console.log("no user email");
+			return;
+		}
 		const response = await fetch(`/populate?q=${email}`);
 		if (response.ok) {
-			console.log('Population successful2');
+			console.log('Calendar Population successful');
 		} else {
-			console.error('Population failed2:', response.statusText);
+			console.error('Calendar Population failed:', response.statusText);
 		}
 		const result = await response.json();
 		const times = result.times; //here we have the times

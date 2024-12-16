@@ -42,8 +42,12 @@ async function populateU() {
 			console.error('user get error :', response.statusText);
 		}
 		const user = await response1.json();
-		console.log(user.email);
-		const email = user.email;
+		//console.log(user.email);
+		let email = user.email;
+		if (email === undefined) {
+			console.log("no user email");
+			return;
+		}
 		const response = await fetch(`/populate?q=${email}`);
 		if (response.ok) {
 			console.log('upcoming Population successful');

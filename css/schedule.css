@@ -1,0 +1,74 @@
+p {
+    font-size: 25px;
+    text-align: center;
+  }
+
+  u {
+    text-decoration: none;
+    border-bottom: 2px solid black;
+  }
+
+  .bottom-container {
+    display:flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 50px;
+    text-align:center;
+
+  }
+
+  .formApperance p{
+    font-size: 18px;
+
+  }
+
+  .formApperance h1{
+    font-weight: normal;
+    font-size: 20px;
+  }
+
+  .textbox {
+    width: 70px;
+    height: 20px;
+    border: none;
+    background-color: #D9D9D9;
+    color: black;
+    margin-left: 5px;
+  }
+
+  .submitButton {
+    text-decoration: none;
+    border: none;
+    width: 125px;
+    height: 30px;
+    background-color: #ed1b2f ;
+    color: white;
+    font-family: 'EB Garamond', Arial, serif;
+    font-size: 20px;
+    transition: background-color 0.3s;
+  }
+
+  .submitButton:hover {
+    background-color: #424242  ;
+  }
+  
+  .tempSpace{
+    width:10%;
+  }
+
+  #hiddenDate{
+      display: none;
+  }
+
+  @media (max-width: 600px) {
+    .bottom-container{
+      margin-top: 0px;
+    }
+    .tempSpace{
+      width: 3%;
+    }
+    .aside p{
+      font-size: 23px;
+    }
+    
+  }

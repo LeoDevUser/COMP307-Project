@@ -107,8 +107,17 @@ function populateColor(id, inputString, evi) {
     element.setAttribute('data', evi);
 }
 
-async function populate(email) {
+async function populate() {
 	try {
+		const response1 = await fetch('/current_user');
+		if (response1.ok) {
+			console.log('user get success');
+		} else {
+			console.error('user get error :', response.statusText);
+		}
+		const user = await response1.json();
+		console.log(user.email);
+		const email = user.email;
 		const response = await fetch(`/populate?q=${email}`);
 		if (response.ok) {
 			console.log('Population successful2');
@@ -116,7 +125,6 @@ async function populate(email) {
 			console.error('Population failed2:', response.statusText);
 		}
 		const result = await response.json();
-		//const obj = JSON.parse(result);
 		const times = result.times; //here we have the times
 		const appointments = result.appointments; //here the labels
 		const evis = result.evis; //objid event_instance

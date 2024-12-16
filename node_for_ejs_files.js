@@ -1,12 +1,19 @@
 const express = require('express');
+const cors = require('cors')
 const mongoose = require('mongoose');
 const ObjectId = require('mongodb').ObjectId;
 const path = require('path');
+const { userInfo } = require('os');
 const app = express();
 const MONGODB_URI = 'mongodb+srv://tempuser:BcRXLU3TTLOqxCWE@myschedule2024.lhqde.mongodb.net/?retryWrites=true&w=majority&appName=myschedule2024/test';
 
 const hostname = '0.0.0.0';
 const port = 3000;
+
+//used to fetch user info for private pages
+let userDeet = {}
+app.use(express.json())
+app.use(cors())
 
 mongoose.connect(MONGODB_URI, {
   dbName: 'test'
@@ -20,6 +27,12 @@ mongoose.connect(MONGODB_URI, {
 
 //get default connection
 const db = mongoose.connection;
+
+//get current user
+app.get('/current_user',  async (req, res) =>{
+	return res.json(userDeet);
+});
+
 
 // Helper function to get professors
 async function getProfessors() {
@@ -36,7 +49,7 @@ async function getProfessors() {
 //START of api calls to populate
 //db collections used in calls
 const events = db.collection('events');
-const userModel = db.collection('users2');
+const userModel = db.collection('users');
 const eventiModel = db.collection('event_instances');
 
 //helpers
@@ -649,20 +662,22 @@ app.get('/addCounter', async (req, res) => {
   }
 });
 
-app.get('/getuserdetails', async (req, res) => {
+app.post('/getuserdetails', async (req, res) => {
   try {
-    const eventID = req.query.q;
-	  
-    const instanceCollection = db.collection('events');
-    var ObjectId = require('mongoose').Types.ObjectId; 
-    const event = await instanceCollection.findOne({_id: new ObjectId(eventID)});
-    console.log(event);
-
-    res.json(event); //returns event
+    console.log("meow")
+    const { firstName, lastName, email, isProf } = req.body
+    console.log(firstName, lastName, email, isProf)
+    userDeet = { firstName, lastName, email, isProf }
+    res.json({result: "User received!"})
   } catch (err) { //error
     console.error(err);
     res.status(500).send('Server error');
   }
+});
+
+app.get('/api', (req, res) => {
+  console.log(userDeet)
+  res.json(userDeet)
 });
 
 

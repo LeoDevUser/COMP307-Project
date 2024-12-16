@@ -95,15 +95,15 @@
             case 2:
                 return "2:00 PM"
             case 3:
-                return "3:00 AM"
+                return "3:00 PM"
             case 4:
-                return "4:00 AM"
+                return "4:00 PM"
             case 5:
-                return "5:00 AM"
+                return "5:00 PM"
             case 6:
-                return "6:00 AM"
+                return "6:00 PM"
             case 7:
-                return "7:00 AM"
+                return "7:00 PM"
             default:
                 return "Something went wrong"
         }
@@ -133,7 +133,7 @@
         const replace = document.getElementById("replace");
         replace.innerHTML = "";
         replace.insertAdjacentHTML('beforeend', `<p>You have been invited to join ${event.label} for 
-            ${event.classs} from ${z.name} on ${stringDate(instance.date)} at ${whatTime(event.time)}</p>`);
+            ${event.classs} from ${z.firstName} ${z.lastName} on ${stringDate(instance.date)} at ${whatTime(event.time)}</p>`);
         if(cur >= max && max != -1){
             const choice = document.getElementById("choice");
             choice.innerHTML = "";

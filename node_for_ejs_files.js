@@ -282,7 +282,7 @@ app.get('/populatebyclassname', async (req, res) => {
 async function getProfessors() {
   try {
     // Use Mongoose's model to query for professors (isProf: true)
-    const userModel = db.collection('users2');
+    const userModel = db.collection('users');
     const professors = await userModel.find({ isProf: true }).toArray();;
     return professors;
   } catch (err) {
@@ -403,7 +403,7 @@ app.get('/retrieveClasses', async (req, res) => {
       return res.json([]);
     }
 
-    const classesCollection = db.collection('users2');
+    const classesCollection = db.collection('users');
 
     // retrieves classes associated with email
     const classes = await classesCollection.findOne({email: { $regex: searchQuery, $options: 'i' }},
@@ -435,7 +435,9 @@ const Events = mongoose.model('events', eventsSchema);
 
 const eventsInstancesSchema = new mongoose.Schema({
   date: { type: Date},
+  time: {type: Number},
   cur_count: {type: Number},
+  prof_email: {type : String},
   student_emails: [{type : String}],
   eventid: {type : String}
 });
@@ -469,7 +471,9 @@ app.get('/add', async (req, res) => {
     //If only a single instance is needed
     if(repeat == "doesNotRepeat"){
       const curInstance = await eventsInstances.create({date: start,
+        time: time,
         cur_count: 0, 
+        prof_email: email,
         student_emails: [],
         eventid: "123"});
         //console.log(curInstance._id.toString());
@@ -513,11 +517,13 @@ app.get('/add', async (req, res) => {
         event_instances: []
       });
 
-      while(date < dateEnd){ //Loops until date is later than dateEnd
+      while(date <= dateEnd){ //Loops until date is later than dateEnd
 
         let curInstance = await eventsInstances.create(
           {date: date,
+          time: time,
           cur_count: 0, 
+          prof_email: email,
           student_emails: [],
           eventid: curEvent._id.toString()
         });
@@ -532,7 +538,7 @@ app.get('/add', async (req, res) => {
     }
 
     //Adds event_instances to user (the prof creating the new event)
-    const classesCollection = db.collection('users2');
+    const classesCollection = db.collection('users');
     classesCollection.findOneAndUpdate(
         {email: email},
         { $push: {
@@ -630,7 +636,7 @@ app.get('/retrieveEvent', async (req, res) => {
 app.get('/retrieveUser', async (req, res) => {
   try {
     const userEmail = req.query.q;
-    const userCollection = db.collection('users2');
+    const userCollection = db.collection('users');
     const user = await userCollection.findOne({email: userEmail});
     console.log(user);
 

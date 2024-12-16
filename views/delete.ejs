@@ -1,81 +1,9 @@
-<style>
-    p {
-      font-size: 25px;
-      text-align: center;
-    }
-
-    u {
-      text-decoration: none;
-      border-bottom: 2px solid black;
-    }
-
-    .bottom-container {
-      display:flex;
-      justify-content: center;
-      align-items: center;
-      margin-top: 50px;
-      text-align:center;
-
-    }
-
-    .formApperance p{
-      font-size: 18px;
-
-    }
-
-    .formApperance h1{
-      font-weight: normal;
-      font-size: 20px;
-    }
-
-    .textbox {
-      width: 70px;
-      height: 20px;
-      border: none;
-      background-color: #D9D9D9;
-      color: black;
-      margin-left: 5px;
-    }
-
-    .submitButton {
-      text-decoration: none;
-      border: none;
-      width: 125px;
-      height: 30px;
-      background-color: #ed1b2f ;
-      color: white;
-      font-family: 'EB Garamond', Arial, serif;
-      font-size: 20px;
-      transition: background-color 0.3s;
-    }
-
-    .submitButton:hover {
-      background-color: #424242  ;
-    }
-    
-    .tempSpace{
-      width:10%;
-    }
-
-    @media (max-width: 600px) {
-      .bottom-container{
-        margin-top: 0px;
-      }
-      .tempSpace{
-        width: 3%;
-      }
-      .aside p{
-        font-size: 23px;
-      }
-      
-    }
-
-  </style>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Schedule</title>
     <link rel="stylesheet" href="../css/stylesheet.css" type="text/css">
+    <link rel="stylesheet" href="../css/schedule.css" type="text/css">
     <link href="https://fonts.googleapis.com/css2?family=EB+Garamond&display=swap" rel="stylesheet">
 
 </head>
@@ -96,29 +24,106 @@
         </div>
     </nav>
 
-    <div class="bottom-container">
+    <div class="bottom-container" id="choice">
       <div class="tempSpace">
       </div>
     <div class="aside" id="root" style="width:20%; height:100%">
-        <p>Would you like to remove the selected time?</p>
-        <button class="submitButton">Yes</button>
-        <p><u>Or</u></p>
-        <p>Would you like to reschedule?</p>
-        <form class="formApperance">
-        <p>When?
-          <input type="text" name="newTime" class="textbox"></input>
-        </p>
-        </form>
+      <form class="formApperance" id="myForm" onsubmit="return submitForm()"">
+      <h1>What date is the class you want to delete scheduled for?</h1>
+      <input type="date" name="deleteDate"></input>
+      <h1>What time is it scheduled to start?</h1>
+      <h1>At: <select name="time">
+        <option value="7">7:00 AM</option>
+        <option value="8">8:00 AM</option>
+        <option value="9">9:00 AM</option>
+        <option value="10">10:00 AM</option>
+        <option value="11">11:00 AM</option>
+        <option value="12">12:00 PM</option>
+        <option value="1">1:00 PM</option>
+        <option value="2">2:00 PM</option>
+        <option value="3">3:00 PM</option>
+        <option value="4">4:00 PM</option>
+        <option value="5">5:00 PM</option>
+        <option value="6">6:00 PM</option>
+        </select>
+
+        <button class="submitButton">Delete</button>
+      </form>
+        
     </div>
     <div style="width:5%">
     </div>
 
-        <!-- Replace with calendar and need to figure out what to do at differnt sizes -->
     <div class="calendar-selector" style="width:65%;margin:auto">
         <%- include('calendar.ejs'); %>
     </div>
     </div>
     <p>Or add a time: <a href="/schedule">Here!</a></p>
+
+    <script>
+      //So current thoughts definetly include teacher email in instance so i can look up and time
+      const params = new URLSearchParams(document.location.search);
+      const proffesor = params.get("p");
+
+      function validateForm(){
+        const x = document.getElementById("myForm").elements;
+
+        if(x["deleteDate"].value == ""  || x["time"].value == ""){
+            alert("Form not fully filled out!");
+            return false;
+        }
+
+        return true;
+      }
+
+      async function findInstance(url){
+        const response = await fetch(url);
+        const json = await response.json();
+        console.log(json);
+        return json;
+      }
+
+      async function findEvent(url){
+        const response = await fetch(url);
+        const json = await response.json();
+        console.log(json);
+        return json;
+      }
+
+      function submitForm(){
+        if(!validateForm()){
+          return false;
+        }
+        const x = document.getElementById("myForm").elements;
+
+        let url = `/deleteInstance?date=${x["deleteDate"].value}&time=${x["time"].value}&user=${proffesor}`;
+
+
+        findInstance(url).then( r => {
+          if(r == null){ //didn't find anything
+          alert("Event Does Not Exsist");
+          return false;
+          } 
+
+          const urlEvent = `/deleteEvent?iid=${r._id}&eid=${r.eventid}`;
+
+          findEvent(urlEvent).then( n => {
+            const aside = document.getElementById("root");
+            aside.innerHTML = "";
+            aside.insertAdjacentHTML('beforeend', `<p>Event Deleted!</p>`); 
+          });
+
+
+
+        return false;
+          
+        });
+        return false;
+
+      }
+
+
+    </script>
 
 
 

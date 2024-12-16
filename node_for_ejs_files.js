@@ -668,6 +668,73 @@ app.get('/addCounter', async (req, res) => {
   }
 });
 
+//Returns instance, given date, time, and professor. Used for delete
+app.get('/deleteInstance', async (req, res) => {
+  try {
+    const d = req.query.date;
+    const t = Number(req.query.time);
+    const u = req.query.user;
+    dt = new Date(d);
+
+    const ic = db.collection('event_instances');
+
+    const deletedInstance = await ic.findOneAndDelete({date: dt, time: t, prof_email: u});
+    //console.log(deletedInstance);
+    if(deletedInstance == null){ //Checks if instance exisists
+      return res.json(deletedInstance);
+    }
+
+    //Deletes instance from all user instance_array
+    const uc = db.collection('users');
+    uc.updateMany({event_instances: deletedInstance._id.toString()},
+    {$pull: {
+      event_instances : deletedInstance._id.toString()
+      }}
+    );
+    
+    res.json(deletedInstance);
+  } catch (err) { //error
+    console.error(err);
+    res.status(500).send('Server error');
+  }
+});
+
+//Deletes event if not repeated or instance array is empty
+app.get('/deleteEvent', async (req, res) => {
+  try {
+    const i = req.query.iid; //Instance id
+    const e = req.query.eid; //event id
+
+    const ec = db.collection('events');
+
+    var ObjectId = require('mongoose').Types.ObjectId; 
+
+    let deleteEvent = await ec.findOne({_id: new ObjectId(e)});
+    //console.log(deleteEvent);
+
+    //Checks if it repeats
+    if(deleteEvent.repeats == -1){
+      ec.deleteOne({_id: new ObjectId(e)});
+    } else{
+      //Deletes instance from instance array
+      await ec.updateOne({_id: new ObjectId(e)}, 
+      {$pull : {event_instances: i}});
+      //console.log(deleteEvent);
+      deleteEvent = await ec.findOne({_id: new ObjectId(e)});
+
+      //Checks if array is empty and if it is deletes event
+      if(deleteEvent.event_instances[0] == null){
+        ec.deleteOne({_id: new ObjectId(e)});
+      }
+    }
+
+    res.json(deleteEvent);
+  } catch (err) { //error
+    console.error(err);
+    res.status(500).send('Server error');
+  }
+});
+
 app.post('/getuserdetails', async (req, res) => {
   try {
     console.log("meow")

@@ -105,7 +105,7 @@ async function selectOption(option, professors) {
 }
 
 // Function to find and populate data for a specific time slot and class
-async function findCellInstance(start_time, end_time, day, class_string) {
+async function findCellInstance(start_time, day, class_string) {
   let start_hour = start_time.split(":")[0];
   start_hour = (start_hour > 12) ? start_hour - 12 : start_hour;
 
@@ -132,14 +132,13 @@ async function logFormData() {
   const classDropdown = document.getElementById('dropdown').value;
   const dayDropdown = document.getElementById('day').value;
   const startTime = document.getElementById('start-time').value;
-  const endTime = document.getElementById('end-time').value;
 
-  if (!classDropdown || !dayDropdown || !startTime || !endTime) {
+  if (!classDropdown || !dayDropdown || !startTime ) {
     alert("Please fill out all required fields!");
     return;
   }
 
-  const result = findCellInstance(startTime, endTime, dayDropdown, classDropdown);
+  const result = findCellInstance(startTime, dayDropdown, classDropdown);
   
   if (result === null) {
     return; // Exit if the result is null (though this won't happen unless you modify `findCellInstance` to return null).

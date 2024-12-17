@@ -15,7 +15,7 @@
         <div class="navbar-container">
            
             <ul class="nav-links">
-                <li><a href="/dashboard">Dashboard</a></li>
+                <li><a href="/pdashboard">Dashboard</a></li>
                 <li><a href="/schedule">Schedule</a></li>
             </ul>
         </div>
@@ -163,7 +163,7 @@
 
       fetchUserEmail().then( e => {
         professorE = e.email;
-        url = `/findAllRequests?pEmail=${proffesorE}`;
+        url = `/findAllRequests?pEmail=${professorE}`;
         getData().then(x =>  {
             const requestDiv = document.getElementById("allRequests");
             if(x == ""){

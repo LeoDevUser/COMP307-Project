@@ -73,6 +73,8 @@
                 professorE = e.email;
             });
 
+            console.log(professorE);
+
             function validateForm(){
         const x = document.getElementById("myForm").elements;
         //Other things to fix later: invalid dates (in the past)
@@ -102,7 +104,9 @@
         const n = document.getElementById("myForm").elements;
 
         const addURL = `/createRequest?profEmail=${n["profEmail"].value}&class=${n["requestClass"].value}&start=${n["start"].value}
-        &time=${n["time"].value}&reason=${n["reason"].value}&user=${proffesorE}`;
+        &time=${n["time"].value}&reason=${n["reason"].value}&user=${professorE}`;
+
+        console.log(addURL)
 
         sendForm(addURL).then(x =>  {
             const replaceR = document.getElementById("root");

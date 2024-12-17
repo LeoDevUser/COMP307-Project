@@ -1,0 +1,178 @@
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Request Checker</title>
+    <link rel="stylesheet" href="../css/stylesheet.css" type="text/css">
+    <link rel="stylesheet" href="../css/requests.css" type="text/css">
+    <link href="https://fonts.googleapis.com/css2?family=EB+Garamond&display=swap" rel="stylesheet">
+
+</head>
+
+<body>
+
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="navbar-container">
+           
+            <ul class="nav-links">
+                <li><a href="/dashboard">Dashboard</a></li>
+                <li><a href="/schedule">Schedule</a></li>
+            </ul>
+        </div>
+    </nav>
+    <div style="height:50px">
+        </div>
+    <div id="toBeReplaced">
+        <div id="top-box">
+    <h1 id="replace">All current requests for meetings:<h1>
+        </div>
+    <div id="allRequests">
+        <p>Currently there are no requests</p>
+    </div>
+</div>
+
+    <script>
+      const params = new URLSearchParams(document.location.search);
+      const proffesorE = params.get("p");
+      const url = `/findAllRequests?pEmail=${proffesorE}`;
+      let curReqURL = null;
+
+      async function getData() {
+      const response = await fetch(url);
+      const json = await response.json();
+      return json;
+      }
+
+      async function getRequest(requestURL) {
+      const response = await fetch(requestURL);
+      const json = await response.json();
+      return json;
+      }
+
+      function whatTime(time){
+        switch(time){
+            case 7 :
+                return "7:00 AM"
+            case 8:
+                return "8:00 AM"
+            case 9:
+                return "9:00 AM"
+            case 10:
+                return "10:00 AM"
+            case 11:
+                return "11:00 AM"
+            case 12:
+                return "12:00 PM"
+            case 1:
+                return "1:00 PM"
+            case 2:
+                return "2:00 PM"
+            case 3:
+                return "3:00 PM"
+            case 4:
+                return "4:00 PM"
+            case 5:
+                return "5:00 PM"
+            case 6:
+                return "6:00 PM"
+            case 7:
+                return "7:00 PM"
+            default:
+                return "Something went wrong"
+        }
+
+      }
+
+      function stringDate(date){
+        let curDate = new Date(date);
+        return `${curDate.getDate()}/${(curDate.getMonth())+1}/${curDate.getFullYear()}`
+      }
+
+      function revealInfo(){
+        var radios = document.getElementsByName("requests");
+        let curRequest = null;
+
+        for (var i = 0, length = radios.length; i < length; i++) {
+          if (radios[i].checked) {
+            curRequest = radios[i];
+            break;
+          }
+        }
+        if(curRequest == null){
+            alert("Select a Request!");
+            return false;
+        }
+
+        const replacable = document.getElementById("toBeReplaced");
+        replacable.innerHTML = "";
+        const requestURL = `/findOneRequests/?q=${curRequest.value}`;
+        getRequest(requestURL).then(r => {
+            replacable.insertAdjacentHTML('beforeend', `<div id="topBox"><h1>Request from ${r.student_email} for ${r.classs}:</h1></div>`);
+            replacable.insertAdjacentHTML('beforeend', `<div id="choosenRequest"><p>Reason: "${r.reason}"<p>
+                <p>At ${whatTime(r.time)} on ${stringDate(r.date)}</p>
+                <button onClick="scheduleRequest()" id="submit-button">Schedule </button> <button onClick="deleteRequest()" id="submit-button">Delete</button></div>`);
+            curReqURL = r;
+
+        });
+        
+      }
+
+      async function addRequestthenDelete(u) {
+      const response = await fetch(u);
+      const json = await response.text();
+      return json;
+      }
+
+      function deleteRequest(){
+        const requrl = `/deleteRequest/?q=${curReqURL._id.toString()}`
+        addRequestthenDelete(requrl).then(r => {
+            const replacable = document.getElementById("toBeReplaced");
+            replacable.innerHTML = "";
+            replacable.insertAdjacentHTML('beforeend', `<p id="topBox" style="font-size:50px">Succesfully deleted request!</p>`);
+        });
+      }
+
+      async function specialDeleteRequest(instanceid){
+        const temp = `/specialDeleteRequest/?q=${curReqURL._id.toString()}&i=${instanceid}`;
+        const response = await fetch(temp);
+        const json = await response.json();
+        return json;
+        }
+
+      function scheduleRequest(){
+        const u = `/add/?appointmentLabel=Requested+Meeting&class=${curReqURL.classs}&start=${curReqURL.date}&time=${curReqURL.time}
+        &hours=1&avaliblePositions=userInput&userInputAvaliblePositions=1&repeats=doesNotRepeat&end=&email=${curReqURL.prof_email}`;
+        console.log("should be");
+
+        addRequestthenDelete(u).then(r => {
+            specialDeleteRequest(r).then(n =>{
+                const replacable = document.getElementById("toBeReplaced");
+                replacable.innerHTML = "";
+                replacable.insertAdjacentHTML('beforeend', `<p id="topBox" style="font-size:50px">Succesfully scheduled request!</p>`);
+            });
+        });
+      }
+
+      getData().then(x =>  {
+      const requestDiv = document.getElementById("allRequests");
+      if(x == ""){
+        return true;
+      }
+      var count = 0;
+      requestDiv.innerHTML = "";
+      requestDiv.insertAdjacentHTML('beforeend', `<p>Choose which one you want to view</p>`);
+      for(var i =0; i < x.length; i++){
+        if(count == 3){
+            break;
+        }
+        requestDiv.insertAdjacentHTML('beforeend', `<p><input type="radio" name="requests" value=${x[i]._id.toString()}></input>Request from ${x[i].student_email}: "${x[i].reason}"</p>`);
+        count = count + 1;
+      }
+      requestDiv.insertAdjacentHTML('beforeend', `<button onClick="revealInfo()" id="submit-button">View Request</button>`);
+      });
+
+      
+
+    </script>
+
+</body>

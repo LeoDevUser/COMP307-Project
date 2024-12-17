@@ -946,6 +946,14 @@ app.get('/rsvp', function (req, res) {
   res.render('rsvp');
 });
 
+app.get('/request', (req, res) => {
+  res.render('request');
+});
+
+app.get('/viewRequests', (req, res) => {
+  res.render('viewRequests');
+});
+
 
 app.get('/booking', (req, res) => {
   res.render('booking');

@@ -36,9 +36,12 @@ function displayResults(professors, suggestions) {
   
   if (!query) return suggestions.style.display = 'none';  // Hide suggestions if input is empty
 
-  const filteredProfessors = professors.filter(professor =>
-    professor.name.toLowerCase().includes(query) || professor.email.toLowerCase().includes(query)
-  ).map(professor => professor.name);
+    // Filter professors by first name or email matching the query
+
+    const filteredProfessors = professors.filter(professor =>
+        professor.firstName && professor.lastName // Check if both firstName and lastName exist
+      ).map(professor => `${professor.firstName} ${professor.lastName}`); // Combine firstName and lastName
+      
 
   const filteredClasses = professors.filter(professor =>
     professor.classes.some(classItem => classItem.toLowerCase().includes(query))
@@ -90,7 +93,7 @@ async function selectOption(option, professors) {
 
 
   } else {  // If the option is a professor
-    const professor = professors.find(p => p.name === option);
+    const professor = professors.find(p => `${p.firstName} ${p.lastName}` === option);
     email_global = professor.email;
     class_global = '';
     populateClassesOptions(professor);
@@ -114,14 +117,15 @@ async function findCellInstance(start_time, end_time, day, class_string) {
     return;
   }
 
-  const response = await fetch(`/registerForInstance?eid=${cell.getAttribute("data")}`);
+
+  const response = await fetch(`/registerForInstance?eid=${cell.getAttribute("data")}&class_name=${class_string}`);
   if (!response.ok) return alert('Failed to register');
 
   alert('Success!');
 }
 
 // Function to log form data and register class
-function logFormData() {
+async function logFormData() {
   const classDropdown = document.getElementById('dropdown').value;
   const dayDropdown = document.getElementById('day').value;
   const startTime = document.getElementById('start-time').value;
@@ -132,17 +136,16 @@ function logFormData() {
     return;
   }
 
-  findCellInstance(startTime, endTime, dayDropdown, classDropdown);
+  const result = findCellInstance(startTime, endTime, dayDropdown, classDropdown);
+  
+  if (result === null) {
+    return; // Exit if the result is null (though this won't happen unless you modify `findCellInstance` to return null).
+  }
+
   document.querySelectorAll('#dropdown, #day, #start-time, #end-time').forEach(input => input.value = '');
 }
 
-// Event listener for form submission
-document.addEventListener('DOMContentLoaded', function() {
-    document.getElementById('confirm').addEventListener('click', function(event) {
-      event.preventDefault();
-      logFormData();
-    });
-  });
+
   
 
 // Function to populate calendar based on class name
@@ -225,7 +228,14 @@ function renderCalendar() {
     document.getElementById(`day${cur.getDay()}`).innerText = `${days[cur.getDay()]} ${cur.getDate()}`;
   }
 
-  if (email_global.trim() || class_global.trim()) populate("test@mail.mcgill.ca");
+  if (email_global.trim()) {
+    // If email_global has a non-empty value, populate with the email
+    populate(email_global);
+  } else if (class_global.trim()) {
+    // If class_global has a non-empty value, populate based on the class name
+    populatebyClassName(class_global);
+  }
+  
 }
 
 // Function to clear the calendar

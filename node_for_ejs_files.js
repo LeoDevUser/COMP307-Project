@@ -11,7 +11,10 @@ const hostname = '0.0.0.0';
 const port = 3000;
 
 //used to fetch user info for private pages
-let userDeet = {}
+let userDeet = {
+ 
+  };
+
 app.use(express.json())
 app.use(cors())
 
@@ -176,7 +179,9 @@ async function findClassInstances(class_name) {
 
     // Iterate over each event and extract its event instances (event_instaces)
     for (const event of eventsCursor) {
-      const eventInstances = event.event_instaces;
+      const eventInstances = event.event_instances;
+
+
 
       if (eventInstances && eventInstances.length > 0) {
         // Push the full event instance details to the array
@@ -305,14 +310,25 @@ app.get('/searchbar', async (req, res) => {
     // Get all professors (isProf: true) using the previously defined logic
     const professors = await getProfessors();
 
+
     // Filter the professors array based on the search query (name, email, or classes_array)
     const filteredProfessors = professors.filter(professor => {
 
+
       return (
-        (professor.name && professor.name.match(new RegExp(searchQuery, 'i'))) ||
+        ((professor.firstName && professor.lastName) && (
+          professor.firstName.match(new RegExp(searchQuery.split(' ')[0], 'i')) &&
+          professor.lastName.match(new RegExp(searchQuery.split(' ')[1] || '', 'i'))
+        )) ||
+        ((professor.firstName && professor.lastName) && (
+          professor.firstName.match(new RegExp(searchQuery.split(' ')[1], 'i')) &&
+          professor.lastName.match(new RegExp(searchQuery.split(' ')[0] || '', 'i'))
+        )) ||
         (professor.classes && professor.classes.some(classItem => classItem.match(new RegExp(searchQuery, 'i'))))
-      );  
+      );
+      
     });
+
 
 
     // Return the filtered professors
@@ -345,40 +361,48 @@ app.get('/findInstance', async (req, res) => {
 
 app.get('/registerForInstance', async (req, res) => {
   const eid = req.query.eid;
+  const class_name = req.query.class_name;
+
+
   const eventiModel = db.collection('event_instances');
+  const userModel = db.collection('users');
+  const user_email=userDeet.email;
+
 
   if (!eid) return res.status(400).json({ error: 'eid is required' });
 
   try {
     // Find the event instance by its ID
     const event = await eventiModel.find({ f_id: new ObjectId(eid) }).toArray();
+    const user = await userModel.findOne({ email: user_email.trim() });
+    
     if (!event) {
       return res.status(404).json({ error: 'Event instance not found' });
     }
 
 
-
-    // token = localStorage.getItem('usertoken');  //THIS EMAIL STUFF MIGHT BE CAUSING ERRORS!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    // Userdetails = jwtDecode(token).email;
-  
-
-    // Update the event instance:
-    // - Increment the `cur_count` by 1
-    // - Push the string to the `student_emails` array
-    console.log("emails need fixing");
-
     await eventiModel.updateOne(
       { _id: new ObjectId(eid) },
       {
         $inc: { cur_count: 1 },        // Increment the `cur_count` field by 1
-        $push: { student_emails: "123" }  // Push the string "123" to `student_emails`
+        $push: { student_emails: userDeet.email }  // Push the email to `student_emails`
       }
     );
+
+
+    await userModel.updateOne(
+      { _id: user._id },  
+      {
+        $push: {
+          event_instances: eid          // Push the `eid` to the `event_instances` array
+        }
+      }
+    );
+    
 
     // Return the updated event instance
     const updatedEvent = await eventiModel.findOne({ _id: new ObjectId(eid) });
 
-    console.log("event2");
 
 
     return res.json(updatedEvent);

@@ -872,9 +872,7 @@ app.get('/specialDeleteRequest', async (req, res) => {
 
 app.post('/getuserdetails', async (req, res) => {
   try {
-    console.log("meow")
     const { firstName, lastName, email, isProf } = req.body
-    console.log(firstName, lastName, email, isProf)
     userDeet = { firstName, lastName, email, isProf }
     res.json({result: "User received!"})
   } catch (err) { //error

@@ -45,6 +45,7 @@ body, html {
     background-color: #ed1b2f;
     position: sticky;
     padding-bottom: 1vh;
+    height: 12.5vh
 }
 
 /* Responsive Design for Mobile */

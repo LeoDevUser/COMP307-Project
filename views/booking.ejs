@@ -1,14 +1,26 @@
 
-<title>Real-time Search Bar</title>
+<title>Booking</title>
 <link rel="stylesheet" href="../css/booking.css">
 <link rel="stylesheet" href="../css/public.css">
+<link rel="stylesheet" href="css/stylesheet.css">
 
 
 
 
 
-<%- include('template.ejs'); %>
 
+
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="navbar-container">
+           
+            <ul class="nav-links">
+                <li><a href="../dashboard">Dashboard</a></li>
+                <li><a href="../request">Request</a></li>
+
+            </ul>
+        </div>
+    </nav>
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
@@ -88,9 +100,10 @@
 
         <p>Need to Request a specific time?</p>
         
-        <button class="button_class">
+        <button class="button_class" style="margin-bottom: 2vh;" onclick="window.location.href='../request';">
             Request a Time
         </button>
+        
         
     </div>
 
@@ -104,7 +117,7 @@
     </div>   
 
     <script src="../js/searchbar.js"></script>
-<script src="../js/populate_cal.js"></script>
+    <script src="../js/populate_cal.js"></script>
 
 </div>
 

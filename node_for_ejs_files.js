@@ -759,6 +759,115 @@ app.get('/deleteEvent', async (req, res) => {
   }
 });
 
+const requestSchema = new mongoose.Schema({
+  date: { type: Date},
+  time: {type: Number},
+  prof_email: {type : String},
+  student_email: {type : String},
+  classs: {type : String},
+  reason: {type : String}
+});
+
+const requests = mongoose.model('requests', requestSchema);
+//retrieves user given email
+app.get('/createRequest', async (req, res) => {
+  try {
+    console.log(req.url);
+
+    const newRequest = await requests.create({
+      date: req.query.start,
+      time: req.query.time,
+      prof_email: req.query.profEmail,
+      student_email: req.query.user,
+      classs: req.query.class,
+      reason: req.query.reason
+    });
+
+    res.json(newRequest); //returns user
+  } catch (err) { //error
+    console.error(err);
+    res.status(500).send('Server error');
+  }
+});
+
+//returns all requests for a certain professor
+app.get('/findAllRequests', async (req, res) => {
+  try {
+    const profEmail = req.query.pEmail;
+
+    const allRequests = await requests.find({prof_email : profEmail});
+    console.log(allRequests);
+
+    res.json(allRequests); //returns user
+  } catch (err) { //error
+    console.error(err);
+    res.status(500).send('Server error');
+  }
+});
+
+//returns one requests for a request id
+app.get('/findOneRequests', async (req, res) => {
+  try {
+    var ObjectId = require('mongoose').Types.ObjectId; 
+
+
+    const oneRequest = await requests.findOne({_id : new ObjectId(req.query.q)});
+    console.log(oneRequest);
+
+    res.json(oneRequest); //returns user
+  } catch (err) { //error
+    console.error(err);
+    res.status(500).send('Server error');
+  }
+});
+
+//returns one requests for a request id
+app.get('/deleteRequest', async (req, res) => {
+  try {
+    console.log(req.url);
+    var ObjectId = require('mongoose').Types.ObjectId; 
+
+    const oneRequest = await requests.deleteOne({_id : new ObjectId(req.query.q)});
+    console.log(oneRequest);
+
+    res.json(oneRequest); //returns user
+  } catch (err) { //error
+    console.error(err);
+    res.status(500).send('Server error');
+  }
+});
+//Deletes requesta and adds the student who made the request into the instance_event request
+app.get('/specialDeleteRequest', async (req, res) => {
+  try {
+    //console.log(req.url);
+    var ObjectId = require('mongoose').Types.ObjectId; 
+
+    const oneRequest = await requests.findOneAndDelete({_id : new ObjectId(req.query.q)});
+    //console.log(oneRequest);
+
+    const curinstance = await eventsInstances.findOneAndUpdate({_id : new ObjectId(req.query.i)},
+    {$push: {
+      student_emails : oneRequest.student_email}, 
+      $inc: { cur_count: 1 }
+    });
+
+    const uC = db.collection('users');
+
+
+    const u = await uC.findOneAndUpdate({email : oneRequest.student_email},
+      {$push: {
+        event_instances : oneRequest._id.toString()
+      }});
+
+      console.log(u);
+
+    res.json(oneRequest); //returns user
+  } catch (err) { //error
+    console.error(err);
+    res.status(500).send('Server error');
+  }
+});
+
 app.post('/getuserdetails', async (req, res) => {
   try {
     console.log("meow")

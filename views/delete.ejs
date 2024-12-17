@@ -1,7 +1,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Schedule</title>
+    <title>Delete</title>
     <link rel="stylesheet" href="../css/stylesheet.css" type="text/css">
     <link rel="stylesheet" href="../css/schedule.css" type="text/css">
     <link href="https://fonts.googleapis.com/css2?family=EB+Garamond&display=swap" rel="stylesheet">
@@ -15,23 +15,20 @@
         <div class="navbar-container">
            
             <ul class="nav-links">
-                <li><a href="#dashboard">Dashboard</a></li>
-                <li><a href="#schedule">Schedule</a></li>
-                <li style="width:125px"></li>
-                <li><a href="#logout">Log Out</a></li>
+              <li><a href="/dashboard">Dashboard</a></li>
+              <li><a href="/viewRequests">View Requests</a></li>
+              <li><a href="/schedule">Add Entry?</a></li>
             </ul>
-            <img class="image" src="../images/logo2.png">
         </div>
     </nav>
 
     <div class="bottom-container" id="choice">
-      <div class="tempSpace">
+      <div style="width:10%">
       </div>
-    <div class="aside" id="root" style="width:20%; height:100%">
+    <div class="aside2" id="root" >
       <form class="formApperance" id="myForm" onsubmit="return submitForm()"">
       <h1>What date is the class you want to delete scheduled for?</h1>
       <input type="date" name="deleteDate"></input>
-      <h1>What time is it scheduled to start?</h1>
       <h1>At: <select name="time">
         <option value="7">7:00 AM</option>
         <option value="8">8:00 AM</option>
@@ -46,6 +43,8 @@
         <option value="5">5:00 PM</option>
         <option value="6">6:00 PM</option>
         </select>
+        <br>
+        <br>
 
         <button class="submitButton">Delete</button>
       </form>
@@ -58,12 +57,23 @@
         <%- include('calendar.ejs'); %>
     </div>
     </div>
-    <p>Or add a time: <a href="/schedule">Here!</a></p>
+    <p id="removeAtEnd">Or add a time: <a href="/schedule">Here!</a></p>
 
+
+    <script src="../js/calendar.js"></script>
     <script>
-      //So current thoughts definetly include teacher email in instance so i can look up and time
-      const params = new URLSearchParams(document.location.search);
-      const proffesor = params.get("p");
+      //const params = new URLSearchParams(document.location.search);
+      //const proffesor = params.get("p");
+      let professor;
+      async function fetchUserEmail(){
+        const response = await fetch(`/current_user`);
+        const json = await response.json();
+        return json;
+      }
+      
+      fetchUserEmail().then( e => {
+        professor = e.email;
+      });
 
       function validateForm(){
         const x = document.getElementById("myForm").elements;
@@ -109,8 +119,13 @@
 
           findEvent(urlEvent).then( n => {
             const aside = document.getElementById("root");
+            const divDelete = document.getElementById("removeAtEnd");
             aside.innerHTML = "";
-            aside.insertAdjacentHTML('beforeend', `<p>Event Deleted!</p>`); 
+            aside.insertAdjacentHTML('beforeend', `<p>Event Deleted!</p>`);
+            aside.insertAdjacentHTML('beforeend', `<p>Delete another time: <a href="/delete">Here!</a></p>`);
+            aside.insertAdjacentHTML('beforeend', `<p><u>Or</u></p>`);
+            aside.insertAdjacentHTML('beforeend', `<p>Add a time: <a href="/schedule">Here!</a></p>`);
+            divDelete.innerHTML = "";
           });
 
 

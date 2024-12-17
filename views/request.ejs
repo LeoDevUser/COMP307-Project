@@ -1,0 +1,118 @@
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Request</title>
+    <link rel="stylesheet" href="../css/stylesheet.css" type="text/css">
+    <link rel="stylesheet" href="../css/requests.css" type="text/css">
+    <link href="https://fonts.googleapis.com/css2?family=EB+Garamond&display=swap" rel="stylesheet">
+
+</head>
+
+<body>
+
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="navbar-container">
+           
+            <ul class="nav-links">
+                <li><a href="/dashboard">Dashboard</a></li>
+                <li><a href="/booking">Booking</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div style="height:35px">
+    </div>
+
+    <div class="topBox">
+        <h1 id="replace" style="font-size: 30px;font-weight: normal;">Please fill out the form to request a one on one meeting with a Professor<h1>
+    </div>
+        <div id="root">
+            <form id="myForm" onsubmit="return submitForm()">
+              <p>Proffesor Email:
+              <input type="text" name="profEmail" class="textbox"></input></p>
+              <p>Which Class?<input type="text" name="requestClass" class="textbox"></input></p>
+              <p>Why do you want to meet?</p>
+              <input type="text" name="reason" class="textbox" style="width: 180px"></input>
+              
+              
+              <p>When? <input type="date" name="start"></input></p> 
+              <p>At: <select name="time">
+                  <option value="7">7:00 AM</option>
+                  <option value="8">8:00 AM</option>
+                  <option value="9">9:00 AM</option>
+                  <option value="10">10:00 AM</option>
+                  <option value="11">11:00 AM</option>
+                  <option value="12">12:00 PM</option>
+                  <option value="1">1:00 PM</option>
+                  <option value="2">2:00 PM</option>
+                  <option value="3">3:00 PM</option>
+                  <option value="4">4:00 PM</option>
+                  <option value="5">5:00 PM</option>
+                  <option value="6">6:00 PM</option>
+                  </select>
+                </p>
+      
+              <input type="submit" value="Submit" class="submitButton"></input>
+      
+            </form>
+          </div>
+
+          <script>
+            //const params = new URLSearchParams(document.location.search);
+            //const proffesorE = params.get("p");
+
+            let professorE;
+            async function fetchUserEmail(){
+                const response = await fetch(`/current_user`);
+                const json = await response.json();
+                return json;
+            }
+            
+            fetchUserEmail().then( e => {
+                professorE = e.email;
+            });
+
+            function validateForm(){
+        const x = document.getElementById("myForm").elements;
+        //Other things to fix later: invalid dates (in the past)
+        //make sure userinputinvalidpositions is an int and is positive
+        //Make it not possible to schedule over an already existing event for this prof
+
+        if(x["profEmail"].value == ""  || x["requestClass"].value == ""
+          || x["reason"].value == "" || x["start"].value == ""
+        ){
+            alert("Form not fully filled out!");
+            return false;
+        }
+
+        return true;
+      }
+      
+      async function sendForm(u) {
+      const response = await fetch(u);
+      const json = await response.text();
+      return json;
+      }
+
+      function submitForm(){
+        if(validateForm() == false){
+          return false;
+        }
+        const n = document.getElementById("myForm").elements;
+
+        const addURL = `/createRequest?profEmail=${n["profEmail"].value}&class=${n["requestClass"].value}&start=${n["start"].value}
+        &time=${n["time"].value}&reason=${n["reason"].value}&user=${proffesorE}`;
+
+        sendForm(addURL).then(x =>  {
+            const replaceR = document.getElementById("root");
+            replaceR.innerHTML = "";
+            replaceR.insertAdjacentHTML('beforeend', `<p>Your request has been sent!</p>`);
+            return false;
+      });
+        return false;
+      }
+
+          </script>
+
+</body>

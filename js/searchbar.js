@@ -111,11 +111,14 @@ async function findCellInstance(start_time, end_time, day, class_string) {
 
   const result = `${start_hour}${day}`;
   const cell = document.getElementById(result);
+
+
   
-  if (!cell.textContent.trim() || !cell.textContent.includes(class_string)) {
+  if (!cell.textContent.trim() || !cell.textContent.toLowerCase().includes(class_string.toLowerCase())) {
     alert("Invalid time or class. Please provide a valid input.");
     return;
   }
+
 
 
   const response = await fetch(`/registerForInstance?eid=${cell.getAttribute("data")}&class_name=${class_string}`);

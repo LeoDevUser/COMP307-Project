@@ -15,26 +15,22 @@
         <div class="navbar-container">
            
             <ul class="nav-links">
-                <li><a href="#dashboard">Dashboard</a></li>
-                <li><a href="#schedule">Schedule</a></li>
-                <li style="width:125px"></li>
-                <li><a href="#logout">Log Out</a></li>
+                <li><a href="/dashboard">Dashboard</a></li>
+                <li><a href="/viewRequests">View Requests</a></li>
+                <li><a href="/delete">Delete Entry?</a></li>
             </ul>
-            <img class="image" src="../images/logo2.png">
         </div>
     </nav>
 
     <div class="bottom-container" id="bottomContainer">
       <div class="tempSpace">
       </div>
-    <div class="aside" id="root" style="width:20%; height:100%">
+    <div class="aside" id="root">
       <form class="formApperance" id="myForm" onsubmit="return submitForm()">
         <h1>Label:
         <input type="text" name="appointmentLabel" class="textbox"></input></h1>
-        <h1>Which Class?</h1>
-        <div id="classQuestion">
-          <p><input type="radio" name="class" value="none"></input></p>
-        </div>
+        <h1>Which Class? 
+          <input type="text" name="class" class="textbox"></input></h1>
         <h1>When? <input type="date" name="start"></input></h1> 
         <h1>At: <select name="time">
             <option value="7">7:00 AM</option>
@@ -80,7 +76,7 @@
 
       </form>
     </div>
-    <div style="width:5%">
+    <div class="tempSpaceTwo">
     </div>
 
         <!-- Replace with calendar and need to figure out what to do at differnt sizes -->
@@ -89,6 +85,10 @@
     </div>
     </div>
     <p>Or delete a time: <a href="/delete">Here!</a></p>
+
+    <script src="../js/calendar.js">
+
+    </script>
 
     <script>
       function revealHiddenObject(){
@@ -102,10 +102,7 @@
 
       function validateForm(){
         const x = document.getElementById("myForm").elements;
-        console.log(x["class"].checked);
-        //Edge Case to be fixed. if prof only has one class a different check is needed
-        //Other things to fix later: invalid dates (in the past)
-        //make sure userinputinvalidpositions is an int and is positive
+        //Make it not possible to schedule over an already existing event for this prof
 
         if(x["appointmentLabel"].value == ""  || x["class"].value == ""
           || x["start"].value == "" || x["avaliblePositions"].value == ""
@@ -121,9 +118,35 @@
           return false;
         }
 
+        if(x["avaliblePositions"].value == "userInput" && (isNaN(x["userInputAvaliblePositions"].value))){
+          alert("Must input a number for openings!");
+          return false;
+        }
+
+        if(x["avaliblePositions"].value == "userInput" && (x["userInputAvaliblePositions"].value) < 1){
+          alert("Number of openings cannot be negative!");
+          return false;
+        }
+
         if(x["repeats"].value == "doesRepeat" && x["end"].value == ""){
           alert("Form not fully filled out!");
           return false;
+        }
+
+        let curDate = new Date();
+        curDate.setHours(0,0,0,0);
+
+        let startDate = new Date(x["start"].value);
+        if(startDate < curDate){
+          alert("Can not schedule event for later than tomorrow!");
+          return false;
+        }
+
+        if(x["end"].value != ""){
+          if(x["start"].value > x["end"].value){
+          alert("An event can not repeat backwards!");
+          return false;
+        }
         }
 
         return true;
@@ -169,29 +192,6 @@
       console.log(proffesorE);
       const passEmail = document.getElementById("secretEmail");
       passEmail.value = proffesorE;
-
-      async function getData() {
-      const response = await fetch(url);
-      const json = await response.json();
-      return json;
-      }
-
-      getData().then(x =>  {
-      const divQuestion = document.getElementById("classQuestion");
-      divQuestion.innerHTML = "";
-      for(var i =0; i< x.classes.length; i++){
-        var temps = x.classes[i];
-        var temp = temps.split(' ').join('_');
-        divQuestion.insertAdjacentHTML('beforeend', `<p><input type="radio" name="class" value=${temp}></input> ${x.classes[i]}</p>`);
-      }
-      if(x.clasees.length == 0){
-        alert("Can not begin scheduling before setting classes!");
-        document.getElementById("root").innerHTML = `<p>Click here to fill out form!</p>`;
-      }
-      
-
-      });
-      
 
     </script>
 

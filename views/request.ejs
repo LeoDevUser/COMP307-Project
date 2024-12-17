@@ -59,9 +59,19 @@
           </div>
 
           <script>
-            const params = new URLSearchParams(document.location.search);
-            const proffesorE = params.get("p");
+            //const params = new URLSearchParams(document.location.search);
+            //const proffesorE = params.get("p");
 
+            let professorE;
+            async function fetchUserEmail(){
+                const response = await fetch(`/current_user`);
+                const json = await response.json();
+                return json;
+            }
+            
+            fetchUserEmail().then( e => {
+                professorE = e.email;
+            });
 
             function validateForm(){
         const x = document.getElementById("myForm").elements;

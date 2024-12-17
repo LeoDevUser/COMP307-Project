@@ -1,3 +1,6 @@
+/* Alexandros Contomichalos 261039376*/
+
+
 function populateRowWithColor(id, inputString) {
     // List of possible colors
     const colors = ['#cbd4eb','#c0f4ae','#fafe92','#e8cae3','#c0a6fc'];

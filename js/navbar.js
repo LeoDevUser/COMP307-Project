@@ -1,3 +1,6 @@
+/* Alexandros Contomichalos 261039376*/
+
+
 const hamburgerIcon = document.getElementById('hamburger-icon');
 const navLinks = document.getElementById('nav-links');
 

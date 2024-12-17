@@ -1,3 +1,7 @@
+/* Alexandros Contomichalos 261039376*/
+/* This is where i did the majority of my backend work excluding the implementation of the api calls themselves*/
+
+
 let email_global = "";
 let class_global = "";
 let currentDate = new Date();

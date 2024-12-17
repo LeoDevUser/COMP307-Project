@@ -8,6 +8,19 @@ p {
     border-bottom: 2px solid black;
   }
 
+  .aside,#root{
+    width:20%;
+    height:100%;
+  }
+
+  .aside2{
+    margin-top: -200px;
+  }
+
+  .tempSpaceTwo{
+    width:5%"
+  }
+
   .bottom-container {
     display:flex;
     justify-content: center;
@@ -19,7 +32,6 @@ p {
 
   .formApperance p{
     font-size: 18px;
-
   }
 
   .formApperance h1{
@@ -60,15 +72,37 @@ p {
       display: none;
   }
 
-  @media (max-width: 600px) {
+  @media (max-width: 900px) {
+    .tempSpace{
+      width:0%;
+    }
+    .tempSpaceTwo{
+      width:0%"
+    }
+    .aside2{
+      margin-top: 0px;
+    }
+    
+  }
+
+  @media (max-width: 700px) {
+    .calendar-selector{
+      display: none;
+    }
+
+    .aside2{
+      margin-top: 100px;
+      width: 100%;
+    }
+
     .bottom-container{
       margin-top: 0px;
     }
     .tempSpace{
-      width: 3%;
+      width: 0%;
     }
-    .aside p{
-      font-size: 23px;
+    .aside{
+      width: 100%;
     }
     
   }

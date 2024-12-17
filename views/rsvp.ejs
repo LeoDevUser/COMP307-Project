@@ -2,8 +2,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Schedule</title>
+    <title>rsvp</title>
     <link rel="stylesheet" href="../css/stylesheet.css" type="text/css">
+    <link rel="stylesheet" href="../css/requests.css" type="text/css">
     <link href="https://fonts.googleapis.com/css2?family=EB+Garamond&display=swap" rel="stylesheet">
 
 </head>
@@ -15,19 +16,20 @@
         <div class="navbar-container">
            
             <ul class="nav-links">
-                <li style="width:125px"></li>
-                <li style="width:125px"></li>
-                <li><a href="#landing">Home</a></li>
-                <li><a href="#login">Log In</a></li>
+                <li><a href="/">Home</a></li>
             </ul>
-            <img class="image" src="../images/logo2.png">
         </div>
     </nav>
+    <div id="topBox" style="width:100%; font-size: 15px;font-weight: normal">
     <h1 id="replace">You have been invited to join [insert label] for [class] from [Professor first and last]<h1>
+    </div>
+    <div style="height:20px">
+
+        </div>
     <div class="choice" id="choice">    
-        <h1>Would you like to RSVP?</h1>
-        <button type="button" onclick="addToCapacity()">Yes</button>
-        <button>No</button>    
+        <h1 class="textApperance">Would you like to RSVP?</h1>
+        <button type="button" onclick="addToCapacity()" class="submitButton">Yes</button>
+        <button onclick="location.href='/'" class="submitButton">No</button>    
 
     </div>
     <script>
@@ -39,8 +41,8 @@
       let event = null;
       let instance = null;
 
-      async function test(url){
-        const response = await fetch(url);
+      async function test(u){
+        const response = await fetch(u);
         const json = await response.json();
         return json;
       }
@@ -48,7 +50,6 @@
     function addToCapacity(){
         const temp = `/addCounter?q=${instanceID}`;
         test(temp).then(y => {
-            const replace = document.getElementById("replace");
             const choice = document.getElementById("choice");
             choice.innerHTML = "";
             choice.insertAdjacentHTML('beforeend', `<p>Great! You have a spot saved!</p>`); 
@@ -117,7 +118,7 @@
 
 
       getInstance().then(x =>  {
-        if(x == ""){
+        if(x == null){
             const replace = document.getElementById("replace");
             const choice = document.getElementById("choice");
             replace.innerHTML = "Invalid URL";

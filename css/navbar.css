@@ -1,0 +1,58 @@
+.nav-links {
+    list-style-type: none;
+    display: flex; 
+    margin: 0;
+    padding: 0;
+}
+
+.hamburger {
+    display: none; 
+    flex-direction: column;
+    justify-content: space-between;
+    width: 30px;
+    height: 20px;
+    cursor: pointer;
+}
+
+.hamburger .bar {
+    height: 4px;
+    width: 100%;
+    background-color: white;
+    border-radius: 2px;
+    transition: all 0.3s ease;
+}
+
+
+@media screen and (max-width: 650px) {
+    
+    .nav-links {
+        display: none; 
+        justify-content: center; 
+        align-items: center; 
+        width: 100%; 
+    }
+
+    .hamburger {
+        display: flex;
+        padding-top: 2vw;
+        padding-left: 2vw;
+    }
+
+    .navbar-container{
+        width: 100%;
+    }
+
+    .nav-links {
+        background-color: #ed1b2f;
+    }
+
+    .button_class_nav{
+        background-color: #424242;
+    }
+
+    .button_class_nav :hover{
+        background-color: #ed1b2f;
+    }
+
+    
+}

@@ -32,10 +32,18 @@
 </div>
 
     <script>
-      const params = new URLSearchParams(document.location.search);
-      const proffesorE = params.get("p");
-      const url = `/findAllRequests?pEmail=${proffesorE}`;
-      let curReqURL = null;
+      //const params = new URLSearchParams(document.location.search);
+      //const proffesorE = params.get("p");
+       //= `/findAllRequests?pEmail=${proffesorE}`;
+      //let curReqURL = null;
+
+       let professorE;
+       let url;
+       async function fetchUserEmail(){
+        const response = await fetch(`/current_user`);
+        const json = await response.json();
+        return json;
+       }
 
       async function getData() {
       const response = await fetch(url);
@@ -153,23 +161,28 @@
         });
       }
 
-      getData().then(x =>  {
-      const requestDiv = document.getElementById("allRequests");
-      if(x == ""){
-        return true;
-      }
-      var count = 0;
-      requestDiv.innerHTML = "";
-      requestDiv.insertAdjacentHTML('beforeend', `<p>Choose which one you want to view</p>`);
-      for(var i =0; i < x.length; i++){
-        if(count == 3){
-            break;
-        }
-        requestDiv.insertAdjacentHTML('beforeend', `<p><input type="radio" name="requests" value=${x[i]._id.toString()}></input>Request from ${x[i].student_email}: "${x[i].reason}"</p>`);
-        count = count + 1;
-      }
-      requestDiv.insertAdjacentHTML('beforeend', `<button onClick="revealInfo()" id="submit-button">View Request</button>`);
-      });
+      fetchUserEmail().then( e => {
+        professorE = e.email;
+        url = `/findAllRequests?pEmail=${proffesorE}`;
+        getData().then(x =>  {
+            const requestDiv = document.getElementById("allRequests");
+            if(x == ""){
+                return true;
+            }
+            var count = 0;
+            requestDiv.innerHTML = "";
+            requestDiv.insertAdjacentHTML('beforeend', `<p>Choose which one you want to view</p>`);
+            for(var i =0; i < x.length; i++){
+                if(count == 3){
+                    break;
+                }
+                requestDiv.insertAdjacentHTML('beforeend', `<p><input type="radio" name="requests" value=${x[i]._id.toString()}></input>Request from ${x[i].student_email}: "${x[i].reason}"</p>`);
+                count = count + 1;
+            }
+            requestDiv.insertAdjacentHTML('beforeend', `<button onClick="revealInfo()" id="submit-button">View Request</button>`);
+        });
+
+        });
 
       
 

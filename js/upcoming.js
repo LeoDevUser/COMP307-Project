@@ -56,9 +56,17 @@ async function populateU() {
 		}
 		let months = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC']
 		const result = await response.json();
-		const times = result.times; //here we have the times
-		const appointments = result.appointments; //here the labels
+		let times = result.times; //here we have the times
+		let appointments = result.appointments; //here the labels
 		let counter = 0;
+		// Create an array of objects, each containing a time and and an appointment
+		// this is done to preserve the ordering
+		let data = times.map((time, index) => ({ time, string: appointments[index] }));
+		//sort times from soonest to latest
+		data.sort((a, b) => new Date(a.time).getTime() - new Date(b.time).getTime());
+		//rextract each array
+		times = data.map(item => item.time);
+		appointments = data.map(item => item.string);
 		for (time of times) {
 			let date = new Date(time);
 			if (date.setHours(date.getHours() + 5) < currentDateU) {

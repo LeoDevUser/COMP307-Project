@@ -62,9 +62,18 @@
 
     <script src="../js/calendar.js"></script>
     <script>
-      //So current thoughts definetly include teacher email in instance so i can look up and time
-      const params = new URLSearchParams(document.location.search);
-      const proffesor = params.get("p");
+      //const params = new URLSearchParams(document.location.search);
+      //const proffesor = params.get("p");
+      let professor;
+      async function fetchUserEmail(){
+        const response = await fetch(`/current_user`);
+        const json = await response.json();
+        return json;
+      }
+      
+      fetchUserEmail().then( e => {
+        professor = e.email;
+      });
 
       function validateForm(){
         const x = document.getElementById("myForm").elements;

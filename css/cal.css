@@ -121,5 +121,26 @@ tr day-header{
 }
 
 
+@media (max-width: 500px){
+	.calendar-grid table, .calendar-grid th:not(.b-container), .calendar-grid td {
+		font-size: 2.5vw;
+	}
+
+	.b-container button {
+		font-size: 4vw;
+	}
+	
+	.calendar-grid .b-container {
+		height: auto;
+	}
+
+	.calendar-grid th, .calendar-grid td {
+		height: 10vw;   
+	}
+	
+	
+}
+
+
   
 

@@ -186,12 +186,20 @@
   </script>
 
     <script>
-      const params = new URLSearchParams(document.location.search);
-      const proffesorE = params.get("p");
-      const url = `/retrieveClasses?q=${proffesorE}`;
-      console.log(proffesorE);
-      const passEmail = document.getElementById("secretEmail");
-      passEmail.value = proffesorE;
+      async function fetchUserEmail(){
+        const response = await fetch(`/current_user`);
+        const json = await response.json();
+        return json;
+
+      }
+      //const params = new URLSearchParams(document.location.search);
+      //const proffesorE = params.get("p");
+      //const url = `/retrieveClasses?q=${proffesorE}`;
+      //console.log(proffesorE);
+      fetchUserEmail().then( e => {
+        const passEmail = document.getElementById("secretEmail");
+        passEmail.value = e.email;
+      });
 
     </script>
 

@@ -563,12 +563,13 @@ app.get('/add', async (req, res) => {
 
     //Adds event_instances to user (the prof creating the new event)
     const classesCollection = db.collection('users');
-    classesCollection.findOneAndUpdate(
+    const curUser = classesCollection.findOneAndUpdate(
         {email: email},
         { $push: {
           event_instances : { $each: curEvent.event_instances}
+        }, $addToSet: { classes : compClass }
         }
-      });
+      );
 	  
     res.set('Content-Type', 'text/html');
     res.send(temp);

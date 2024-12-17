@@ -12,8 +12,7 @@ const port = 3000;
 
 //used to fetch user info for private pages
 let userDeet = {
- 
-  };
+};
 
 app.use(express.json())
 app.use(cors())
@@ -168,7 +167,9 @@ async function findClassInstances(class_name) {
     const decodedClassName = decodeURIComponent(class_name);
 
     // Find all events that match the class name
-    const eventsCursor = await events.find({ classs: decodedClassName }).toArray();
+    const eventsCursor = await events.find({
+      classs: { $regex: decodedClassName, $options: 'i' }
+    }).toArray();
 
     if (eventsCursor.length === 0) {
       return { error: 'No events found for the given class name' };  // Return error if no matching event

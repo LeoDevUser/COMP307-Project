@@ -6,6 +6,15 @@ let email_global = "";
 let class_global = "";
 let currentDate = new Date();
 
+// Function to clear the calendar
+function clearCalendar() {
+  document.querySelectorAll('td:not(.u-td)').forEach(cell => {
+    cell.textContent = '';  // Clear content
+    cell.style.backgroundColor = '';  // Clear background color
+    cell.removeAttribute('data');  // Remove event data
+  });
+}
+
 
 // Function to initialize the search functionality
 function filterSuggestions() {
@@ -18,42 +27,44 @@ function filterSuggestions() {
       const professors = await response.json();
       displayResults(professors, suggestions);
     } else {
-      suggestions.innerHTML = '';  // Clear results if input is empty
+      suggestions.innerHTML = ''; 
     }
   });
 
-  document.addEventListener('click', function(event) {
+//to hide the suggestions when clicking on one of the classes
+document.addEventListener('click', function(event) {
     if (!suggestions.contains(event.target) && event.target !== document.getElementById('search')) {
-      suggestions.style.display = 'none';  // Hide suggestions
+      suggestions.style.display = 'none';  
     }
   });
 }
 
+//to clear searchbar when reloading
 window.onload = function() {
-  document.getElementById('search').value = '';  // Clear the search bar on page load
+  document.getElementById('search').value = ''; 
 }
 
 // Function to display search results
 function displayResults(professors, suggestions) {
   const query = document.getElementById('search').value.toLowerCase();
-  suggestions.innerHTML = '';  // Clear previous suggestions
+  suggestions.innerHTML = ''; 
   
-  if (!query) return suggestions.style.display = 'none';  // Hide suggestions if input is empty
+  if (!query) return suggestions.style.display = 'none';  
 
-    // Filter professors by first name or email matching the query
 
-    const filteredProfessors = professors.filter(professor =>
-        professor.firstName && professor.lastName // Check if both firstName and lastName exist
-      ).map(professor => `${professor.firstName} ${professor.lastName}`); // Combine firstName and lastName
+  // Filter professors to get right string 
+  const filteredProfessors = professors.filter(professor =>
+      professor.firstName && professor.lastName 
+    ).map(professor => `${professor.firstName} ${professor.lastName}`); 
       
-
+    // Filter classes to get right string 
   const filteredClasses = professors.filter(professor =>
     professor.classes.some(classItem => classItem.toLowerCase().includes(query))
   ).flatMap(professor => professor.classes.filter(classItem => classItem.toLowerCase().includes(query)));
 
   const filteredOptions = [...filteredProfessors, ...filteredClasses].slice(0, 5);
   
-  suggestions.style.display = 'block';  // Show suggestions
+  suggestions.style.display = 'block';
   filteredOptions.forEach(option => {
     const item = document.createElement('div');
     item.classList.add('suggestion-item');
@@ -63,15 +74,9 @@ function displayResults(professors, suggestions) {
   });
 }
 
-// Function to clear all table data
-function clearAllTableData() {
-  document.querySelectorAll('td').forEach(cell => {
-    cell.textContent = '';  // Clear content
-    cell.style.backgroundColor = '';  // Clear background color
-  });
-}
 
-// Function to populate class options for a professor
+
+// Function to populate class options dropdown for a professor
 function populateClassesOptions(professor) {
   professor.classes.forEach((className, index) => {
     const option = document.getElementById(`class${index + 1}`);
@@ -80,18 +85,20 @@ function populateClassesOptions(professor) {
   });
 }
 
-// Function to handle item selection
+// Function to handle class selection
 async function selectOption(option, professors) {
   const suggestions = document.getElementById("suggestions");
   for (let i = 1; i <= 6; i++) {
-    document.getElementById(`class${i}`).style.display = 'none';  // Hide all class options
+    document.getElementById(`class${i}`).style.display = 'none';  
   }
 
   if (/\d/.test(option)) {  // If the option is a class
     document.getElementById("class1").textContent = option;
     document.getElementById("class1").style.display = 'block';
     class_global = option;
+    email_global = "";
     populatebyClassName(option);
+    clearCalendar();
     suggestions.style.display = 'none';
     document.getElementById('search').value = option;
 
@@ -101,14 +108,14 @@ async function selectOption(option, professors) {
     email_global = professor.email;
     class_global = '';
     populateClassesOptions(professor);
-    clearAllTableData();
+    clearCalendar();
     document.getElementById('search').value = option;
     suggestions.style.display = 'none';
     populate(professor.email);
   }
 }
 
-// Function to find and populate data for a specific time slot and class
+// Function to find and register for a specific time slot and class
 async function findCellInstance(start_time, day, class_string) {
   let start_hour = start_time.split(":")[0];
   start_hour = (start_hour > 12) ? start_hour - 12 : start_hour;
@@ -116,14 +123,10 @@ async function findCellInstance(start_time, day, class_string) {
   const result = `${start_hour}${day}`;
   const cell = document.getElementById(result);
 
-
-  
   if (!cell.textContent.trim() || !cell.textContent.toLowerCase().includes(class_string.toLowerCase())) {
     alert("Invalid time or class. Please provide a valid input.");
     return;
   }
-
-
 
   const response = await fetch(`/registerForInstance?eid=${cell.getAttribute("data")}&class_name=${class_string}`);
   if (!response.ok) return alert('Failed to register');
@@ -137,7 +140,7 @@ async function findCellInstance(start_time, day, class_string) {
   alert('Success!');
 }
 
-// Function to log form data and register class
+// Function to triger logic when clicking confirm button class
 async function logFormData() {
   const classDropdown = document.getElementById('dropdown').value;
   const dayDropdown = document.getElementById('day').value;
@@ -151,7 +154,7 @@ async function logFormData() {
   const result = findCellInstance(startTime, dayDropdown, classDropdown);
   
   if (result === null) {
-    return; // Exit if the result is null (though this won't happen unless you modify `findCellInstance` to return null).
+    return; 
   }
 
   document.querySelectorAll('#dropdown, #day, #start-time, #end-time').forEach(input => input.value = '');
@@ -224,8 +227,6 @@ function populateColor(id, inputString, evi) {
 }
 
 // Function to render the calendar
-
-  
 function renderCalendar() {
   const monthYear = currentDate.toLocaleString('default', { month: 'long', year: 'numeric' });
   document.getElementById('current-month-year').textContent = monthYear;
@@ -241,23 +242,13 @@ function renderCalendar() {
   }
 
   if (email_global.trim()) {
-    // If email_global has a non-empty value, populate with the email
     populate(email_global);
   } else if (class_global.trim()) {
-    // If class_global has a non-empty value, populate based on the class name
     populatebyClassName(class_global);
   }
   
 }
 
-// Function to clear the calendar
-function clearCalendar() {
-  document.querySelectorAll('td:not(.u-td)').forEach(cell => {
-    cell.textContent = '';  // Clear content
-    cell.style.backgroundColor = '';  // Clear background color
-    cell.removeAttribute('data');  // Remove event data
-  });
-}
 
 // Functions to navigate weeks in the calendar
 function prevWeek() {

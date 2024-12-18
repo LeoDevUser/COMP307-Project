@@ -1,3 +1,5 @@
+/* Alexandros Contomichalos 261039376*/
+
 .nav-links {
     list-style-type: none;
     display: flex; 
@@ -23,7 +25,7 @@
 }
 
 
-@media screen and (max-width: 650px) {
+@media screen and (max-width: 649px) {
     
     .nav-links {
         display: none; 
@@ -56,3 +58,4 @@
 
     
 }
+

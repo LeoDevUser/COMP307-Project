@@ -35,7 +35,7 @@ body, html {
 .nav-links a {
     color: white;
     text-decoration: none; 
-    font-size: 4vh;
+    font-size: 3vh;
     padding: 2vw;
     transition: background-color 0.3s;
 }
@@ -45,7 +45,7 @@ body, html {
     background-color: #ed1b2f;
     position: sticky;
     padding-bottom: 1vh;
-    height: 12.5vh
+    height: 5vh
 }
 
 /* Responsive Design for Mobile */

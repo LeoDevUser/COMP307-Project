@@ -12,3 +12,12 @@ hamburgerIcon.addEventListener('click', () => {
     }
 });
 
+function adjustNavLinksDisplay() {
+    const navLinks = document.querySelector('.nav-links');
+    const mediaQuery = window.matchMedia('(min-width: 650px)');
+    navLinks.style.display = mediaQuery.matches ? 'flex' : '';
+}
+
+window.addEventListener('resize', adjustNavLinksDisplay);
+
+

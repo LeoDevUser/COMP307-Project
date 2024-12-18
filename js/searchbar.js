@@ -127,6 +127,12 @@ async function findCellInstance(start_time, day, class_string) {
 
   const response = await fetch(`/registerForInstance?eid=${cell.getAttribute("data")}&class_name=${class_string}`);
   if (!response.ok) return alert('Failed to register');
+  const data = await response.json(); 
+
+
+  if (data.isfull) return alert('Class is full : (');
+  if (data.registered) return alert('You have already registered for this class');
+
 
   alert('Success!');
 }

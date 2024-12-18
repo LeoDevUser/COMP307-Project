@@ -36,17 +36,7 @@ app.get('/current_user',  async (req, res) =>{
 });
 
 
-// Helper function to get professors
-async function getProfessors() {
-  try {
-    // Use Mongoose's model to query for professors (isProf: true)
-    const professors = await userModel.find({ isProf: true });
-    return professors;
-  } catch (err) {
-    console.error("Error fetching professors:", err);
-    throw err;
-  }
-}
+
 
 //START of api calls to populate
 //db collections used in calls
@@ -233,24 +223,19 @@ app.get('/populatebyclassname', async (req, res) => {
   const class_name = req.query.q;  // Get the class name from the query parameter
 
   try {
-    // Find all class instances based on the class name
     const all_eid = await findClassInstances(class_name);
 
     if (!all_eid || all_eid.length === 0) {
       return res.json({ error: 'No class instances found' });
     }
-
-    // Create arrays to hold the results
     const times = [];
     const appointments = [];
     const evis = [];
 
     
 
-    // Process each eid in all_eid sequentially
     for (each_event of all_eid) {
       for (const eid of each_event.eventInstances) {
-        // Call getAppEid function for each event instance ID
         const result =await getAppEid(eid);
 
 
@@ -266,7 +251,6 @@ app.get('/populatebyclassname', async (req, res) => {
     }
 
 
-    // Return the results as a JSON response
     res.json({ times, appointments, evis });
 
   } catch (err) {
@@ -275,19 +259,15 @@ app.get('/populatebyclassname', async (req, res) => {
   }
 });
 
-
-
-
 //END of populate api calls
 
 
 
 // searchbar START
 
-// Helper function to get professors
+// Helper function to get professors - DO NOT MOVE 
 async function getProfessors() {
   try {
-    // Use Mongoose's model to query for professors (isProf: true)
     const userModel = db.collection('users');
     const professors = await userModel.find({ isProf: true }).toArray();;
     return professors;
@@ -296,23 +276,15 @@ async function getProfessors() {
     throw err;
   }
 }
-
-
 app.get('/searchbar', async (req, res) => {
 
   try {
-    // Retrieve the search query from the request
     const searchQuery = req.query.q;
 
-    // If no query is provided, return empty array
     if (!searchQuery) {
       return res.json([]);
     }
-    // Get all professors (isProf: true) using the previously defined logic
     const professors = await getProfessors();
-
-
-    // Filter the professors array based on the search query (name, email, or classes_array)
     const filteredProfessors = professors.filter(professor => {
 
 
@@ -330,9 +302,6 @@ app.get('/searchbar', async (req, res) => {
       
     });
 
-
-
-    // Return the filtered professors
     res.json(filteredProfessors);
   } catch (err) {
     console.error(err);
@@ -358,8 +327,7 @@ app.get('/findInstance', async (req, res) => {
   }
 });
 
-//register for instance
-
+//registers a user for instance using the instanceid
 app.get('/registerForInstance', async (req, res) => {
   const eid = req.query.eid;
   const class_name = req.query.class_name;
@@ -373,35 +341,42 @@ app.get('/registerForInstance', async (req, res) => {
   if (!eid) return res.status(400).json({ error: 'eid is required' });
 
   try {
-    // Find the event instance by its ID
-    const event = await eventiModel.find({ f_id: new ObjectId(eid) }).toArray();
+    const event_instance = await eventiModel.find({ _id: new ObjectId(eid) }).toArray();
     const user = await userModel.findOne({ email: user_email.trim() });
+    const event = await events.find({_id:  new ObjectId(event_instance[0].eventid)}).toArray();
     
-    if (!event) {
-      return res.status(404).json({ error: 'Event instance not found' });
+    if (!event || !event_instance) {
+      return res.status(404).json({ error: 'Event or instance not found' });
     }
 
+    if (event_instance[0].student_emails.includes(user_email)) {
+      return res.json({ registered: true });
+    }
+    
+    if (event[0].capacity<=event_instance[0].cur_count && event[0].capacity!=-1){
+      return res.json({ isfull: true });
+    }
 
+    //updates event instance info with student email, updates cur_count
     await eventiModel.updateOne(
       { _id: new ObjectId(eid) },
       {
-        $inc: { cur_count: 1 },        // Increment the `cur_count` field by 1
-        $push: { student_emails: userDeet.email }  // Push the email to `student_emails`
+        $inc: { cur_count: 1 },        
+        $push: { student_emails: userDeet.email }  
       }
     );
 
-
+    //updates user by adding the event_instance id
     await userModel.updateOne(
       { _id: user._id },  
       {
         $push: {
-          event_instances: eid          // Push the `eid` to the `event_instances` array
+          event_instances: eid          
         }
       }
     );
     
 
-    // Return the updated event instance
     const updatedEvent = await eventiModel.findOne({ _id: new ObjectId(eid) });
 
 
@@ -413,7 +388,6 @@ app.get('/registerForInstance', async (req, res) => {
     return res.status(500).json({ error: 'Server error' });
   }
 });
-
 
 //search bar end
 

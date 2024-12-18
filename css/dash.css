@@ -1,10 +1,10 @@
+/*Author: Leonardo Martinez 261082940*/
 body, html {
     margin: 0;
     padding: 0;
     font-family: 'EB Garamond', 'Arial', 'serif';
 }
 
-/*style for dashboard*/
 .dashboard-section {
 	display: flex;
 	justify-content: center;
@@ -107,16 +107,6 @@ body, html {
 	.date-header form input[type="submit"] {
 		font-size: 2vh;
 	}
-
-	/* .calendar-container {
-		position: absolute;
-		top: 16vw;
-		padding-top: 2vh;
-		left: 11.2vw;
-		width:75vw;
-		height: 5vh;
-	} */
-
 } 
 
 @media (min-width: 900px) {
@@ -138,5 +128,3 @@ body, html {
 		left: 2.5vw;
 	}
 }
-
-

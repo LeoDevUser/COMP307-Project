@@ -1,10 +1,10 @@
+/*Author: Leonardo Martiez 261082940*/
 body, html {
     margin: 0;
     padding: 0;
     font-family: 'EB Garamond', 'Arial', 'serif';
 }
 
-/*style for calendar*/
 .calendar-grid table, .calendar-grid th:not(.b-container), .calendar-grid td {
 	text-align: center;
 	border: 1px solid black;
@@ -16,14 +16,14 @@ body, html {
 
 table.calendar-grid {
 	width: 100%;
-	table-layout: fixed;  /* Fix table layout to make all columns equal */
+	table-layout: fixed;
 	border-collapse: collapse;
 }
   
 .calendar-grid th, .calendar-grid td {
-	width: 12.5%;   /* Equal width for all columns (since you have 8 columns) */
+	width: 12.5%;
 	height: 4vw;   
-	overflow: hidden; /* Prevent overflow of text */
+	overflow: hidden;
 	word-wrap: break-word;
 	white-space: nowrap;
 }
@@ -52,12 +52,6 @@ tr day-header{
 	width: 7vw;
 }
 
-/*
-.calendar-grid td {
-	color:black;
-	background-color: white;
-}
-*/
 
 .time {
     vertical-align: top;
@@ -93,6 +87,7 @@ tr day-header{
 .b-container button:hover {
 	background-color: #ed1b2f
 }
+
 /* Responsive Design for Mobile */
 @media (min-width: 900px) {
 	.b-container button {
@@ -140,7 +135,3 @@ tr day-header{
 	
 	
 }
-
-
-  
-

@@ -1,3 +1,4 @@
+// Author Leonardo Martinez 261082940
 // JavaScript functions to handle date navigation and rendering
 let currentDate = new Date();
 
@@ -38,26 +39,19 @@ function renderCalendar() {
 		let dayIndex = cur.getDay();
 		document.getElementById("day"+ dayIndex).innerText = days[dayIndex]+ " " + d;
 	}
-	//render the user's events in the calendar
 	populate();
 }
 
 function clearCalendar() {
-    // Select all <td> elements in the document
-    const cells = document.querySelectorAll('td:not(.u-td)');  // Only target <td> elements
-
-    // Loop through each <td> and reset content and background color
+    const cells = document.querySelectorAll('td:not(.u-td)');
     cells.forEach(cell => {
-		cell.textContent = '';  // Clear the content inside the <td>
-		cell.style.backgroundColor = '';  // Clear the background color
-		//remove objectId for event_instance if there is one
+		cell.textContent = '';
+		cell.style.backgroundColor = '';
 		cell.removeAttribute('data');
     });
   }
 
-//return boolean indicating if the date is in the current week
 function inweek(date) {
-	//start stores the start of the week
 	let start = new Date(currentDate);
 	if (currentDate.getDay() != 0) {
 		start.setDate(currentDate.getDate() - currentDate.getDay());
@@ -74,15 +68,12 @@ function inweek(date) {
 }
 
 function populateColor(id, inputString, evi) {
-    // List of possible colors
     const colors = ['#cbd4eb','#c0f4ae','#fafe92','#e8cae3','#c0a6fc'];
     
     const tds = document.getElementsByTagName('td:not(.u-td)');    
     
-    // Create a set to track used colors
     const usedColors = new Set();
     
-    // Check the current background colors and track the ones used
     for (let i = 0; i < tds.length; i++) {
         const bgColor = tds[i].style.backgroundColor;
         if (colors.includes(bgColor)) {
@@ -90,13 +81,10 @@ function populateColor(id, inputString, evi) {
         }
     }
 
-    // Find available colors
     const availableColors = colors.filter(color => !usedColors.has(color));
 
-    // If there are available colors, choose a random one, otherwise choose any
     const colorToUse = availableColors.length > 0 ? availableColors[Math.floor(Math.random() * availableColors.length)] : colors[Math.floor(Math.random() * colors.length)];
 
-    // Populate the <td> elements with the inputString and apply the chosen background color
 
     const element = document.getElementById(id);   
     
@@ -109,36 +97,28 @@ function populateColor(id, inputString, evi) {
 async function populate() {
 	try {
 		const response1 = await fetch('/current_user');
-		if (response1.ok) {
-			console.log('user get success');
-		} else {
+		if (!response1.ok) {
 			console.error('user get error :', response.statusText);
 		}
 		const user = await response1.json();
-		//console.log(user.email);
 		let email = user.email;
 		if (email === undefined) {
 			console.log("no user email");
 			return;
 		}
 		const response = await fetch(`/populate?q=${email}`);
-		if (response.ok) {
-			console.log('Calendar Population successful');
-		} else {
+		if (!response.ok) {
 			console.error('Calendar Population failed:', response.statusText);
 		}
 		const result = await response.json();
-		const times = result.times; //here we have the times
-		const appointments = result.appointments; //here the labels
-		const evis = result.evis; //objid event_instance
+		const times = result.times;
+		const appointments = result.appointments;
+		const evis = result.evis;
 		let counter = 0;
 		for (time of times) {
-			//parse the the Date and convert into the identifier
 			date = new Date(time);
-			//check if event within curent week
 			if (!inweek(date)) {
 				counter++;
-				//skip the appointment since not in week
 				continue;
 			} else {
 				let id;
@@ -146,7 +126,6 @@ async function populate() {
 				//+5 since Montreal is UTC-5
 				let h = (date.getHours() + 5) % 12;
 				if (h == 0) {
-					//this means that h was equal to 12
 					h = 12;
 				}
 				if (h < 10) {

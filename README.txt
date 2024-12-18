@@ -1,7 +1,7 @@
 COMP307 Project
 Ryan: Login/Register, auth, landing page (1/2)
 
-Leonardo: (Landing Professor, Student (Dashboard)) API calls for calendars
+Leonardo: Professor Dashboard, Student Dashboard API calls for calendars, upcoming appointments functionality
 
 Rachel: Professor scheduling page, Request page, url
 

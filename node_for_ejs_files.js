@@ -30,13 +30,85 @@ mongoose.connect(MONGODB_URI, {
 //get default connection
 const db = mongoose.connection;
 
-//get current user
-app.get('/current_user',  async (req, res) =>{
-	return res.json(userDeet);
+// Set EJS as the view engine
+app.set('view engine', 'ejs');
+app.set('views', path.join(__dirname, 'views'));
+
+// Serve static files from the 'css' and 'images' directories
+app.use('/css', express.static(path.join(__dirname, 'css')));
+app.use('/images', express.static(path.join(__dirname, 'images')));
+
+//serve scripts
+app.use('/js', express.static(path.join(__dirname, 'js')));
+
+// Route to serve the landing page with template included
+app.get('/landing.html', (req, res) => {
+  // Render the landing page using EJS
+  res.render('landing');  // This will render 'views/landing.ejs' and include 'template.ejs'
+});
+
+//route to dashboard (Student)
+app.get('/dashboard', (req, res) => {
+  res.render('dashboard');
+});
+
+//route to dashboard (Student)
+app.get('/pdashboard', (req, res) => {
+  res.render('pdashboard');
+});
+
+//route to calendar
+app.get('/calendar', (req, res) => {
+  res.render('calendar');
+});
+
+//route to upcoming appointments page, will be used
+//in user dashboard page
+app.get('/upcoming', (req, res) => {
+  res.render('upcoming');
+});
+
+//route to professor's event adder
+app.get('/schedule', function (req, res) {
+  res.render('schedule');
+});
+
+//route to professor's event deleter
+app.get('/delete', function (req, res) {
+  res.render('delete');
+});
+
+//route to rsvp page
+app.get('/rsvp', function (req, res) {
+  //Checks if rsvp has a sindle parameter else it won't load
+  const param = req.query.p;
+  if (!param) {
+      return res.status(404).send('Page not found');
+    }
+  res.render('rsvp');
+});
+
+app.get('/request', (req, res) => {
+  res.render('request');
+});
+
+app.get('/viewRequests', (req, res) => {
+  res.render('viewRequests');
 });
 
 
+app.get('/booking', (req, res) => {
+  res.render('booking');
+});
 
+// Start the server
+app.listen(port, hostname, () => {
+  console.log(`Server running at http://${hostname}:${port}/`);
+});
+
+app.get('/current_user',  async (req, res) =>{
+	return res.json(userDeet);
+});
 
 //START of api calls to populate
 //db collections used in calls
@@ -61,8 +133,6 @@ async function findEventInstances(eid) {
 async function findEvent(evid) {
 	try {
 		const resp = await events.find({_id:  new ObjectId(evid)}).toArray();
-		//console.log(resp[0]);
-		//console.log(evid);
 		return (resp[0].classs + " " + resp[0].label);
 	} catch (err) {
 		console.error(err);
@@ -72,21 +142,15 @@ async function findEvent(evid) {
 app.get('/populate', async (req, res) => {
 	const mail = req.query.q;
 
-	//takes user email
-	//get user's event_instances
 	async function findUserEvents(mail) {
 	  try {
 		const resp = await userModel.find({email: mail}).toArray();
-		//console.log(resp[0].event_instances);
 		return resp[0].event_instances;
 	  } catch (err) {
 		console.error(err);
 	  }
 	}
 
-	//takes user email
-	//returns the time and appointments for the user
-	//in json format {times: [Date]; appointments: [String], event_instance ObjectId (eid): [str]}
 	async function getAppointments(mail) {
 		let times = [];
 		let appointments = [];
@@ -102,7 +166,6 @@ app.get('/populate', async (req, res) => {
 				//storing objectId for event_instance
 				evis.push(e);
 			}
-			//console.log(appointments);
 			return res.json({times: times, appointments: appointments, evis: evis});
 		} catch (err) {
 			console.error(err);
@@ -136,7 +199,6 @@ app.get('/populatebyeid', async (req, res) => {
 			appointments.push(fullLabel);
 			//storing objectId for event_instance
 			evis.push(eid);
-			//console.log(appointments);
 			return res.json({times: times, appointments: appointments, evis: evis});
 		} catch (err) {
 			console.error(err);
@@ -232,13 +294,9 @@ app.get('/populatebyclassname', async (req, res) => {
     const appointments = [];
     const evis = [];
 
-    
-
     for (each_event of all_eid) {
       for (const eid of each_event.eventInstances) {
         const result =await getAppEid(eid);
-
-
 
         if (result) {
           times.push(...result.times);
@@ -260,8 +318,6 @@ app.get('/populatebyclassname', async (req, res) => {
 });
 
 //END of populate api calls
-
-
 
 // searchbar START
 
@@ -856,88 +912,10 @@ app.post('/getuserdetails', async (req, res) => {
 });
 
 app.get('/api', (req, res) => {
-  console.log(userDeet)
   res.json(userDeet)
-});
-
-
-// Set EJS as the view engine
-app.set('view engine', 'ejs');
-app.set('views', path.join(__dirname, 'views'));
-
-// Serve static files from the 'css' and 'images' directories
-app.use('/css', express.static(path.join(__dirname, 'css')));
-app.use('/images', express.static(path.join(__dirname, 'images')));
-
-//serve scripts
-app.use('/js', express.static(path.join(__dirname, 'js')));
-
-// Route to serve the landing page with template included
-app.get('/landing.html', (req, res) => {
-  // Render the landing page using EJS
-  res.render('landing');  // This will render 'views/landing.ejs' and include 'template.ejs'
-});
-
-//route to dashboard (Student)
-app.get('/dashboard', (req, res) => {
-  res.render('dashboard');
-});
-
-//route to dashboard (Student)
-app.get('/pdashboard', (req, res) => {
-  res.render('pdashboard');
-});
-
-//route to calendar
-app.get('/calendar', (req, res) => {
-  res.render('calendar');
-});
-
-//route to upcoming appointments page, will be used
-//in user dashboard page
-app.get('/upcoming', (req, res) => {
-  res.render('upcoming');
-});
-
-//route to professor's event adder
-app.get('/schedule', function (req, res) {
-  res.render('schedule');
-});
-
-//route to professor's event deleter
-app.get('/delete', function (req, res) {
-  res.render('delete');
-});
-
-//route to rsvp page
-app.get('/rsvp', function (req, res) {
-  //Checks if rsvp has a sindle parameter else it won't load
-  const param = req.query.p;
-  if (!param) {
-      return res.status(404).send('Page not found');
-    }
-  res.render('rsvp');
-});
-
-app.get('/request', (req, res) => {
-  res.render('request');
-});
-
-app.get('/viewRequests', (req, res) => {
-  res.render('viewRequests');
-});
-
-
-app.get('/booking', (req, res) => {
-  res.render('booking');
 });
 
 // 404 for any other route
 app.use((req, res) => {
   res.status(404).send('Page not found');
-});
-
-// Start the server
-app.listen(port, hostname, () => {
-  console.log(`Server running at http://${hostname}:${port}/`);
 });

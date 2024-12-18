@@ -1,4 +1,4 @@
-
+/* Alexandros Contomichalos 261039376*/
 
 .search-container {
   position: relative;
@@ -41,31 +41,30 @@ width: 30%;
 }
 
 .styled-radio {
-list-style-type: none; /* Removes default bullets */
-padding-left: 0; /* Removes default padding */
+list-style-type: none; 
+padding-left: 0; 
 }
 
 .styled-radio li {
-margin-bottom: 10px; /* Adds space between the options */
+margin-bottom: 10px; 
 }
 
 .styled-radio input[type="radio"] {
--webkit-appearance: none; /* Removes default radio button styling in WebKit browsers */
--moz-appearance: none; /* Removes default radio button styling in Firefox */
-appearance: none; /* Removes default radio button styling in other browsers */
-width: 20px; /* Larger width */
-height: 20px; /* Larger height */
-border-radius: 50%; /* Makes the radio button a circle */
-border: 2px solid #000; /* Gray border */
-background-color: #D9D9D9; /* White background */
-outline: none; /* Removes the outline when focused */
-cursor: pointer; /* Changes the cursor to a pointer */
+-webkit-appearance: none; 
+-moz-appearance: none; 
+appearance: none; 
+width: 20px; 
+height: 20px; 
+border-radius: 50%; 
+border: 2px solid #000; 
+background-color: #D9D9D9; 
+outline: none; 
+cursor: pointer; 
 position: relative;
 }
 
-/* Style the checked state */
 .styled-radio input[type="radio"]:checked {
-background-color: #000; /* Gray when checked */
+background-color: #000; 
 }
 
 .booking_layout{

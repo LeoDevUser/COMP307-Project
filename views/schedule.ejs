@@ -4,6 +4,7 @@
     <title>Schedule</title>
     <link rel="stylesheet" href="../css/stylesheet.css" type="text/css">
     <link rel="stylesheet" href="../css/schedule.css" type="text/css">
+    <link rel="stylesheet" href="css/navbar.css">
     <link href="https://fonts.googleapis.com/css2?family=EB+Garamond&display=swap" rel="stylesheet">
 
 </head>
@@ -13,14 +14,26 @@
     <!-- Navigation Bar -->
     <nav class="navbar">
         <div class="navbar-container">
+
+            <div class="hamburger" id="hamburger-icon">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </div>
+
+
            
-            <ul class="nav-links">
-                <li><a href="/pdashboard">Dashboard</a></li>
-                <li><a href="/viewRequests">View Requests</a></li>
-                <li><a href="/delete">Delete Entry?</a></li>
+            <ul class="nav-links" id="nav-links">
+                <li><a href="../pdashboard" class="button_class_nav">Dashboard</a></li>
+                <li><a href="../viewRequests" class="button_class_nav">View Requests</a></li>
+                <li><a href="../delete" class="button_class_nav">Delete Entry?</a></li>
+
+
             </ul>
         </div>
     </nav>
+
+
 
     <div class="bottom-container" id="bottomContainer">
       <div class="tempSpace">
@@ -86,9 +99,8 @@
     </div>
     <p>Or delete a time: <a href="/delete">Here!</a></p>
 
-    <script src="../js/calendar.js">
-
-    </script>
+    <script src="../js/calendar.js"></script>
+    <script src="../js/navbar.js"></script>
 
     <script>
       function revealHiddenObject(){

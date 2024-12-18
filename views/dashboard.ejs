@@ -6,21 +6,32 @@
     <title>mySchedule</title>
     <link rel="stylesheet" href="css/stylesheet.css">
 	<link rel="stylesheet" href="../css/dash.css">
+    <link rel="stylesheet" href="css/navbar.css">
     <link href="https://fonts.googleapis.com/css2?family=EB+Garamond&display=swap" rel="stylesheet">
 
 </head>
 <body>
 
-    <!-- Navigation Bar -->
-    <nav class="navbar">
-        <div class="navbar-container">
-           
-            <ul class="nav-links">
-                <li><a href="../request">Request</a></li>
-                <li><a href="../booking">Booking</a></li>
-            </ul>
-        </div>
-    </nav>
+        <!-- Navigation Bar -->
+        <nav class="navbar">
+            <div class="navbar-container">
+    
+                <div class="hamburger" id="hamburger-icon">
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                </div>
+    
+    
+               
+                <ul class="nav-links" id="nav-links">
+                    <li><a href="../booking" class="button_class_nav">Booking</a></li>
+                    <li><a href="../request" class="button_class_nav">Request</a></li>
+    
+                </ul>
+            </div>
+        </nav>
+
 <!--DASHBOARD -->
 <br>
 <div class="upcoming-header dashboard-section">
@@ -45,4 +56,5 @@
 </div>
 <script src="../js/dashboard.js"></script>
 <script src="../js/calendar.js"></script>
+<script src="../js/navbar.js"></script>
 </html>

@@ -664,7 +664,7 @@ app.get('/retrieveEvent', async (req, res) => {
     const eventID = req.query.q;
 	  
     var ObjectId = require('mongoose').Types.ObjectId; 
-    const event = await eventiModel.findOne({_id: new ObjectId(eventID)});
+    const event = await events.findOne({_id: new ObjectId(eventID)});
 
     res.json(event); //returns event
   } catch (err) { //error

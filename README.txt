@@ -22,3 +22,22 @@ Alexandros Contomichalos (261039376):
     5. collaborated with Ryan for the landing page
 
 
++--------------------+------------------------------------------------------------+---------------------------------------------------------------+
+| Person             | Task                                                      | Additional Notes                                             |
++--------------------+------------------------------------------------------------+---------------------------------------------------------------+
+| Rachel             | 1. Schedule Page                                           | Did CSS for all pages except for navbar and calendar          |
+|                    | 2. Delete Page                                             | (Calendar appears on schedule/delete pages)                   |
+|                    | 3. RSVP Page                                               |                                                               |
+|                    | 4. Request Page                                            |                                                               |
+|                    | 5. ViewRequest Page                                        |                                                               |
+|                    | 6. All API calls needed for these pages (Not the calendar) |                                                               |
++--------------------+------------------------------------------------------------+---------------------------------------------------------------+
+| Alexandros         | 1. Navbar with hamburger menu                              |                                                               |
+| Contomichalos      | 2. Searchbar with suggestions                              |                                                               |
+| (261039376)        | 3. OH booking for student (booking page)                   |                                                               |
+|                    | 4. Booking page responsiveness (except calendar)           |                                                               |
+|                    | 5. API calls for booking page (except calendar functionality)|                                                               |
+|                    | 6. Collaborated with Ryan for the landing page             |                                                               |
++--------------------+------------------------------------------------------------+---------------------------------------------------------------+
+
+

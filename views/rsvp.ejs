@@ -32,24 +32,27 @@
         <button onclick="location.href='/'" class="submitButton">No</button>    
 
     </div>
+
     <script>
+      //Retrieves single parameter that is the instanceid
       const params = new URLSearchParams(document.location.search);
       const instanceID = params.get("p");
       const url = `/retrieveInstance?q=${instanceID}`;
-      let cur = 0;
-      let max = 0;
+      let cur = 0; //cur capacity
+      let max = 0; //Max capacity
       let event = null;
       let instance = null;
 
-      async function test(u){
+      async function fetchInfo(u){
         const response = await fetch(u);
         const json = await response.json();
         return json;
       }
 
+    //Adds one to instance cur_count
     function addToCapacity(){
         const temp = `/addCounter?q=${instanceID}`;
-        test(temp).then(y => {
+        fetchInfo(temp).then(y => {
             const choice = document.getElementById("choice");
             choice.innerHTML = "";
             choice.insertAdjacentHTML('beforeend', `<p>Great! You have a spot saved!</p>`); 
@@ -116,7 +119,7 @@
         return `${curDate.getDate()}/${(curDate.getMonth())+1}/${curDate.getFullYear()}`
       }
 
-
+      //Fills page with instance info
       getInstance().then(x =>  {
         if(x == null){
             const replace = document.getElementById("replace");
@@ -127,23 +130,23 @@
             cur = x.cur_count;
             instance = x;
             getEvent(x.eventid).then(y => {
-        event = y;
-        max = y.capacity;
-        return getUser(y.profEmail);
-      }).then(z => {
-        const replace = document.getElementById("replace");
-        replace.innerHTML = "";
-        replace.insertAdjacentHTML('beforeend', `<p>You have been invited to join ${event.label} for 
-            ${event.classs} from ${z.firstName} ${z.lastName} on ${stringDate(instance.date)} at ${whatTime(event.time)}</p>`);
-        if(cur >= max && max != -1){
-            const choice = document.getElementById("choice");
-            choice.innerHTML = "";
-            choice.insertAdjacentHTML('beforeend', `<p>Sorry! Event is already at max capacity</p>`); 
-        }
-      }).catch((error) => {
-        console.log(error);
-        document.innerHTML="";
-      });
+                event = y;
+                max = y.capacity;
+                return getUser(y.profEmail);
+            }).then(z => {
+                const replace = document.getElementById("replace");
+                replace.innerHTML = "";
+                replace.insertAdjacentHTML('beforeend', `<p>You have been invited to join ${event.label} for 
+                    ${event.classs} from ${z.firstName} ${z.lastName} on ${stringDate(instance.date)} at ${whatTime(event.time)}</p>`);
+                if(cur >= max && max != -1){
+                    const choice = document.getElementById("choice");
+                    choice.innerHTML = "";
+                    choice.insertAdjacentHTML('beforeend', `<p>Sorry! Event is already at max capacity</p>`); 
+                }
+            }).catch((error) => {
+                console.log(error);
+                document.innerHTML="";
+            });
 
         }
       })

@@ -526,16 +526,17 @@ app.get('/add', async (req, res) => {
 
     //If only a single instance is needed
     if(repeat == "doesNotRepeat"){
-      const curInstance = await eventsInstances.create({date: start,
+      //Adds time with no timezone to date
+      let dateWithTime = new Date(start);
+      dateWithTime.setUTCHours(whatTime(time));
+	    
+      const curInstance = await eventsInstances.create({
+	date: dateWithTime,
         time: time,
         cur_count: 0, 
         prof_email: email,
         student_emails: [],
         eventid: "123"});
-	//Adds time with no timezone to date
-	let dateWithTime = new Date(start);
-        dateWithTime.setUTCHours(whatTime(time));
-
 
         curEvent = await Events.create({
           profEmail: email,
@@ -580,9 +581,11 @@ app.get('/add', async (req, res) => {
       });
 
       while(date <= dateEnd){ //Loops until date is later than dateEnd
-
+      dateWithTime = new Date(date);
+      dateWithTime.setUTCHours(whatTime(time));
+	      
         let curInstance = await eventsInstances.create(
-          {date: date,
+          {date: dateWithTime,
           time: time,
           cur_count: 0, 
           prof_email: email,

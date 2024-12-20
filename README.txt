@@ -1,16 +1,16 @@
-COMP307 Project
+# COMP307 Project
 
-Ryan Pincha Dewage (260945666):
-    1. Register Page (register.js)
-    2. Login Page (login.js)
-    3. Authentication (verify.js)
-    4. Update Password Feature (updatepassword.js)
-    5. Routing in React (App.js)
-    6. Database setup (server/models/users.js)
-    7. Backend register, login, and update password handlers (server/index.js)
-    8. Template Integration in react (template.js, privatetemplate.js)
-    9. Connection to second backend (iframecomponent.js)
-    10. CSS for login/register pages (client/src/css/loginregister.css)
+### Ryan Pincha Dewage (260945666):
+* Register Page (register.js)
+* Login Page (login.js)
+* Authentication (verify.js)
+* Update Password Feature (updatepassword.js)
+* Routing in React (App.js)
+* Database setup (server/models/users.js)
+* Backend register, login, and update password handlers (server/index.js)
+* Template Integration in react (template.js, privatetemplate.js)
+* Connection to second backend (iframecomponent.js)
+* CSS for login/register pages (client/src/css/loginregister.css)
 
 Leonardo: Professor Dashboard, Student Dashboard API calls for calendars, upcoming appointments functionality
 

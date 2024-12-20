@@ -38,7 +38,8 @@
     <div class="bottom-container" id="choice">
       <div style="width:10%">
       </div>
-    <div class="aside2" id="root" >
+    <div class="aside" id="root" >
+      <h1 style="font-size: 25px" class="heading">Fill out form to delete any event!</h1>
       <form class="formApperance" id="myForm" onsubmit="return submitForm()"">
       <h1>What date is the class you want to delete scheduled for?</h1>
       <input type="date" name="deleteDate"></input>
@@ -70,7 +71,6 @@
         <%- include('calendar.ejs'); %>
     </div>
     </div>
-    <p id="removeAtEnd">Or add a time: <a href="/schedule">Here!</a></p>
 
 
     <script src="../js/calendar.js"></script>

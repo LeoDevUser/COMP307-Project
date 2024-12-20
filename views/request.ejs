@@ -58,65 +58,66 @@
             </form>
           </div>
 
-          <script>
-            //const params = new URLSearchParams(document.location.search);
-            //const proffesorE = params.get("p");
+           <script>
+          //Retrieves current student user's email
+          let uEmail;
+          async function fetchUserEmail(){
+              const response = await fetch(`/current_user`);
+              const json = await response.json();
+              return json;
+          }
+          
+          fetchUserEmail().then( e => {
+              uEmail = e.email;
+          });
 
-            let professorE;
-            async function fetchUserEmail(){
-                const response = await fetch(`/current_user`);
-                const json = await response.json();
-                return json;
+          function validateForm(){
+            const x = document.getElementById("myForm").elements;
+
+            if(x["profEmail"].value == ""  || x["requestClass"].value == ""
+              || x["reason"].value == "" || x["start"].value == ""
+            ){
+                alert("Form not fully filled out!");
+                return false;
             }
+
+            let curDate = new Date();
+            curDate.setHours(0,0,0,0);
+
+            let startDate = new Date(x["start"].value);
+            if(startDate < curDate){
+              alert("Cannot schedule an event in the past or today!");
+              return false;
+            }
+
+            return true;
+          }
+    
+          async function sendForm(u) {
+            const response = await fetch(u);
+            const json = await response.text();
+            return json;
+          }
+
+          function submitForm(){
+            if(validateForm() == false){
+              return false;
+            }
+            const n = document.getElementById("myForm").elements;
+
+            const addURL = `/createRequest?profEmail=${n["profEmail"].value}&class=${n["requestClass"].value}&start=${n["start"].value}
+            &time=${n["time"].value}&reason=${n["reason"].value}&user=${uEmail}`;
             
-            fetchUserEmail().then( e => {
-                professorE = e.email;
+            //Creates request document
+            sendForm(addURL).then(x =>  {
+              const replaceR = document.getElementById("root");
+              replaceR.innerHTML = "";
+              replaceR.insertAdjacentHTML('beforeend', `<p>Your request has been sent!</p>`);
+              return false;
             });
-
-            console.log(professorE);
-
-            function validateForm(){
-        const x = document.getElementById("myForm").elements;
-        //Other things to fix later: invalid dates (in the past)
-        //make sure userinputinvalidpositions is an int and is positive
-        //Make it not possible to schedule over an already existing event for this prof
-
-        if(x["profEmail"].value == ""  || x["requestClass"].value == ""
-          || x["reason"].value == "" || x["start"].value == ""
-        ){
-            alert("Form not fully filled out!");
             return false;
-        }
+          }
 
-        return true;
-      }
-      
-      async function sendForm(u) {
-      const response = await fetch(u);
-      const json = await response.text();
-      return json;
-      }
-
-      function submitForm(){
-        if(validateForm() == false){
-          return false;
-        }
-        const n = document.getElementById("myForm").elements;
-
-        const addURL = `/createRequest?profEmail=${n["profEmail"].value}&class=${n["requestClass"].value}&start=${n["start"].value}
-        &time=${n["time"].value}&reason=${n["reason"].value}&user=${professorE}`;
-
-        console.log(addURL)
-
-        sendForm(addURL).then(x =>  {
-            const replaceR = document.getElementById("root");
-            replaceR.innerHTML = "";
-            replaceR.insertAdjacentHTML('beforeend', `<p>Your request has been sent!</p>`);
-            return false;
-      });
-        return false;
-      }
-
-          </script>
+        </script>
 
 </body>

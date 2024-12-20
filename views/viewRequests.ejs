@@ -42,12 +42,8 @@
     </div>
 </div>
 
-    <script>
-      //const params = new URLSearchParams(document.location.search);
-      //const proffesorE = params.get("p");
-       //= `/findAllRequests?pEmail=${proffesorE}`;
-      //let curReqURL = null;
-
+   <script>
+       //Retrieves current user (proffesor's email)
        let professorE;
        let url;
        async function fetchUserEmail(){
@@ -107,6 +103,7 @@
         return `${curDate.getDate()}/${(curDate.getMonth())+1}/${curDate.getFullYear()}`
       }
 
+      //Displays all the info about choosen request and given option of scheduling/deleting
       function revealInfo(){
         var radios = document.getElementsByName("requests");
         let curRequest = null;
@@ -117,13 +114,15 @@
             break;
           }
         }
-        if(curRequest == null){
+
+        if(curRequest == null){ //Checks if user selected a request
             alert("Select a Request!");
             return false;
         }
 
         const replacable = document.getElementById("toBeReplaced");
         replacable.innerHTML = "";
+        //Finds request and populates document with info
         const requestURL = `/findOneRequests/?q=${curRequest.value}`;
         getRequest(requestURL).then(r => {
             replacable.insertAdjacentHTML('beforeend', `<div id="topBox"><h1>Request from ${r.student_email} for ${r.classs}:</h1></div>`);
@@ -131,9 +130,7 @@
                 <p>At ${whatTime(r.time)} on ${stringDate(r.date)}</p>
                 <button onClick="scheduleRequest()" id="submit-button">Schedule </button> <button onClick="deleteRequest()" id="submit-button">Delete</button></div>`);
             curReqURL = r;
-
-        });
-        
+        });    
       }
 
       async function addRequestthenDelete(u) {
@@ -142,6 +139,7 @@
       return json;
       }
 
+      //Deletes request when delete is clicked
       function deleteRequest(){
         const requrl = `/deleteRequest/?q=${curReqURL._id.toString()}`
         addRequestthenDelete(requrl).then(r => {
@@ -158,6 +156,7 @@
         return json;
         }
 
+      //Deletes request and schedules it when schedule is clicked
       function scheduleRequest(){
         const u = `/add/?appointmentLabel=Requested+Meeting&class=${curReqURL.classs}&start=${curReqURL.date}&time=${curReqURL.time}
         &hours=1&avaliblePositions=userInput&userInputAvaliblePositions=1&repeats=doesNotRepeat&end=&email=${curReqURL.prof_email}`;
@@ -172,6 +171,7 @@
         });
       }
 
+      //Fetches and displays the 3 oldest requests for this teacher
       fetchUserEmail().then( e => {
         professorE = e.email;
         url = `/findAllRequests?pEmail=${professorE}`;

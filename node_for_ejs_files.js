@@ -294,18 +294,21 @@ app.get('/populatebyclassname', async (req, res) => {
     const appointments = [];
     const evis = [];
 
-    for (each_event of all_eid) {
-      for (const eid of each_event.eventInstances) {
-        const result =await getAppEid(eid);
-
-        if (result) {
-          times.push(...result.times);
-          appointments.push(...result.appointments);
-          evis.push(...result.evis);
-        }
-
-      }
+    if (all_eid && typeof all_eid[Symbol.iterator] === 'function') {
       
+      for (each_event of all_eid) {
+        for (const eid of each_event.eventInstances) {
+          const result =await getAppEid(eid);
+
+          if (result) {
+            times.push(...result.times);
+            appointments.push(...result.appointments);
+            evis.push(...result.evis);
+          }
+
+        }
+        
+      }
     }
 
 

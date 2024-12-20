@@ -75,9 +75,8 @@
 
     <script src="../js/calendar.js"></script>
     <script>
-      //const params = new URLSearchParams(document.location.search);
-      //const proffesor = params.get("p");
-      let professor;
+      //Fetches current user's email (in this case a prof)
+      let proffesor;
       async function fetchUserEmail(){
         const response = await fetch(`/current_user`);
         const json = await response.json();
@@ -85,7 +84,7 @@
       }
       
       fetchUserEmail().then( e => {
-        professor = e.email;
+        proffesor = e.email;
       });
 
       function validateForm(){
@@ -99,14 +98,8 @@
         return true;
       }
 
-      async function findInstance(url){
-        const response = await fetch(url);
-        const json = await response.json();
-        console.log(json);
-        return json;
-      }
-
-      async function findEvent(url){
+      //Fetches any needed info
+      async function fetchInfo(url){
         const response = await fetch(url);
         const json = await response.json();
         console.log(json);
@@ -119,18 +112,18 @@
         }
         const x = document.getElementById("myForm").elements;
 
-        let url = `/deleteInstance?date=${x["deleteDate"].value}&time=${x["time"].value}&user=${professor}`;
+        let url = `/deleteInstance?date=${x["deleteDate"].value}&time=${x["time"].value}&user=${proffesor}`;
 
-
-        findInstance(url).then( r => {
+        //returns event_instance if it exists or null if not
+        fetchInfo(url).then( r => {
           if(r == null){ //didn't find anything
           alert("Event Does Not Exsist");
           return false;
           } 
 
           const urlEvent = `/deleteEvent?iid=${r._id}&eid=${r.eventid}`;
-
-          findEvent(urlEvent).then( n => {
+          //Finds and deletes event of instance that user want to delete. (Will not delete event itself if it is a repeating event)
+          fetchInfo(urlEvent).then( n => {
             const aside = document.getElementById("root");
             const divDelete = document.getElementById("removeAtEnd");
             aside.innerHTML = "";
@@ -140,8 +133,6 @@
             aside.insertAdjacentHTML('beforeend', `<p>Add a time: <a href="/schedule">Here!</a></p>`);
             divDelete.innerHTML = "";
           });
-
-
 
         return false;
           

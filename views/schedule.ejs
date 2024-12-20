@@ -103,10 +103,12 @@
     <script src="../js/navbar.js"></script>
 
     <script>
+      //Reveals end date option
       function revealHiddenObject(){
           document.getElementById("hiddenDate").style.display = "block";
       }
 
+      //hides end date option
       function hideHiddenObject(){
           document.getElementById("hiddenDate").style.display = "none";
           document.getElementById("reset").value = "";
@@ -114,7 +116,6 @@
 
       function validateForm(){
         const x = document.getElementById("myForm").elements;
-        //Make it not possible to schedule over an already existing event for this prof
 
         if(x["appointmentLabel"].value == ""  || x["class"].value == ""
           || x["start"].value == "" || x["avaliblePositions"].value == ""
@@ -150,13 +151,13 @@
 
         let startDate = new Date(x["start"].value);
         if(startDate < curDate){
-          alert("Can not schedule event for later than tomorrow!");
+          alert("Cannot schedule an event in the past or today!");
           return false;
         }
 
         if(x["end"].value != ""){
           if(x["start"].value > x["end"].value){
-          alert("An event can not repeat backwards!");
+          alert("An event's end can not occur sooner than its start!");
           return false;
         }
         }
@@ -164,6 +165,7 @@
         return true;
       }
       
+      //Adds new schedule time and returns instance ID
       async function sendForm(u) {
       const response = await fetch(u);
       const json = await response.text();
@@ -192,28 +194,22 @@
       });
         return false;
       }
-
       
-
-  </script>
-
-    <script>
+      //Retrieves current user's email
       async function fetchUserEmail(){
         const response = await fetch(`/current_user`);
         const json = await response.json();
         return json;
 
       }
-      //const params = new URLSearchParams(document.location.search);
-      //const proffesorE = params.get("p");
-      //const url = `/retrieveClasses?q=${proffesorE}`;
-      //console.log(proffesorE);
+      
       fetchUserEmail().then( e => {
         const passEmail = document.getElementById("secretEmail");
         passEmail.value = e.email;
       });
+  
 
-    </script>
+  </script>
 
 
 

@@ -502,8 +502,6 @@ const eventsInstances = mongoose.model('event_instances', eventsInstancesSchema)
 //Adds new events to database and returns the closest dated instance
 app.get('/add', async (req, res) => {
   try {
-    //console.log(req.url);
-    //console.log("here");
     //retrieves all needed info for both repeat cases
     const repeat = req.query.repeats;
     const email = req.query.email;
@@ -514,7 +512,7 @@ app.get('/add', async (req, res) => {
     const hours = req.query.hours;
     let temp = "temp"; //Stores closest dated instance that was just created
     let capacity = req.query.avaliblePositions;
-    let curEvent = "temp"; //Needed to add instance values at end for user
+    let curEvent = "temp"; //Holds event to add instance values at end to user
 	  
     //If unlimited then capacity is given -1 value
     if(capacity == "unlimited"){
@@ -531,13 +529,16 @@ app.get('/add', async (req, res) => {
         prof_email: email,
         student_emails: [],
         eventid: "123"});
-        //console.log(curInstance._id.toString());
+	//Adds time with no timezone to date
+	let dateWithTime = new Date(start);
+        dateWithTime.setUTCHours(whatTime(time));
+
 
         curEvent = await Events.create({
           profEmail: email,
           label: label,
           classs: compClass,
-          start: start,
+          start: dateWithTime,
           end: start,
           time: time,
           hours: hours,
@@ -558,12 +559,15 @@ app.get('/add', async (req, res) => {
       let dateEnd = new Date(end);
       let date = new Date(start);
       const day = date.getDay();
+      //Adds time to date
+      let dateWithTime = new Date(start);
+      dateWithTime.setUTCHours(whatTime(time));
 
       curEvent = await Events.create({
         profEmail: email,
         label: label,
         classs: compClass,
-        start: start,
+        start: dateWithTime,
         end: end,
         time: time,
         hours: hours,
@@ -593,8 +597,7 @@ app.get('/add', async (req, res) => {
     }
 
     //Adds event_instances to user (the prof creating the new event)
-    const classesCollection = db.collection('users');
-    const curUser = classesCollection.findOneAndUpdate(
+    const curUser = userModel.findOneAndUpdate(
         {email: email},
         { $push: {
           event_instances : { $each: curEvent.event_instances}
@@ -610,19 +613,42 @@ app.get('/add', async (req, res) => {
   }
 });
 
+//Converts time to 24-hour time
+function whatTime(time){
+  switch(time){
+      case "1":
+          return 13;
+      case "2":
+          return 14;
+      case "3":
+          return 15;
+      case "4":
+          return 16;
+      case "5":
+          return 17;
+      case "6":
+          return 18;
+      case "7":
+          return 19;
+      default:
+          return Number(time);
+  }
+
+}
+
+//End of add
+
 //Various database acceses needed by RSVP
 //Retrieves instance with instance id
 app.get('/retrieveInstance', async (req, res) => {
   try {
     const instanceID = req.query.q;
 
-    const instanceCollection = db.collection('event_instances');
     var ObjectId = require('mongoose').Types.ObjectId; 
     if(!ObjectId.isValid(instanceID)){ //Checks if valid id else returns empty 
       return res.json([]);
     }
-    const instance = await instanceCollection.findOne({_id: new ObjectId(instanceID)});
-    //console.log(instance);
+    const instance = await eventiModel.findOne({_id: new ObjectId(instanceID)});
 
     res.json(instance); //returns instance
 
@@ -637,10 +663,8 @@ app.get('/retrieveEvent', async (req, res) => {
   try {
     const eventID = req.query.q;
 	  
-    const instanceCollection = db.collection('events');
     var ObjectId = require('mongoose').Types.ObjectId; 
-    const event = await instanceCollection.findOne({_id: new ObjectId(eventID)});
-    console.log(event);
+    const event = await eventiModel.findOne({_id: new ObjectId(eventID)});
 
     res.json(event); //returns event
   } catch (err) { //error
@@ -655,16 +679,13 @@ app.get('/retrieveInstance', async (req, res) => {
   try {
     const instanceID = req.query.q;
 
-    const instanceCollection = db.collection('event_instances');
     var ObjectId = require('mongoose').Types.ObjectId; 
     if(!ObjectId.isValid(instanceID)){ //Checks if valid id else returns empty 
       return res.json([]);
     }
-    const instance = await instanceCollection.findOne({_id: new ObjectId(instanceID)});
-    //console.log(instance);
+    const instance = await eventiModel.findOne({_id: new ObjectId(instanceID)});
 
     res.json(instance); //returns instance
-
   } catch (err) { //error
     console.error(err);
     res.status(500).send('Server error');
@@ -676,10 +697,8 @@ app.get('/retrieveEvent', async (req, res) => {
   try {
     const eventID = req.query.q;
 	  
-    const instanceCollection = db.collection('events');
     var ObjectId = require('mongoose').Types.ObjectId; 
-    const event = await instanceCollection.findOne({_id: new ObjectId(eventID)});
-    console.log(event);
+    const event = await events.findOne({_id: new ObjectId(eventID)});
 
     res.json(event); //returns event
   } catch (err) { //error
@@ -692,9 +711,7 @@ app.get('/retrieveEvent', async (req, res) => {
 app.get('/retrieveUser', async (req, res) => {
   try {
     const userEmail = req.query.q;
-    const userCollection = db.collection('users');
-    const user = await userCollection.findOne({email: userEmail});
-    console.log(user);
+    const user = await userModel.findOne({email: userEmail});
 
     res.json(user); //returns user
   } catch (err) { //error
@@ -708,10 +725,9 @@ app.get('/addCounter', async (req, res) => {
   try {
     const instanceID = req.query.q;
 
-    const instanceCollection = db.collection('event_instances');
     var ObjectId = require('mongoose').Types.ObjectId; 
     //Finds instance and adds one to it
-    instanceCollection.findOneAndUpdate(
+    eventiModel.findOneAndUpdate(
       {_id: new ObjectId(instanceID)},
       { $inc: {
         cur_count: 1
@@ -730,19 +746,18 @@ app.get('/deleteInstance', async (req, res) => {
     const d = req.query.date;
     const t = Number(req.query.time);
     const u = req.query.user;
-    dt = new Date(d);
+    let sd = new Date(d); //Start date at time 0:00:00
+    let fd = new Date(d); //End date 
+    fd.setDate(fd.getDate() + 1);
 
-    const ic = db.collection('event_instances');
-
-    const deletedInstance = await ic.findOneAndDelete({date: dt, time: t, prof_email: u});
-    //console.log(deletedInstance);
+    //finds instance with date between sd and fd
+    const deletedInstance = await eventiModel.findOneAndDelete({date: {$gte: sd, $lt: fd}, time: t, prof_email: u});
     if(deletedInstance == null){ //Checks if instance exisists
       return res.json(deletedInstance);
     }
 
     //Deletes instance from all user instance_array
-    const uc = db.collection('users');
-    uc.updateMany({event_instances: deletedInstance._id.toString()},
+    userModel.updateMany({event_instances: deletedInstance._id.toString()},
     {$pull: {
       event_instances : deletedInstance._id.toString()
       }}
@@ -761,26 +776,21 @@ app.get('/deleteEvent', async (req, res) => {
     const i = req.query.iid; //Instance id
     const e = req.query.eid; //event id
 
-    const ec = db.collection('events');
-
     var ObjectId = require('mongoose').Types.ObjectId; 
-
-    let deleteEvent = await ec.findOne({_id: new ObjectId(e)});
-    //console.log(deleteEvent);
+    let deleteEvent = await events.findOne({_id: new ObjectId(e)});
 
     //Checks if it repeats
     if(deleteEvent.repeats == -1){
-      ec.deleteOne({_id: new ObjectId(e)});
+      events.deleteOne({_id: new ObjectId(e)});
     } else{
       //Deletes instance from instance array
-      await ec.updateOne({_id: new ObjectId(e)}, 
+      await events.updateOne({_id: new ObjectId(e)}, 
       {$pull : {event_instances: i}});
-      //console.log(deleteEvent);
-      deleteEvent = await ec.findOne({_id: new ObjectId(e)});
+      deleteEvent = await events.findOne({_id: new ObjectId(e)});
 
       //Checks if array is empty and if it is deletes event
       if(deleteEvent.event_instances[0] == null){
-        ec.deleteOne({_id: new ObjectId(e)});
+        events.deleteOne({_id: new ObjectId(e)});
       }
     }
 
@@ -791,6 +801,7 @@ app.get('/deleteEvent', async (req, res) => {
   }
 });
 
+//Creates request schema
 const requestSchema = new mongoose.Schema({
   date: { type: Date},
   time: {type: Number},
@@ -801,11 +812,10 @@ const requestSchema = new mongoose.Schema({
 });
 
 const requests = mongoose.model('requests', requestSchema);
-//retrieves user given email
+
+//creates a request and returns it
 app.get('/createRequest', async (req, res) => {
   try {
-    console.log(req.url);
-
     const newRequest = await requests.create({
       date: req.query.start,
       time: req.query.time,
@@ -815,7 +825,7 @@ app.get('/createRequest', async (req, res) => {
       reason: req.query.reason
     });
 
-    res.json(newRequest); //returns user
+    res.json(newRequest); //returns request
   } catch (err) { //error
     console.error(err);
     res.status(500).send('Server error');
@@ -827,8 +837,7 @@ app.get('/findAllRequests', async (req, res) => {
   try {
     const profEmail = req.query.pEmail;
 
-    const allRequests = await requests.find({prof_email : profEmail});
-    console.log(allRequests);
+    const allRequests = await requests.find({prof_email : { $regex : `^${profEmail}$`, $options: 'i'}});
 
     res.json(allRequests); //returns user
   } catch (err) { //error
@@ -842,10 +851,8 @@ app.get('/findOneRequests', async (req, res) => {
   try {
     var ObjectId = require('mongoose').Types.ObjectId; 
 
-
     const oneRequest = await requests.findOne({_id : new ObjectId(req.query.q)});
-    console.log(oneRequest);
-
+	  
     res.json(oneRequest); //returns user
   } catch (err) { //error
     console.error(err);
@@ -853,29 +860,26 @@ app.get('/findOneRequests', async (req, res) => {
   }
 });
 
-//returns one requests for a request id
+//Deletes a request (Professor rejected it)
 app.get('/deleteRequest', async (req, res) => {
   try {
-    console.log(req.url);
     var ObjectId = require('mongoose').Types.ObjectId; 
 
     const oneRequest = await requests.deleteOne({_id : new ObjectId(req.query.q)});
-    console.log(oneRequest);
 
-    res.json(oneRequest); //returns user
+    res.json(oneRequest);
   } catch (err) { //error
     console.error(err);
     res.status(500).send('Server error');
   }
 });
-//Deletes requesta and adds the student who made the request into the instance_event request
+
+//Deletes request and adds the student who made the request into the accepted request instance (Professor accepted request)
 app.get('/specialDeleteRequest', async (req, res) => {
   try {
-    //console.log(req.url);
     var ObjectId = require('mongoose').Types.ObjectId; 
 
     const oneRequest = await requests.findOneAndDelete({_id : new ObjectId(req.query.q)});
-    //console.log(oneRequest);
 
     const curinstance = await eventsInstances.findOneAndUpdate({_id : new ObjectId(req.query.i)},
     {$push: {
@@ -883,15 +887,10 @@ app.get('/specialDeleteRequest', async (req, res) => {
       $inc: { cur_count: 1 }
     });
 
-    const uC = db.collection('users');
-
-
-    const u = await uC.findOneAndUpdate({email : oneRequest.student_email},
+    const u = await userModel.findOneAndUpdate({email : oneRequest.student_email},
       {$push: {
         event_instances : oneRequest._id.toString()
       }});
-
-      console.log(u);
 
     res.json(oneRequest); //returns user
   } catch (err) { //error

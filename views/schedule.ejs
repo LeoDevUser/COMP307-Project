@@ -39,6 +39,8 @@
       <div class="tempSpace">
       </div>
     <div class="aside" id="root">
+      <h1 style="font-size: 25px" class="heading">Fill out form to create new event!</h1>
+
       <form class="formApperance" id="myForm" onsubmit="return submitForm()">
         <h1>Label:
         <input type="text" name="appointmentLabel" class="textbox"></input></h1>
@@ -77,8 +79,7 @@
         <label for="unlimitdPositions"> Unlimited</label></p>
         
         <h1>Repeats?</h1>
-        <p><input type="radio" name="repeats" id="unlimitdPositions" value="doesRepeat" onclick="revealHiddenObject()"></input> Yes</p>
-        <p><input type="radio" name="repeats" id="unlimitdPositions" value="doesNotRepeat" onclick="hideHiddenObject()""></input> No</p>
+        <p><input type="radio" name="repeats" id="unlimitdPositions" value="doesRepeat" onclick="revealHiddenObject()"></input> Yes <input type="radio" name="repeats" id="unlimitdPositions" value="doesNotRepeat" onclick="hideHiddenObject()""></input> No</p>
 
         
         <h1 id="hiddenDate">Repeats Until? <input type="date" name="end" id="reset"></input></h1> 
@@ -97,7 +98,6 @@
       <%- include('calendar.ejs'); %>
     </div>
     </div>
-    <p>Or delete a time: <a href="/delete">Here!</a></p>
 
     <script src="../js/calendar.js"></script>
     <script src="../js/navbar.js"></script>

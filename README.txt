@@ -23,11 +23,11 @@ Alexandros Contomichalos (261039376):
 
 
 +--------------------+------------------------------------------------------------+---------------------------------------------------------------+
-| Person             | Task                                                      | Additional Notes                                             |
+| Person             | Task                                                      | Additional Notes                                               |
 +--------------------+------------------------------------------------------------+---------------------------------------------------------------+
 | Rachel             | 1. Schedule Page                                           | Did CSS for all pages except for navbar and calendar          |
-|                    | 2. Delete Page                                             | (Calendar appears on schedule/delete pages)                   |
-|                    | 3. RSVP Page                                               |                                                               |
+| Craite             | 2. Delete Page                                             | that appears on schedule/delete pages)                        |
+| (261012447)        | 3. RSVP Page                                               |                                                               |
 |                    | 4. Request Page                                            |                                                               |
 |                    | 5. ViewRequest Page                                        |                                                               |
 |                    | 6. All API calls needed for these pages (Not the calendar) |                                                               |

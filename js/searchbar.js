@@ -118,6 +118,14 @@ async function selectOption(option, professors) {
 // Function to find and register for a specific time slot and class
 async function findCellInstance(start_time, day, class_string) {
   let start_hour = start_time.split(":")[0];
+
+
+if (start_hour > 13 ) {
+    alert("Invalid time or class. Please provide a valid input.");
+    return;
+}
+
+
   start_hour = (start_hour > 12) ? start_hour - 12 : start_hour;
 
   let result = `${start_hour}${day}`;

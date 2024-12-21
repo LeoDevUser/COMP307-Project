@@ -215,41 +215,36 @@ app.get('/populatebyeid', async (req, res) => {
 // Function to find class instances based on class name
 async function findClassInstances(class_name) {
   try {
-    // Decode the class name to handle spaces or special characters
     const decodedClassName = decodeURIComponent(class_name);
 
-    // Find all events that match the class name
     const eventsCursor = await events.find({
       classs: { $regex: decodedClassName, $options: 'i' }
     }).toArray();
 
     if (eventsCursor.length === 0) {
-      return { error: 'No events found for the given class name' };  // Return error if no matching event
+      return { error: 'No events found for the given class name' }; 
     }
 
-    // Create an array to store all event instances (event_instaces)
     const allClassInstances = [];
 
-    // Iterate over each event and extract its event instances (event_instaces)
     for (const event of eventsCursor) {
       const eventInstances = event.event_instances;
 
 
 
       if (eventInstances && eventInstances.length > 0) {
-        // Push the full event instance details to the array
+
         allClassInstances.push({ eventId: event._id, eventInstances });
       } else {
         allClassInstances.push({ eventId: event._id, error: 'No event instances found' });
       }
     }
 
-    // Return the array of all event instances for each event
     return allClassInstances;
 
   } catch (err) {
     console.error(err);
-    return { error: 'Server error' };  // Return error in case of any server error
+    return { error: 'Server error' };  
   }
 }
 
@@ -261,19 +256,16 @@ async function getAppEid(eid) {
   let evis = [];
 
   try {
-    // Get event instance details (replace with your method to fetch event instance)
-    const instance = await findEventInstances(eid);  // Assuming you have this function
-    if (!instance) return;  // If no instance found, return early
+    const instance = await findEventInstances(eid);  
+    if (!instance) return;  
 
     // Push the time and appointments to the arrays
-    times.push(instance[0]);  // Assuming instance has a date property
-    const fullLabel = await findEvent(instance[1]);  // Assuming eventid exists in instance
+    times.push(instance[0]);  
+    const fullLabel = await findEvent(instance[1]);  
     appointments.push(fullLabel);
 
-    // Store the event_instance objectId (eid)
     evis.push(eid);
 
-    // Return the results
     return { times, appointments, evis };
   } catch (err) {
     console.error(err);
@@ -282,7 +274,7 @@ async function getAppEid(eid) {
 
 // Populate by class name
 app.get('/populatebyclassname', async (req, res) => {
-  const class_name = req.query.q;  // Get the class name from the query parameter
+  const class_name = req.query.q;  
 
   try {
     const all_eid = await findClassInstances(class_name);
@@ -324,7 +316,7 @@ app.get('/populatebyclassname', async (req, res) => {
 
 // searchbar START
 
-// Helper function to get professors - DO NOT MOVE 
+// Helper function to get professors 
 async function getProfessors() {
   try {
     const userModel = db.collection('users');
@@ -453,23 +445,23 @@ app.get('/registerForInstance', async (req, res) => {
 //retrieves list of classes, takes email
 app.get('/retrieveClasses', async (req, res) => {
   try {
-    // retrieves email sent with req
+
     const searchQuery = req.query.q;
 
-    // If no query is provided, return empty array
+
     if (!searchQuery) {
       return res.json([]);
     }
 
     const classesCollection = db.collection('users');
 
-    // retrieves classes associated with email
+
     const classes = await classesCollection.findOne({email: { $regex: searchQuery, $options: 'i' }},
        {projection: {"classes": 1, "_id": 0}});  
 
-    res.json(classes); //returns classes
+    res.json(classes); 
 
-  } catch (err) { //error
+  } catch (err) { 
     console.error(err);
     res.status(500).send('Server error');
   }
@@ -905,6 +897,7 @@ app.get('/specialDeleteRequest', async (req, res) => {
   }
 });
 
+//Get details from JWT
 app.post('/getuserdetails', async (req, res) => {
   try {
     const { firstName, lastName, email, isProf } = req.body

@@ -9,9 +9,9 @@ let currentDate = new Date();
 // Function to clear the calendar
 function clearCalendar() {
   document.querySelectorAll('td:not(.u-td)').forEach(cell => {
-    cell.textContent = '';  // Clear content
-    cell.style.backgroundColor = '';  // Clear background color
-    cell.removeAttribute('data');  // Remove event data
+    cell.textContent = '';  
+    cell.style.backgroundColor = '';  
+    cell.removeAttribute('data'); 
   });
 }
 

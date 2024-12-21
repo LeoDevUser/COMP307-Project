@@ -120,7 +120,7 @@ async function findCellInstance(start_time, day, class_string) {
   let start_hour = start_time.split(":")[0];
 
 
-  if (start_hour >= 7 && start_hour <= 18) {
+  if (!(start_hour = 7 && start_hour <= 18)) {
         alert("Invalid time or class. Please provide a valid input.");
     return;
 }

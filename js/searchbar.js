@@ -120,8 +120,14 @@ async function findCellInstance(start_time, day, class_string) {
   let start_hour = start_time.split(":")[0];
   start_hour = (start_hour > 12) ? start_hour - 12 : start_hour;
 
-  const result = `${start_hour}${day}`;
+  let result = `${start_hour}${day}`;
+
+  if (result.length === 2) {
+    result = `0${result}`;
+  }
+
   const cell = document.getElementById(result);
+
 
   if (!cell.textContent.trim() || !cell.textContent.toLowerCase().includes(class_string.toLowerCase())) {
     alert("Invalid time or class. Please provide a valid input.");
